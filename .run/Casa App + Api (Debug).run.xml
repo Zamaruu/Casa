@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Casa App + Api (Debug)" type="CompoundRunConfigurationType">
+    <toRun name="Api (Debug)" type="DartCommandLineRunConfigurationType" />
+    <toRun name="App (Debug)" type="FlutterRunConfigurationType" />
+    <method v="2" />
+  </configuration>
+</component>

@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ./api/Dockerfile
+    container_name: casa_api
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+  app:
+    build:
+      context: .
+      dockerfile: ./app/Dockerfile
+    container_name: casa_app
+    ports:
+      - "3000:80"
+    depends_on:
+      - api
+    restart: unless-stopped
