@@ -1,16 +1,25 @@
 name: api
 description: A server app using the shelf package and Docker.
 version: 1.0.0
+export_to: 'none'
 # repository: https://github.com/my_org/my_repo
+
 
 environment:
   sdk: ^3.10.4
 
 dependencies:
+  freezed: ^3.2.4
+  json_annotation: ^4.9.0
   shelf: ^1.4.2
   shelf_router: ^1.1.2
+  jose: ^0.3.4
+  http: ^1.2.0
+  shared:
+    path: ../shared
 
 dev_dependencies:
-  http: ^1.2.2
+
+  json_serializable: ^6.11.3
   lints: ^6.0.0
   test: ^1.25.6
