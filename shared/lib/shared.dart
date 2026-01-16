@@ -3,6 +3,15 @@
 /// More dartdocs go here.
 library;
 
-export 'src/shared_exports.dart';
+export 'src/models/user.model.dart';
+export 'src/models/todo/todo.model.dart';
+// endregion
 
-// TODO: Export any libraries intended for clients of this package.
+// region Services
+export 'src/services/auth.service.dart';
+// endregion
+
+// region Interfaces
+export 'src/interfaces/i_user.dart';
+export 'src/interfaces/i_entity.dart';
+export 'src/interfaces/i_copyable.dart';
