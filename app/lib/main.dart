@@ -2,8 +2,10 @@ import 'package:casa/src/app/theme/casa_theme.dart';
 import 'package:casa/src/core/router/casa_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_web_plugins/url_strategy.dart';
 
 void main() async {
+  usePathUrlStrategy();
   runApp(
     ProviderScope(
       child: const CasaApp(),
