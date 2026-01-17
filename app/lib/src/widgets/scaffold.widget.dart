@@ -1,4 +1,5 @@
 import 'package:casa/src/app/interfaces/i_menu_item.dart';
+import 'package:casa/src/core/auth/auth.provider.dart';
 import 'package:casa/src/core/utils/menu.utils.dart';
 import 'package:casa/src/widgets/appbar.widget.dart';
 import 'package:casa/src/widgets/drawer.widget.dart';
@@ -28,18 +29,28 @@ class _CasaScaffoldState extends ConsumerState<CasaScaffold> {
 
   late List<IMenuItem> serviceItems;
 
+  late Widget profileItem;
+
   @override
   void initState() {
     super.initState();
-    navigationItems = MenuUtils().buildDrawerItems(context);
-    serviceItems = MenuUtils().buildServiceItems(context);
+
+    final menuUtils = MenuUtils();
+
+    navigationItems = menuUtils.buildDrawerItems(context);
+    serviceItems = menuUtils.buildServiceItems(context);
+    profileItem = menuUtils.buildProfile(context, ref.read(authProvider).user);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CasaAppBar(title: widget.title),
-      drawer: CasaDrawer(items: navigationItems, service: serviceItems),
+      drawer: CasaDrawer(
+        items: navigationItems,
+        service: serviceItems,
+        header: profileItem,
+      ),
       body: Builder(
         builder: (context) => widget.builder(context, ref),
       ),

@@ -1,4 +1,3 @@
-import 'package:shared/src/interfaces/i_entity.dart';
 import 'package:shared/src/interfaces/i_user.dart';
 
 class AuthUser implements IUser {
@@ -20,6 +19,15 @@ class AuthUser implements IUser {
     required this.username,
     required this.groups,
   });
+
+  factory AuthUser.initial() {
+    return const AuthUser(
+      id: '',
+      email: '',
+      username: '',
+      groups: [],
+    );
+  }
 
   @override
   // TODO: implement createdAt

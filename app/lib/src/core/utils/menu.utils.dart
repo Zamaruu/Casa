@@ -1,7 +1,9 @@
 import 'package:casa/src/app/interfaces/i_menu_item.dart';
 import 'package:casa/src/app/layout/simple_menu_file.dart';
+import 'package:casa/src/features/profile/widgets/drawerprofile.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared/shared.dart';
 
 class MenuUtils {
   List<IMenuItem> buildDrawerItems(BuildContext context) {
@@ -41,5 +43,9 @@ class MenuUtils {
     ];
 
     return items;
+  }
+
+  Widget buildProfile(BuildContext context, IUser user) {
+    return DrawerProfile(user: user);
   }
 }

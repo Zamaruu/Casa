@@ -4,8 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class AuthNotifier extends Notifier<AuthState> {
   @override
   AuthState build() {
-    return AuthState(isAuthenticated: true, isLoading: false);
-    //return AuthState.initial();
+    return AuthState.initial();
   }
 
   Future<void> checkAuth() async {
@@ -21,9 +20,6 @@ class AuthNotifier extends Notifier<AuthState> {
   }
 
   void logout() {
-    state = const AuthState(
-      isAuthenticated: false,
-      isLoading: false,
-    );
+    state = AuthState.initial();
   }
 }
