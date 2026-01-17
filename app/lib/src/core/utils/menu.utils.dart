@@ -38,7 +38,7 @@ class MenuUtils {
       SimpleMenuItem(
         title: 'Abmelden',
         icon: Icons.logout,
-        onTap: () => context.go('/'),
+        onTap: () => context.replace('/auth'),
       ),
     ];
 

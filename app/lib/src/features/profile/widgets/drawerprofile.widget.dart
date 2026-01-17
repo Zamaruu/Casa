@@ -1,5 +1,6 @@
 import 'package:casa/src/core/extensions/context.extension.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared/shared.dart';
 
 class DrawerProfile extends StatelessWidget {
@@ -19,7 +20,16 @@ class DrawerProfile extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(user.email),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("test@mail.de"),
+                IconButton(
+                  onPressed: () => context.go('/profile'),
+                  icon: Icon(Icons.person),
+                ),
+              ],
+            ),
             Text("Hallo, ${user.username}"),
           ],
         ),

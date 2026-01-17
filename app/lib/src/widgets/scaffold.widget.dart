@@ -51,8 +51,11 @@ class _CasaScaffoldState extends ConsumerState<CasaScaffold> {
         service: serviceItems,
         header: profileItem,
       ),
-      body: Builder(
-        builder: (context) => widget.builder(context, ref),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Builder(
+          builder: (context) => widget.builder(context, ref),
+        ),
       ),
     );
   }

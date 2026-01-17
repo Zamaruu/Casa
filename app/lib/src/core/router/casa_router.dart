@@ -1,4 +1,5 @@
 import 'package:casa/src/core/auth/auth.provider.dart';
+import 'package:casa/src/features/auth/auth.route.dart';
 import 'package:casa/src/features/home/home.route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,7 +10,7 @@ final routerProvider = Provider<GoRouter>(
     final authState = ref.watch(authProvider);
 
     return GoRouter(
-      initialLocation: '/home',
+      initialLocation: '/auth',
       // refreshListenable: GoRouterRefreshStream(ref.watch(authProvider.notifier).stream),
       redirect: (context, state) {
         return null;
@@ -39,6 +40,10 @@ final routerProvider = Provider<GoRouter>(
               body: Center(child: CircularProgressIndicator()),
             );
           },
+        ),
+        GoRoute(
+          path: '/auth',
+          builder: (context, state) => const AuthRoute(),
         ),
         // GoRoute(
         //  path: '/login',
