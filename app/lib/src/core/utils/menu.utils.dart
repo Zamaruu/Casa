@@ -25,4 +25,21 @@ class MenuUtils {
 
     return items;
   }
+
+  List<IMenuItem> buildServiceItems(BuildContext context) {
+    final items = <IMenuItem>[
+      SimpleMenuItem(
+        title: 'Einstellungen',
+        icon: Icons.settings,
+        onTap: () => context.go('/settings'),
+      ),
+      SimpleMenuItem(
+        title: 'Abmelden',
+        icon: Icons.logout,
+        onTap: () => context.go('/'),
+      ),
+    ];
+
+    return items;
+  }
 }

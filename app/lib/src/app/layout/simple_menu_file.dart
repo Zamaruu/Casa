@@ -11,9 +11,13 @@ class SimpleMenuItem implements IMenuItem {
   @override
   final VoidCallback onTap;
 
+  @override
+  final List<IMenuItem> children;
+
   SimpleMenuItem({
     required this.title,
     required this.icon,
     required this.onTap,
+    this.children = const [],
   });
 }

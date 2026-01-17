@@ -26,17 +26,20 @@ class CasaScaffold extends ConsumerStatefulWidget {
 class _CasaScaffoldState extends ConsumerState<CasaScaffold> {
   late List<IMenuItem> navigationItems;
 
+  late List<IMenuItem> serviceItems;
+
   @override
   void initState() {
     super.initState();
     navigationItems = MenuUtils().buildDrawerItems(context);
+    serviceItems = MenuUtils().buildServiceItems(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CasaAppBar(title: widget.title),
-      drawer: CasaDrawer(items: navigationItems),
+      drawer: CasaDrawer(items: navigationItems, service: serviceItems),
       body: Builder(
         builder: (context) => widget.builder(context, ref),
       ),

@@ -6,10 +6,13 @@ class CasaDrawer extends StatefulWidget {
 
   final List<IMenuItem> items;
 
+  final List<IMenuItem> service;
+
   const CasaDrawer({
     super.key,
     this.header,
     required this.items,
+    this.service = const [],
   });
 
   @override
@@ -27,16 +30,17 @@ class _CasaDrawerState extends State<CasaDrawer> {
     return Drawer(
       child: SafeArea(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             if (widget.header != null) widget.header!,
 
-            Expanded(
-              child: ListView.separated(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                itemCount: widget.items.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 4),
-                itemBuilder: (context, index) {
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: List.generate(
+                widget.items.length,
+                (index) {
                   final item = widget.items[index];
 
                   return ListTile(
@@ -50,6 +54,27 @@ class _CasaDrawerState extends State<CasaDrawer> {
                 },
               ),
             ),
+
+            Spacer(),
+            if (widget.service.isNotEmpty)
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: List.generate(
+                  widget.service.length,
+                  (index) {
+                    final item = widget.service[index];
+
+                    return ListTile(
+                      leading: Icon(item.icon),
+                      title: Text(item.title),
+                      onTap: () {
+                        Navigator.of(context).pop(); // Drawer schließen
+                        item.onTap();
+                      },
+                    );
+                  },
+                ),
+              ),
           ],
         ),
       ),

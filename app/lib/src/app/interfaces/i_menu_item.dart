@@ -6,4 +6,6 @@ abstract interface class IMenuItem {
   IconData get icon;
 
   VoidCallback get onTap;
+
+  List<IMenuItem> get children;
 }
