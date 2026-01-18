@@ -1,6 +1,6 @@
 import 'package:shared/shared.dart';
 
-abstract interface class IDefaultDataOperations<T extends IEntity> {
+abstract interface class IDefaultEntityOperations<T extends IEntity> {
   /// Saves an entity to the repository.
   ///
   /// Returns the saved entity with a new ID if successful.

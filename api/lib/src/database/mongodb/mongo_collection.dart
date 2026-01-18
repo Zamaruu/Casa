@@ -2,7 +2,7 @@ import 'package:api/src/utils/logger.util.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:shared/shared.dart';
 
-abstract class MongoCollection<T extends IEntity> implements IDefaultDataOperations<T> {
+abstract class MongoCollection<T extends IEntity> implements IDefaultEntityOperations<T> {
   final Db db;
 
   const MongoCollection({required this.db});

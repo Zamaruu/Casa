@@ -5,7 +5,7 @@ library;
 
 export 'src/enums/e_auth_provider.dart';
 export 'src/enums/e_response_status.dart';
-export 'src/interfaces/data/i_default_data_operations.dart';
+export 'src/interfaces/data/i_default_entity_operations.dart';
 export 'src/interfaces/i_auth_provider.dart';
 export 'src/interfaces/i_copyable.dart';
 export 'src/interfaces/i_entity.dart';
