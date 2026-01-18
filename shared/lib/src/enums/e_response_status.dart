@@ -3,4 +3,5 @@ enum EResponseStatus {
   failure,
   skipped,
   stopped,
+  notFound,
 }

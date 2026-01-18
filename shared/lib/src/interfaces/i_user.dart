@@ -6,4 +6,14 @@ abstract interface class IUser implements IEntity {
   String get username;
 
   List<String> get groups;
+
+  @override
+  IUser copyWith({
+    String? id,
+    String? email,
+    String? username,
+    List<String>? groups,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  });
 }

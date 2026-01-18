@@ -10,6 +10,7 @@ environment:
 
 dependencies:
   freezed: ^3.2.4
+  json_serializable: ^6.11.4
   json_annotation: ^4.9.0
   shelf: ^1.4.2
   shelf_router: ^1.1.2
@@ -17,6 +18,7 @@ dependencies:
   http: ^1.2.0
   shared:
     path: ../shared
+  mongo_dart: ^0.10.5
 
 dev_dependencies:
 

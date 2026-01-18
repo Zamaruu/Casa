@@ -1,5 +1,9 @@
+import 'package:json_annotation/json_annotation.dart';
 import 'package:shared/src/abstract/entity.dart';
 
+part 'todo.model.g.dart';
+
+@JsonSerializable()
 class Todo extends Entity {
   final String userId;
 
@@ -28,9 +32,33 @@ class Todo extends Entity {
     this.childIds = const [],
   });
 
+  factory Todo.fromJson(Map<String, dynamic> json) => _$TodoFromJson(json);
+
   @override
-  Todo copyWith() {
-    // TODO: implement copyWith
-    throw UnimplementedError();
+  Map<String, dynamic> toJson() => _$TodoToJson(this);
+
+  @override
+  Todo copyWith({
+    String? id,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    String? userId,
+    String? title,
+    String? description,
+    DateTime? dueDate,
+    bool? completed,
+    List<String>? tagIds,
+    List<String>? childIds,
+  }) {
+    return Todo(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      dueDate: dueDate ?? this.dueDate,
+      completed: completed ?? this.completed,
+      tagIds: tagIds ?? this.tagIds,
+      childIds: childIds ?? this.childIds,
+    );
   }
 }
