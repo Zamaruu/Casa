@@ -1,6 +1,6 @@
 import 'package:shared/src/interfaces/i_user.dart';
 
-class AuthUser implements IUser {
+class User implements IUser {
   @override
   final String id;
 
@@ -13,15 +13,15 @@ class AuthUser implements IUser {
   @override
   final List<String> groups;
 
-  const AuthUser({
+  const User({
     required this.id,
     required this.email,
     required this.username,
     required this.groups,
   });
 
-  factory AuthUser.initial() {
-    return const AuthUser(
+  factory User.initial() {
+    return const User(
       id: '',
       email: '',
       username: '',
@@ -38,7 +38,7 @@ class AuthUser implements IUser {
   DateTime? get updatedAt => throw UnimplementedError();
 
   @override
-  AuthUser copyWith() {
+  User copyWith() {
     // TODO: implement copyWith
     throw UnimplementedError();
   }

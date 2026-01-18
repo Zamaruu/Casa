@@ -1,13 +1,15 @@
 import 'package:casa/src/core/auth/auth_request.dart';
 import 'package:casa/src/core/auth/auth_result.dart';
 import 'package:casa/src/core/auth/provider/auth_config_provider.dart';
+import 'package:casa/src/core/extensions/string.extensions.dart';
+import 'package:shared/shared.dart';
 
 class LocalAuthProvider extends AuthConfigProvider {
   @override
   bool get enabled => true;
 
   @override
-  String get name => "Basic-JWT";
+  String get name => EAuthProvider.jwt.name.asCapitalized;
 
   @override
   Future<AuthResult> authenticate(AuthRequest request) async {

@@ -13,7 +13,7 @@ class AuthState implements ICopyable {
 
   factory AuthState.initial() {
     return AuthState(
-      user: AuthUser.initial(),
+      user: User.initial(),
       isAuthenticated: false,
       isLoading: true,
     );
