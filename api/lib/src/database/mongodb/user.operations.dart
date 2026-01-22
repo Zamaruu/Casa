@@ -1,10 +1,10 @@
-import 'package:api/src/database/mongodb/mongo_collection.dart';
+import 'package:api/src/database/mongodb/mongo_operations.dart';
 import 'package:api/src/utils/logger.util.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:shared/shared.dart';
 
-class MongoUserRepository extends MongoCollection<IUser> implements IUserRepository {
-  const MongoUserRepository({required super.db});
+class MongoUserOperations extends MongoOperations<IUser> implements IUserOperations {
+  const MongoUserOperations({required super.db});
 
   @override
   DbCollection get collection => db.collection('users');

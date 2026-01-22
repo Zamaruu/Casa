@@ -1,9 +1,8 @@
-import 'package:api/src/abstract/repositories/repo_source.dart';
 import 'package:shared/shared.dart';
 
-abstract class BaseApiRepo implements IRepository {
+abstract class BaseApiRepo<S extends IRepositorySource> implements IRepository {
   @override
-  final ApiRepoSource source;
+  final S source;
 
   const BaseApiRepo({required this.source});
 }
