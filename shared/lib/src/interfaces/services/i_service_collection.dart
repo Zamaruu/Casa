@@ -1,7 +1,7 @@
 abstract interface class IServiceCollection<K, V> {
   Future<void> initalize();
 
-  V get<T>();
+  T get<T extends V>();
 
   V getByKey(K key);
 }

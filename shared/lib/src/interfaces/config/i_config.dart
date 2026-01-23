@@ -1,7 +1,9 @@
-import 'package:shared/src/interfaces/config/i_database_config.dart';
+import 'package:shared/shared.dart';
 
 abstract interface class IConfig {
   Map<String, String> get rawConfigs;
 
   IDatabaseConfig get databaseConfig;
+
+  ELogLevel get logLevel;
 }

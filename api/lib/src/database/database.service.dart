@@ -34,12 +34,12 @@ class DatabaseServiceCollection implements IServiceCollection<Type, IDefaultEnti
   }
 
   @override
-  IDefaultEntityOperations<IEntity> get<T>() {
-    return collection.values.firstWhere((element) => element is T);
+  IDefaultEntityOperations<IEntity> getByKey(Type key) {
+    return collection[key]!;
   }
 
   @override
-  IDefaultEntityOperations<IEntity> getByKey(Type key) {
-    return collection[key]!;
+  T get<T extends IDefaultEntityOperations>() {
+    return collection.values.firstWhere((element) => element is T) as T;
   }
 }

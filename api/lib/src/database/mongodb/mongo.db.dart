@@ -6,7 +6,7 @@ import 'package:shared/shared.dart';
 class MongoDatabaseService extends ServiceCollection<Type, IDefaultEntityOperations> {
   final mongo.Db mongoInstance;
 
-  const MongoDatabaseService({required this.mongoInstance});
+  MongoDatabaseService({required this.mongoInstance});
 
   @override
   Future<void> initalize() async {

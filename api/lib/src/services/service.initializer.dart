@@ -4,9 +4,12 @@ import 'package:api/src/utils/logger.util.dart';
 import 'package:shared/shared.dart';
 
 abstract class ServiceInitializer {
-  static Future<IResponse> startUpServices([IConfig? config]) async {
+  static Future<IResponse> startUpServices(IConfig config) async {
     try {
-      final dbResponse = await _initializeDatabases(EDatabase.mongodb, 'mongodb://localhost:27017');
+      final dbResponse = await _initializeDatabases(
+        config.databaseConfig.databaseType,
+        config.databaseConfig.connectionString,
+      );
 
       final serviceResponses = MultiResponse([
         dbResponse,

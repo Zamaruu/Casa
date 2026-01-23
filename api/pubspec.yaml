@@ -13,7 +13,7 @@ dependencies:
   json_serializable: ^6.11.4
   json_annotation: ^4.9.0
   shelf: ^1.4.2
-  shelf_router: ^1.1.2
+  shelf_router: ^1.1.4
   jose: ^0.3.4
   http: ^1.2.0
   shared:

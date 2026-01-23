@@ -3,15 +3,15 @@ import 'package:shared/shared.dart';
 abstract class ServiceCollection<K, V> implements IServiceCollection<K, V> {
   final Map<K, V> collection;
 
-  const ServiceCollection({this.collection = const {}});
+  ServiceCollection() : collection = <K, V>{};
 
   void addAll(Map<K, V> map) {
     collection.addAll(map);
   }
 
   @override
-  V get<T>() {
-    return collection.values.firstWhere((element) => element is T);
+  T get<T extends V>() {
+    return collection.values.firstWhere((element) => element is T) as T;
   }
 
   @override
