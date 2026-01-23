@@ -27,13 +27,13 @@ abstract class ServiceInitializer {
 
   static Future<IResponse> _initializeDatabases(EDatabase databaseType, String databaseConnectionString) async {
     try {
-      final IServiceCollection database = DatabaseServiceCollection(
+      final database = DatabaseServiceCollection(
         database: databaseType,
         databaseConnectionString: databaseConnectionString,
       );
 
       await database.initalize();
-      services.registerSingleton(database);
+      services.registerSingleton<DatabaseServiceCollection>(database);
 
       return Response.success();
     } catch (e, st) {
