@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:api/src/abstract/controller/crud.controller.dart';
 import 'package:api/src/services/service_locator.dart';
 import 'package:shared/shared.dart';

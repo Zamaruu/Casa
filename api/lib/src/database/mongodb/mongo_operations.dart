@@ -53,8 +53,16 @@ abstract class MongoOperations<T extends IEntity> implements IDefaultEntityOpera
 
   @override
   Future<IValueResponse<List<T>>> findAll() async {
-    // TODO: implement findAll
-    throw UnimplementedError();
+    try {
+      final docs = await collection.find().toList();
+      final entities = docs.map((doc) => fromMongo(doc)).toList();
+
+      return ValueResponse.success(value: entities);
+    } catch (e, st) {
+      final message = 'Error while finding all entities of type ${T.toString()}';
+      apiLog(message: message, error: e, stackTrace: st, callingClass: runtimeType);
+      return ValueResponse.failure(message: message, error: e, stackTrace: st);
+    }
   }
 
   @override

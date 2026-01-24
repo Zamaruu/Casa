@@ -3,7 +3,7 @@ import 'package:api/src/models/responses/api.response.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
 
-import '../abstract/controller/healthcheck.controller.dart';
+import 'healthcheck.controller.dart';
 
 abstract class ControllerBuilder {
   static Router buildEndpoints() {
