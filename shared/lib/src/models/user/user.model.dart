@@ -13,12 +13,16 @@ class User extends Entity implements IUser {
   final String username;
 
   @override
+  final String passwordHash;
+
+  @override
   final List<String> groups;
 
   const User({
     required super.id,
     super.createdAt,
     super.updatedAt,
+    required this.passwordHash,
     required this.email,
     required this.username,
     this.groups = const [],
@@ -29,6 +33,7 @@ class User extends Entity implements IUser {
       id: '',
       email: '',
       username: '',
+      passwordHash: '',
     );
   }
 
@@ -42,6 +47,7 @@ class User extends Entity implements IUser {
     String? id,
     String? email,
     String? username,
+    String? passwordHash,
     List<String>? groups,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -50,6 +56,7 @@ class User extends Entity implements IUser {
       id: id ?? this.id,
       email: email ?? this.email,
       username: username ?? this.username,
+      passwordHash: passwordHash ?? this.passwordHash,
       groups: groups ?? this.groups,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,

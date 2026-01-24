@@ -4,7 +4,6 @@ import 'package:api/src/abstract/controller/api.controller.dart';
 import 'package:api/src/models/responses/api.response.dart';
 import 'package:shared/shared.dart';
 import 'package:shelf/shelf.dart';
-import 'package:shelf_router/shelf_router.dart';
 
 abstract class CrudController<E extends IEntity, O extends IDefaultEntityOperations<E>> extends ApiController {
   final O operations;

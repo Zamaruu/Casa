@@ -1,14 +1,10 @@
 import 'dart:io';
 
 import 'package:api/src/config/config_loader.dart';
-import 'package:api/src/controllers/controller_builder.dart';
 import 'package:api/src/core/pipeline.dart';
-import 'package:api/src/models/responses/api.response.dart';
 import 'package:api/src/services/service.initializer.dart';
 import 'package:api/src/utils/logger.util.dart';
-import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
-import 'package:shelf_router/shelf_router.dart';
 
 void main(List<String> args) async {
   // Use any available host or container IP (usually `0.0.0.0`).

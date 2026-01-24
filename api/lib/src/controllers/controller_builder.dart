@@ -1,6 +1,5 @@
+import 'package:api/src/controllers/auth.controller.dart';
 import 'package:api/src/controllers/user.controller.dart';
-import 'package:api/src/models/responses/api.response.dart';
-import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
 
 import 'healthcheck.controller.dart';
@@ -17,6 +16,10 @@ abstract class ControllerBuilder {
     // User
     final userController = UserController.endpoint();
     router.mount(mergePaths(root, userController.path), userController.router.call);
+
+    // Auth
+    final authController = AuthController.endpoint();
+    router.mount(mergePaths(root, authController.path), authController.router.call);
 
     return router;
   }

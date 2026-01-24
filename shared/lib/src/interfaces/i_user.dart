@@ -5,6 +5,8 @@ abstract interface class IUser implements IEntity {
 
   String get username;
 
+  String get passwordHash;
+
   List<String> get groups;
 
   @override

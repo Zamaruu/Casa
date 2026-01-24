@@ -22,7 +22,7 @@ abstract class MongoOperations<T extends IEntity> implements IDefaultEntityOpera
   @override
   Future<IValueResponse<T>> find(String id) async {
     try {
-      final doc = await collection.findOne(where.id(ObjectId.parse(id)));
+      final doc = await collection.findOne(where.eq("id", id));
       if (doc == null) {
         final message = 'Entity of type ${T.toString()} with id $id not found';
         return ValueResponse.notFound(message: message);
