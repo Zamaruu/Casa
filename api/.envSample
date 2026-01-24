@@ -1,0 +1,11 @@
+# Misc
+LOG_LEVEL=info
+
+# Database
+DB_TYPE=mongodb
+DB_CONNECTION_STRING=mongodb://user:password@ip:port/casa?authSource=admin
+
+# Auth / JWT
+JWT_SECRET=super-long-random-secret-change-me
+# JWT_EXPIRES_IN equals hours, if not provided, token will expire after 48 Hours
+JWT_EXPIRES_IN=48
