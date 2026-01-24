@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:api/src/config/config_loader.dart';
 import 'package:api/src/controllers/controller_builder.dart';
+import 'package:api/src/core/pipeline.dart';
+import 'package:api/src/models/responses/api.response.dart';
 import 'package:api/src/services/service.initializer.dart';
 import 'package:api/src/utils/logger.util.dart';
 import 'package:shelf/shelf.dart';
@@ -27,8 +29,9 @@ void main(List<String> args) async {
   }
 
   // Configure a pipeline that logs requests.
-  final endpoints = ControllerBuilder.buildEndpoints();
-  final handler = Pipeline().addMiddleware(logRequests()).addHandler(endpoints);
+  final handler = await buildPipeline();
+
+  print('✅ Pipeline created. Starting server...');
 
   // For running in containers, we respect the PORT environment variable.
   final port = int.parse(Platform.environment['PORT'] ?? '8080');

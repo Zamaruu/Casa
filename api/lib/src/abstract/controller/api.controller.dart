@@ -1,8 +1,7 @@
 import 'dart:convert';
 
-import 'package:api/src/models/responses/http.response.dart';
+import 'package:api/src/models/responses/api.response.dart';
 import 'package:api/src/utils/logger.util.dart';
-import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
 
 abstract class ApiController {
@@ -12,11 +11,11 @@ abstract class ApiController {
 
   String get path;
 
-  Handler get handler => router.call;
+  Router get handler => router;
 
-  Future<void> registerEndpoints();
+  void registerEndpoints();
 
-  Future<HttpResponse> runGuarded(Future<HttpResponse> Function() endpointHandler) async {
+  Future<ApiResponse> runGuarded(Future<ApiResponse> Function() endpointHandler) async {
     try {
       return await endpointHandler();
     } catch (e, st) {
@@ -31,7 +30,7 @@ abstract class ApiController {
 
       final json = jsonEncode(errorMap);
 
-      return HttpResponse.internalServerError(json);
+      return ApiResponse.internalServerError(json);
     }
   }
 }
