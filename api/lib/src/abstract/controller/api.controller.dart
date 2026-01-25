@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:api/src/models/responses/api.response.dart';
+import 'package:api/src/services/auth/user_context.dart';
 import 'package:api/src/utils/logger.util.dart';
+import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
 
 abstract class ApiController {
@@ -32,5 +34,13 @@ abstract class ApiController {
 
       return ApiResponse.internalServerError(json);
     }
+  }
+
+  UserContext userContext(Request request) {
+    final ctx = request.context["UserContext"];
+    if (ctx == null) {
+      throw StateError('UserContext missing');
+    }
+    return ctx as UserContext;
   }
 }

@@ -22,7 +22,7 @@ class User extends Entity implements IUser {
     required super.id,
     super.createdAt,
     super.updatedAt,
-    required this.passwordHash,
+    this.passwordHash = '',
     required this.email,
     required this.username,
     this.groups = const [],

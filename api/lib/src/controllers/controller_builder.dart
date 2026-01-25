@@ -5,21 +5,28 @@ import 'package:shelf_router/shelf_router.dart';
 import 'healthcheck.controller.dart';
 
 abstract class ControllerBuilder {
-  static Router buildEndpoints() {
-    final String root = "/api";
+  static String get root => "/api";
+
+  static Router buildPublicEndpoints() {
     final router = Router();
+
+    // Auth
+    final authController = AuthController.endpoint();
+    router.mount(mergePaths(root, authController.path), authController.router.call);
 
     // Healthcheck
     final healthcheckController = HealthCheckController.endpoint();
     router.mount(mergePaths(root, healthcheckController.path), healthcheckController.router.call);
 
+    return router;
+  }
+
+  static Router buildProtectedEndpoints() {
+    final router = Router();
+
     // User
     final userController = UserController.endpoint();
     router.mount(mergePaths(root, userController.path), userController.router.call);
-
-    // Auth
-    final authController = AuthController.endpoint();
-    router.mount(mergePaths(root, authController.path), authController.router.call);
 
     return router;
   }

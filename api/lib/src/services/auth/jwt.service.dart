@@ -10,6 +10,8 @@ class JwtService {
     required this.tokenLifetime,
   });
 
+  String get issuer => 'casa-api';
+
   String generate(IUser user) {
     final jwt = JWT(
       {
@@ -20,7 +22,7 @@ class JwtService {
         'createdAt': user.createdAt?.toIso8601String(),
         'updatedAt': user.updatedAt?.toIso8601String(),
       },
-      issuer: 'casa-api',
+      issuer: issuer,
       subject: user.id,
     );
 
@@ -28,5 +30,15 @@ class JwtService {
       SecretKey(secret),
       expiresIn: tokenLifetime,
     );
+  }
+
+  Map<String, dynamic> verify(String token) {
+    final jwt = JWT.verify(
+      token,
+      SecretKey(secret),
+      issuer: issuer,
+    );
+
+    return jwt.payload as Map<String, dynamic>;
   }
 }
