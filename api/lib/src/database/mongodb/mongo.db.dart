@@ -1,4 +1,3 @@
-import 'package:api/src/abstract/services/service_collection.dart';
 import 'package:api/src/database/mongodb/user.operations.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
 import 'package:shared/shared.dart';

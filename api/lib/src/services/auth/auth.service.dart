@@ -1,4 +1,3 @@
-import 'package:api/src/services/auth/hasher.dart';
 import 'package:api/src/services/auth/jwt.service.dart';
 import 'package:shared/shared.dart';
 

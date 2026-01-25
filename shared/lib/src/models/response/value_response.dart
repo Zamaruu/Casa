@@ -12,7 +12,7 @@ class ValueResponse<T> extends Response implements IValueResponse<T> {
     this.value,
   });
 
-  const ValueResponse.success({required T value, String? message}) : this(status: EResponseStatus.success, value: value);
+  const ValueResponse.success({T? value, String? message}) : this(status: EResponseStatus.success, value: value);
 
   const ValueResponse.failure({
     String? message,

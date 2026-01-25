@@ -1,6 +1,6 @@
 import 'package:casa/src/app/interfaces/i_menu_item.dart';
 import 'package:casa/src/core/auth/auth.provider.dart';
-import 'package:casa/src/core/utils/menu.utils.dart';
+import 'package:casa/src/core/utils/menu.util.dart';
 import 'package:casa/src/widgets/appbar.widget.dart';
 import 'package:casa/src/widgets/drawer.widget.dart';
 import 'package:flutter/material.dart';

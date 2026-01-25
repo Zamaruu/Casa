@@ -64,11 +64,42 @@ enum EHttpStatus {
   loopDetected(508),
   bandwidthLimitExceeded(509),
   notExtended(510),
-  networkAuthenticationRequired(511)
+  networkAuthenticationRequired(511),
+  // endregion
+
+  // region 900
+  unknown(900),
+  requestError(901)
   ;
   // endregion
 
   final int code;
 
+  // region Constructor
+
   const EHttpStatus(this.code);
+
+  static EHttpStatus fromCode(int? code) {
+    if (code == null) return unknown;
+    final statusCode = EHttpStatus.values.firstWhere((element) => element.code == code, orElse: () => unknown);
+    return statusCode;
+  }
+
+  // endregion
+
+  // region Status-Getter
+
+  bool get isSuccessful {
+    return code >= 200 && code < 300;
+  }
+
+  bool get isClientError {
+    return code >= 400 && code < 500;
+  }
+
+  bool get isServerError {
+    return code >= 500 && code < 600;
+  }
+
+  // endregion
 }

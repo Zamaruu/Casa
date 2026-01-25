@@ -1,8 +1,54 @@
+import 'package:casa/src/core/utils/snackbar.util.dart';
+import 'package:casa/src/features/auth/data/repositories/auth.repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class AuthRoute extends StatelessWidget {
+class AuthRoute extends ConsumerStatefulWidget {
   const AuthRoute({super.key});
+
+  @override
+  ConsumerState createState() => _AuthRouteState();
+}
+
+class _AuthRouteState extends ConsumerState<AuthRoute> {
+  late final GlobalKey<FormState> formKey;
+
+  late final TextEditingController emailController;
+  late final TextEditingController passwordController;
+
+  @override
+  void initState() {
+    super.initState();
+    formKey = GlobalKey<FormState>();
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
+  }
+
+  // region Methods
+
+  void performLoginWithEmailAndPassword(WidgetRef ref) async {
+    if (formKey.currentState!.validate()) {
+      final email = emailController.text;
+      final password = passwordController.text;
+
+      // Perform login with email and password
+      final loginResponse = await ref.read(authRepositoryProvider).loginWithEmail(email: email, password: password);
+
+      if (mounted) {
+        if (loginResponse.isError) {
+          CasaSnackbars.showDefaultSnackbar(
+            message: loginResponse.message ?? 'An error occurred during login.',
+            context: context,
+          );
+        } else {
+          context.go('/home');
+        }
+      }
+    }
+  }
+
+  // endregion
 
   @override
   Widget build(BuildContext context) {
@@ -13,36 +59,39 @@ class AuthRoute extends StatelessWidget {
           child: Card(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text('Login'),
+              child: Form(
+                key: formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text('Login'),
 
-                  const SizedBox(height: 16),
+                    const SizedBox(height: 16),
 
-                  const TextField(
-                    decoration: InputDecoration(
-                      labelText: 'Email',
+                    TextField(
+                      controller: emailController,
+                      decoration: InputDecoration(
+                        labelText: 'Email',
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 16),
+                    const SizedBox(height: 16),
 
-                  const TextField(
-                    decoration: InputDecoration(
-                      labelText: 'Password',
+                    TextField(
+                      controller: passwordController,
+                      decoration: InputDecoration(
+                        labelText: 'Password',
+                      ),
+                      obscureText: true,
                     ),
-                    obscureText: true,
-                  ),
 
-                  const Spacer(),
+                    const Spacer(),
 
-                  ElevatedButton(
-                    onPressed: () {
-                      context.replace('/home');
-                    },
-                    child: const Text('Login'),
-                  ),
-                ],
+                    ElevatedButton(
+                      onPressed: () => performLoginWithEmailAndPassword(ref),
+                      child: const Text('Login'),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

@@ -42,6 +42,9 @@ dependencies:
     path: ../shared
   go_router: ^17.0.1
   flutter_expandable_fab: ^2.5.2
+  web: ^1.1.1
+  dio: ^5.9.0
+  universal_platform: ^1.1.0
 
 dev_dependencies:
   flutter_test:

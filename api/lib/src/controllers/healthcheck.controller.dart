@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:api/src/abstract/controller/api.controller.dart';
 import 'package:api/src/models/responses/api.response.dart';
-import 'package:api/src/utils/logger.util.dart';
 import 'package:shelf/shelf.dart';
 
 class HealthCheckController extends ApiController {
