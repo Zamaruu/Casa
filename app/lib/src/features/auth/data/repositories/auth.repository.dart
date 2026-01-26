@@ -1,4 +1,5 @@
 import 'package:casa/src/core/services/service_locator.dart';
+import 'package:casa/src/core/utils/logger.util.dart';
 import 'package:casa/src/features/auth/data/interfaces/i_auth_api.dart';
 import 'package:casa/src/features/auth/data/repositories/auth.repo.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,14 +23,18 @@ class AuthRepository extends AuthRepo {
 
   @override
   Future<IResponse> loginWithEmail({required String email, required String password}) async {
-    final hashedPassword = PasswordHasher().hash(password);
+    try {
+      final token = await source.authApi.loginByEmail(email: email, password: password);
 
-    final token = await source.authApi.loginByEmail(email: email, passwordHash: hashedPassword);
-
-    if (token != null) {
-      return Response.success();
-    } else {
-      return Response.failure(message: 'Login failed');
+      if (token != null) {
+        return Response.success();
+      } else {
+        return Response.failure(message: 'Login failed');
+      }
+    } catch (e, st) {
+      final message = "Unexpected error during login.";
+      appLog(message: message, error: e, stackTrace: st, callingClass: runtimeType);
+      return Response.failure(message: message, error: e, stackTrace: st);
     }
   }
 }

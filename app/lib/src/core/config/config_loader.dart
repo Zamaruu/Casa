@@ -17,7 +17,7 @@ class AppConfigLoader {
 
   static AppConfig _loadForApp() {
     // TODO: Implement loading url by sercure preferences
-    final apiBaseUrl = Uri.parse('http://127.0.0.1:8080/api');
+    final apiBaseUrl = Uri.parse('http://localhost:8080/api');
 
     final apiConfig = ApiConfig(baseUrl: apiBaseUrl);
     final logLevel = ELogLevel.debug;
@@ -26,7 +26,7 @@ class AppConfigLoader {
   }
 
   static AppConfig _loadForWeb() {
-    final origin = html.window.location.origin;
+    final origin = Uri.base.host;
 
     final apiBaseUrl = Uri.parse('$origin/api');
 

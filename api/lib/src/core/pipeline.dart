@@ -15,13 +15,14 @@ Future<Handler> buildPipeline() async {
   final publicEndpoints = ControllerBuilder.buildPublicEndpoints();
 
   final protectedPipeline = Pipeline()
-      .addMiddleware(logRequests())
-      .addMiddleware(corsHeaders())
       .addMiddleware(authMiddleware(jwtService))
       .addMiddleware(defaultHeaders())
       .addHandler(protectedEndpoints.call);
 
-  final handler = Cascade().add(publicEndpoints.call).add(protectedPipeline).handler;
+  final cascade = Cascade().add(publicEndpoints.call).add(protectedPipeline).handler;
+
+  // 🔑 CORS + Logging GANZ AUSSEN
+  final handler = Pipeline().addMiddleware(logRequests()).addMiddleware(corsHeaders()).addHandler(cascade);
 
   return handler;
 }

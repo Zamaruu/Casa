@@ -36,4 +36,14 @@ class Response implements IResponse {
 
   @override
   bool get hasMessage => message != null && message!.isNotEmpty;
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'status': status.name,
+      'message': message,
+      'error': error.toString(),
+      'stackTrace': stackTrace.toString(),
+    };
+  }
 }

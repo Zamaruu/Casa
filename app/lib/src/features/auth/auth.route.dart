@@ -1,3 +1,4 @@
+import 'package:casa/src/core/models/enums/e_snackbar_type.dart';
 import 'package:casa/src/core/utils/snackbar.util.dart';
 import 'package:casa/src/features/auth/data/repositories/auth.repository.dart';
 import 'package:flutter/material.dart';
@@ -40,6 +41,7 @@ class _AuthRouteState extends ConsumerState<AuthRoute> {
           CasaSnackbars.showDefaultSnackbar(
             message: loginResponse.message ?? 'An error occurred during login.',
             context: context,
+            type: ESnackbarType.error,
           );
         } else {
           context.go('/home');

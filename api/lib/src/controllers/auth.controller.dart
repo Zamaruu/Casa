@@ -47,10 +47,12 @@ class AuthController extends ApiController {
       );
 
       if (tokenResponse.isError) {
-        return ApiResponse.forbidden(tokenResponse.message ?? "Invalid credentials");
+        final responseJson = jsonEncode(tokenResponse.toJson());
+        return ApiResponse.forbidden(responseJson);
       } else {
         if (tokenResponse.hasValue == false) {
-          return ApiResponse.internalServerError('Token could not be generated');
+          final responseJson = jsonEncode(tokenResponse.toJson());
+          return ApiResponse.internalServerError(responseJson);
         } else {
           final token = tokenResponse.value!;
           return ApiResponse.ok(

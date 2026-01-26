@@ -30,7 +30,7 @@ class ApiAuthService implements IAuthService {
   }
 
   @override
-  Future<IValueResponse<String>> authenticate(String email, String passwordHash) async {
+  Future<IValueResponse<String>> authenticate(String email, String password) async {
     try {
       final userResponse = await userOperations.findByEmail(email);
 
@@ -43,8 +43,10 @@ class ApiAuthService implements IAuthService {
       }
 
       final user = userResponse.value!;
+      final passwordHash = user.passwordHash;
 
-      final valid = user.passwordHash == passwordHash;
+      final valid = verifyPassword(password, passwordHash);
+
       if (!valid) {
         return ValueResponse.failure(message: 'Invalid password');
       }

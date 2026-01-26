@@ -7,5 +7,5 @@ abstract interface class IAuthService {
 
   bool verifyPassword(String password, String hash);
 
-  Future<IValueResponse<String>> authenticate(String email, String passwordHash);
+  Future<IValueResponse<String>> authenticate(String email, String password);
 }

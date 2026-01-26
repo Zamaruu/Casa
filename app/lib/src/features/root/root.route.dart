@@ -29,7 +29,7 @@ class _RootRouteState extends State<RootRoute> {
   }
 
   void navigateToAuth() {
-    context.replace('/auth');
+    context.go('/auth');
   }
 
   // endregion

@@ -7,13 +7,13 @@ class AuthApi extends ApiManager implements IAuthApi {
   @override
   Future<String?> loginByEmail({
     required String email,
-    required String passwordHash,
+    required String password,
   }) async {
     final response = await client.dio.post(
       '/auth/login',
       data: {
         'email': email,
-        'password': passwordHash,
+        'password': password,
       },
     );
 

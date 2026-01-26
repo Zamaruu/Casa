@@ -25,4 +25,15 @@ class MultiResponse implements IResponse {
 
   @override
   EResponseStatus get status => isSuccess ? EResponseStatus.success : EResponseStatus.failure;
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'status': status.name,
+      'message': message,
+      'error': error.toString(),
+      'stackTrace': stackTrace.toString(),
+      'responses': responses.map((e) => e.toJson()).toList(),
+    };
+  }
 }
