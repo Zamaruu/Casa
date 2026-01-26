@@ -1,34 +1,35 @@
 import 'package:shared/shared.dart';
 
 class AuthState implements ICopyable {
-  final bool isAuthenticated;
-  final bool isLoading;
-  final IUser user;
+  final IUser? user;
+
+  final String token;
+
+  // region Constructors
 
   const AuthState({
-    required this.user,
-    required this.isAuthenticated,
-    required this.isLoading,
+    required this.token,
+    this.user,
   });
 
   factory AuthState.initial() {
     return AuthState(
-      user: User.initial(),
-      isAuthenticated: false,
-      isLoading: true,
+      token: '',
     );
   }
 
+  // endregion
+
+  bool get isAuthenticated => user != null;
+
   @override
   AuthState copyWith({
-    bool? isAuthenticated,
-    bool? isLoading,
     IUser? user,
+    String? token,
   }) {
     return AuthState(
       user: user ?? this.user,
-      isAuthenticated: isAuthenticated ?? this.isAuthenticated,
-      isLoading: isLoading ?? this.isLoading,
+      token: token ?? this.token,
     );
   }
 }

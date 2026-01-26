@@ -7,27 +7,22 @@ import 'package:go_router/go_router.dart';
 
 final routerProvider = Provider<GoRouter>(
   (ref) {
-    final authState = ref.watch(authProvider);
-
+    final asyncAuthState = ref.watch(authProvider);
     return GoRouter(
       initialLocation: '/',
       // refreshListenable: GoRouterRefreshStream(ref.watch(authProvider.notifier).stream),
       redirect: (context, state) {
-        return null;
+        final auth = asyncAuthState.value;
 
-        if (authState.isLoading) {
+        final isLoggingIn = state.matchedLocation == '/auth';
+        final isAuthenticated = auth?.isAuthenticated ?? false;
+
+        if (!isAuthenticated && !isLoggingIn) {
+          return '/auth';
+        }
+
+        if (isAuthenticated && isLoggingIn) {
           return '/';
-        }
-
-        final isLoggedIn = authState.isAuthenticated;
-        final isLoginRoute = state.matchedLocation == '/login';
-
-        if (!isLoggedIn && !isLoginRoute) {
-          return '/login';
-        }
-
-        if (isLoggedIn && isLoginRoute) {
-          return '/home';
         }
 
         return null;
@@ -35,25 +30,11 @@ final routerProvider = Provider<GoRouter>(
       routes: [
         GoRoute(
           path: '/',
-          builder: (context, state) => const RootRoute(),
+          builder: (context, state) => const HomeRoute(),
         ),
         GoRoute(
           path: '/auth',
           builder: (context, state) => const AuthRoute(),
-        ),
-        // GoRoute(
-        //  path: '/login',
-        //  builder: (context, state) => const LoginPage(),
-        // ),
-        GoRoute(
-          path: "/home",
-          builder: (context, state) => const HomeRoute(),
-          routes: [
-            // GoRoute(
-            //  path: 'todos',
-            //  builder: (context, state) => const TodoPage(),
-            // ),
-          ],
         ),
       ],
     );

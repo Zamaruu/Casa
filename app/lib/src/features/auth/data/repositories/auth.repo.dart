@@ -15,5 +15,5 @@ class AuthRepoSource extends RepoSource {
 abstract class AuthRepo extends BaseRepo<AuthRepoSource> {
   const AuthRepo({required super.source});
 
-  Future<IResponse> loginWithEmail({required String email, required String password});
+  Future<IValueResponse<String>> loginWithEmail({required String email, required String password});
 }

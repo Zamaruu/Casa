@@ -37,6 +37,8 @@ class User extends Entity implements IUser {
     );
   }
 
+  bool get isInitial => id == '';
+
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
   @override

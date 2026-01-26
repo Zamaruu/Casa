@@ -2,7 +2,6 @@ import 'package:casa/src/core/config/api_config.dart';
 import 'package:casa/src/core/config/app_config.dart';
 import 'package:shared/shared.dart';
 import 'package:universal_platform/universal_platform.dart';
-import 'package:web/web.dart' as html;
 
 class AppConfigLoader {
   static AppConfig loadConfig() {

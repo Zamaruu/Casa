@@ -1,9 +1,8 @@
+import 'package:casa/src/core/auth/auth.provider.dart';
 import 'package:casa/src/core/models/enums/e_snackbar_type.dart';
 import 'package:casa/src/core/utils/snackbar.util.dart';
-import 'package:casa/src/features/auth/data/repositories/auth.repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 class AuthRoute extends ConsumerStatefulWidget {
   const AuthRoute({super.key});
@@ -34,7 +33,7 @@ class _AuthRouteState extends ConsumerState<AuthRoute> {
       final password = passwordController.text;
 
       // Perform login with email and password
-      final loginResponse = await ref.read(authRepositoryProvider).loginWithEmail(email: email, password: password);
+      final loginResponse = await ref.read(authProvider.notifier).login(email, password);
 
       if (mounted) {
         if (loginResponse.isError) {
@@ -44,7 +43,11 @@ class _AuthRouteState extends ConsumerState<AuthRoute> {
             type: ESnackbarType.error,
           );
         } else {
-          context.go('/home');
+          CasaSnackbars.showDefaultSnackbar(
+            message: 'Login successful!',
+            context: context,
+            type: ESnackbarType.success,
+          );
         }
       }
     }
