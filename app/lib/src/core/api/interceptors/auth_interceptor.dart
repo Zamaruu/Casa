@@ -1,19 +1,22 @@
+import 'package:casa/src/core/interfaces/auth/i_token_provider.dart';
 import 'package:dio/dio.dart';
 
-class AuthInterceptor extends Interceptor {
-  final Future<String?> Function() getToken;
+class AuthTokenInterceptor extends Interceptor {
+  final ITokenProvider tokenProvider;
 
-  AuthInterceptor(this.getToken);
+  AuthTokenInterceptor(this.tokenProvider);
 
   @override
   void onRequest(
     RequestOptions options,
     RequestInterceptorHandler handler,
-  ) async {
-    final token = await getToken();
+  ) {
+    final token = tokenProvider.accessToken;
+
     if (token != null) {
       options.headers['Authorization'] = 'Bearer $token';
     }
+
     handler.next(options);
   }
 }

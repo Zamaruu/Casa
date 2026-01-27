@@ -6,16 +6,15 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared/shared.dart';
 
 class AuthNotifier extends AsyncNotifier<AuthState> {
-  static const _tokenKey = 'casa.jwt';
-
-  final _storage = const FlutterSecureStorage();
-
   @override
   Future<AuthState> build() async {
-    final token = await _storage.read(key: _tokenKey);
-    if (token == null) {
+    final tokenResponse = await ref.read(authRepositoryProvider).getToken();
+
+    if (tokenResponse.isError || tokenResponse.hasValue == false) {
       return AuthState.initial();
     }
+
+    final token = tokenResponse.value!;
 
     final user = _userFromJwt(token);
     return AuthState(user: user, token: token);
@@ -49,9 +48,13 @@ class AuthNotifier extends AsyncNotifier<AuthState> {
   }
 
   Future<IResponse> logout() async {
-    await _storage.delete(key: _tokenKey);
+    state = const AsyncLoading();
+
+    final logoutResponse = await ref.read(authRepositoryProvider).logout();
+
     state = AsyncData(AuthState.initial());
-    return Response.success();
+
+    return logoutResponse;
   }
 
   // endregion
@@ -66,7 +69,7 @@ class AuthNotifier extends AsyncNotifier<AuthState> {
 
   Future<void> _persistAndSetToken(String token) async {
     final user = _userFromJwt(token);
-    await _storage.write(key: _tokenKey, value: token);
+    await ref.read(authRepositoryProvider).saveAndSetToken(token);
 
     state = AsyncData(
       AuthState(user: user, token: token),

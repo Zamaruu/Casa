@@ -1,6 +1,8 @@
 import 'package:casa/src/core/api/api_client.dart';
 import 'package:casa/src/core/api/api_service.dart';
+import 'package:casa/src/core/auth/token/in_memeory_token_provider.dart';
 import 'package:casa/src/core/config/config_loader.dart';
+import 'package:casa/src/core/interfaces/auth/i_token_provider.dart';
 import 'package:casa/src/core/interfaces/config/i_app_config.dart';
 import 'package:casa/src/core/services/service_locator.dart';
 import 'package:casa/src/core/utils/logger.util.dart';
@@ -16,11 +18,13 @@ abstract class ServiceInitializer {
       }
 
       final config = configResponse.value!;
+      final tokenProviderResponse = await _startUpTokenProvider();
       final apiResponse = await _startUpCasaApi(config);
 
       appLog(message: "Casa-App Services started successfully.", callingClass: ServiceInitializer);
 
       return MultiResponse([
+        tokenProviderResponse,
         apiResponse,
       ]);
     } catch (e, st) {
@@ -44,6 +48,17 @@ abstract class ServiceInitializer {
   // endregion
 
   // region Casa-API
+
+  static Future<IResponse> _startUpTokenProvider() async {
+    try {
+      final tokenProvider = InMemoryAuthTokenProvider.empty();
+      services.registerSingleton<ITokenProvider>(tokenProvider);
+      return Response.success();
+    } catch (e, st) {
+      final message = "Unexpected error while starting up ITokenProvider.";
+      return Response.failure(message: message, error: e, stackTrace: st);
+    }
+  }
 
   static Future<IResponse> _startUpCasaApi(IAppConfig config) async {
     try {
