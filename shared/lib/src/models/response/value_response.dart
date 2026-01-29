@@ -1,7 +1,5 @@
-import 'package:json_annotation/json_annotation.dart';
 import 'package:shared/shared.dart';
 
-@JsonSerializable()
 class ValueResponse<T> extends Response implements IValueResponse<T> {
   @override
   final T? value;

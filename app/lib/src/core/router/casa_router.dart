@@ -1,27 +1,38 @@
 import 'package:casa/src/core/auth/auth.provider.dart';
+import 'package:casa/src/core/models/enums/e_auth_status.dart';
+import 'package:casa/src/core/router/casa_auth_router_refreshable.dart';
 import 'package:casa/src/features/auth/auth.route.dart';
 import 'package:casa/src/features/home/home.route.dart';
-import 'package:casa/src/features/root/root.route.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 final routerProvider = Provider<GoRouter>(
   (ref) {
-    final asyncAuthState = ref.watch(authProvider);
+    final initialStatus = ref.read(authStatusProvider);
+    final refreshNotifier = RouterRefreshNotifier(initialStatus);
+
+    ref.listen<EAuthStatus>(authStatusProvider, (prev, next) {
+      if (prev != next) {
+        refreshNotifier.value = next;
+      }
+    });
+
     return GoRouter(
-      initialLocation: '/',
-      // refreshListenable: GoRouterRefreshStream(ref.watch(authProvider.notifier).stream),
+      initialLocation: '/auth',
+      refreshListenable: refreshNotifier,
       redirect: (context, state) {
-        final auth = asyncAuthState.value;
-
+        final status = refreshNotifier.value;
         final isLoggingIn = state.matchedLocation == '/auth';
-        final isAuthenticated = auth?.isAuthenticated ?? false;
 
-        if (!isAuthenticated && !isLoggingIn) {
+        if (status == EAuthStatus.unknown || status == EAuthStatus.authenticating) {
+          return null;
+        }
+
+        if (status == EAuthStatus.unauthenticated && !isLoggingIn) {
           return '/auth';
         }
 
-        if (isAuthenticated && isLoggingIn) {
+        if (status == EAuthStatus.authenticated && isLoggingIn) {
           return '/';
         }
 

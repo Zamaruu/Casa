@@ -36,18 +36,20 @@ class _AuthRouteState extends ConsumerState<AuthRoute> {
       // Perform login with email and password
       final loginResponse = await ref.read(authProvider.notifier).login(email, password);
 
-      if (loginResponse.isError) {
-        toastification.show(
-          title: Text(loginResponse.message ?? 'An error occurred during login.'),
-          autoCloseDuration: const Duration(seconds: 5),
-          primaryColor: ESnackbarType.error.color,
-        );
-      } else {
-        toastification.show(
-          title: Text('Login successful!'),
-          autoCloseDuration: const Duration(seconds: 5),
-          primaryColor: ESnackbarType.success.color,
-        );
+      if (mounted) {
+        if (loginResponse.isError) {
+          toastification.show(
+            title: Text(loginResponse.message ?? 'An error occurred during login.'),
+            autoCloseDuration: const Duration(seconds: 5),
+            primaryColor: ESnackbarType.error.color,
+          );
+        } else {
+          toastification.show(
+            title: Text('Login successful!'),
+            autoCloseDuration: const Duration(seconds: 5),
+            primaryColor: ESnackbarType.success.color,
+          );
+        }
       }
     }
   }
