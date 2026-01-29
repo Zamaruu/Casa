@@ -1,31 +1,33 @@
 import 'dart:io';
 
-import 'package:shelf/shelf.dart';
+import 'package:api/src/config/config_loader.dart';
+import 'package:api/src/core/pipeline.dart';
+import 'package:api/src/services/service_initializer.dart';
+import 'package:api/src/utils/logger.util.dart';
 import 'package:shelf/shelf_io.dart';
-import 'package:shelf_router/shelf_router.dart';
-
-// Configure routes.
-final _router = Router()
-  ..get('/', _rootHandler)
-  ..get('/echo/<message>', _echoHandler);
-
-Response _rootHandler(Request req) {
-  return Response.ok('Hello, World!\n');
-}
-
-Response _echoHandler(Request request) {
-  final message = request.params['message'];
-  return Response.ok('$message\n');
-}
 
 void main(List<String> args) async {
   // Use any available host or container IP (usually `0.0.0.0`).
   final ip = InternetAddress.anyIPv4;
 
+  final config = ConfigLoader.load();
+
+  final serviceStartUpResponse = await ServiceInitializer.startUpServices(config);
+
+  if (serviceStartUpResponse.isError) {
+    apiLog(
+      message: 'Error while starting up services.',
+      error: serviceStartUpResponse.error,
+      stackTrace: serviceStartUpResponse.stackTrace,
+    );
+
+    return;
+  }
+
   // Configure a pipeline that logs requests.
-  final handler = Pipeline()
-      .addMiddleware(logRequests())
-      .addHandler(_router.call);
+  final handler = await buildPipeline();
+
+  print('✅ Pipeline created. Starting server...');
 
   // For running in containers, we respect the PORT environment variable.
   final port = int.parse(Platform.environment['PORT'] ?? '8080');

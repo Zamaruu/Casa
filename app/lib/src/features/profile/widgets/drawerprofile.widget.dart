@@ -23,7 +23,7 @@ class DrawerProfile extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("test@mail.de"),
+                Text(user.email),
                 IconButton(
                   onPressed: () => context.go('/profile'),
                   icon: Icon(Icons.person),

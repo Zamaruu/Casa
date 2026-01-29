@@ -1,9 +1,18 @@
 import 'package:shared/src/interfaces/i_copyable.dart';
 
-abstract interface class IEntity implements ICopyable<IEntity> {
+import 'i_serializable.dart';
+
+abstract interface class IEntity implements ICopyable<IEntity>, ISerializable {
   String get id;
 
   DateTime? get createdAt;
 
   DateTime? get updatedAt;
+
+  @override
+  IEntity copyWith({
+    String? id,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  });
 }
