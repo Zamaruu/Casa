@@ -1,5 +1,6 @@
 import 'package:casa/src/core/auth/auth.provider.dart';
 import 'package:casa/src/core/models/enums/e_snackbar_type.dart';
+import 'package:casa/src/core/utils/snackbar.util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toastification/toastification.dart';
@@ -37,16 +38,16 @@ class _AuthRouteState extends ConsumerState<AuthRoute> {
 
       if (mounted) {
         if (loginResponse.isError) {
-          toastification.show(
-            title: Text(loginResponse.message ?? 'An error occurred during login.'),
-            autoCloseDuration: const Duration(seconds: 5),
-            primaryColor: ESnackbarType.error.color,
+          CasaSnackbars.showDefaultSnackbar(
+            message: loginResponse.message ?? 'An error occurred during login.',
+            context: context,
+            type: ESnackbarType.error,
           );
         } else {
-          toastification.show(
-            title: Text('Login successful!'),
-            autoCloseDuration: const Duration(seconds: 5),
-            primaryColor: ESnackbarType.success.color,
+          CasaSnackbars.showDefaultSnackbar(
+            message: 'Login successful!',
+            context: context,
+            type: ESnackbarType.success,
           );
         }
       }
@@ -68,32 +69,74 @@ class _AuthRouteState extends ConsumerState<AuthRoute> {
                 key: formKey,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const Text('Login'),
+                    const Text(
+                      'Login',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
 
                     const SizedBox(height: 16),
 
-                    TextField(
+                    TextFormField(
                       controller: emailController,
                       decoration: InputDecoration(
                         labelText: 'Email',
                       ),
+                      validator: (email) {
+                        if (email == null || email.isEmpty) {
+                          return 'Please enter your email';
+                        }
+                        return null;
+                      },
                     ),
                     const SizedBox(height: 16),
 
-                    TextField(
+                    TextFormField(
                       controller: passwordController,
                       decoration: InputDecoration(
                         labelText: 'Password',
                       ),
                       obscureText: true,
+                      validator: (password) {
+                        if (password == null || password.isEmpty) {
+                          return 'Please enter your password';
+                        }
+                        return null;
+                      },
                     ),
 
                     const Spacer(),
 
-                    ElevatedButton(
-                      onPressed: () => performLoginWithEmailAndPassword(ref),
-                      child: const Text('Login'),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () => performLoginWithEmailAndPassword(ref),
+                          child: const Text('Anmelden'),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Divider(height: 1, thickness: 2),
+                              Text("ODER"),
+                              Divider(height: 1, thickness: 2),
+                            ],
+                          ),
+                        ),
+
+                        ElevatedButton(
+                          onPressed: null,
+                          child: const Text('OAuth'),
+                        ),
+                      ],
                     ),
                   ],
                 ),
