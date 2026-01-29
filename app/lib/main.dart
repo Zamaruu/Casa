@@ -1,5 +1,4 @@
 import 'package:casa/src/app/theme/casa_theme.dart';
-import 'package:casa/src/core/interfaces/config/i_app_config.dart';
 import 'package:casa/src/core/router/casa_router.dart';
 import 'package:casa/src/core/services/service_initializer.dart';
 import 'package:casa/src/core/utils/logger.util.dart';

@@ -13,7 +13,7 @@ class AuthRepoSource extends RepoSource {
   final FlutterSecureStorage storage;
 
   const AuthRepoSource({
-    required super.user,
+    required super.ref,
     required this.authApi,
     required this.tokenProvider,
     required this.storage,

@@ -5,10 +5,11 @@ import 'package:casa/src/core/interfaces/config/i_router_config.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared/shared.dart';
 
-class SettingsRepoSource extends RepoSource {
+class SettingsRepoSource extends AuthenticatedRepoSource {
   final FlutterSecureStorage storage;
 
   const SettingsRepoSource({
+    required super.ref,
     required super.user,
     required this.storage,
   });

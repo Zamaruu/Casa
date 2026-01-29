@@ -16,6 +16,7 @@ final settingsRepositoryProvider = Provider.autoDispose<SettingsRepo>((ref) {
   final storage = const FlutterSecureStorage();
 
   final source = SettingsRepoSource(
+    ref: ref,
     user: user,
     storage: storage,
   );

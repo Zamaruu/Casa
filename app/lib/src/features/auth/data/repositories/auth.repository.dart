@@ -1,5 +1,3 @@
-import 'package:casa/src/core/api/api_service.dart';
-import 'package:casa/src/core/auth/auth.provider.dart';
 import 'package:casa/src/core/interfaces/auth/i_token_provider.dart';
 import 'package:casa/src/core/services/service_locator.dart';
 import 'package:casa/src/core/utils/logger.util.dart';
@@ -19,7 +17,7 @@ final authRepositoryProvider = Provider.autoDispose<AuthRepo>((ref) {
   final authApi = services.api.get<IAuthApi>();
 
   final source = AuthRepoSource(
-    user: user,
+    ref: ref,
     authApi: authApi,
     storage: storage,
     tokenProvider: tokenProvider,
