@@ -20,7 +20,7 @@ class ApiResponse<T> extends ValueResponse<T> implements IApiResponse<T> {
 
   const ApiResponse.success({
     super.value,
-    required this.httpStatus,
+    this.httpStatus = EHttpStatus.ok,
     this.rawBody = const {},
   }) : super.success();
 

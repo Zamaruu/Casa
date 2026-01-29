@@ -33,13 +33,9 @@ class AuthRepository extends AuthRepo {
   @override
   Future<IValueResponse<String>> loginWithEmail({required String email, required String password}) async {
     try {
-      final token = await source.authApi.loginByEmail(email: email, password: password);
+      final tokenResponse = await source.authApi.loginByEmail(email: email, password: password);
 
-      if (token != null) {
-        return ValueResponse.success(value: token);
-      } else {
-        return ValueResponse.failure(message: 'Login failed');
-      }
+      return tokenResponse;
     } catch (e, st) {
       final message = "Unexpected error during login.";
       appLog(message: message, error: e, stackTrace: st, callingClass: runtimeType);

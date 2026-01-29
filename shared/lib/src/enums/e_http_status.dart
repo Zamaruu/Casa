@@ -102,4 +102,10 @@ enum EHttpStatus {
   }
 
   // endregion
+
+  // region String-Getter
+
+  String get nameWithCode => '$name - $code';
+
+  // endregion
 }

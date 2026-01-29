@@ -48,7 +48,7 @@ class AuthController extends ApiController {
 
       if (tokenResponse.isError) {
         final responseJson = jsonEncode(tokenResponse.toJson());
-        return ApiResponse.forbidden(responseJson);
+        return ApiResponse.unauthorized(responseJson);
       } else {
         if (tokenResponse.hasValue == false) {
           final responseJson = jsonEncode(tokenResponse.toJson());
