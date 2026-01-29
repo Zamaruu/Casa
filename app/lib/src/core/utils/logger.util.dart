@@ -13,20 +13,19 @@ void appLog({required String message, Object? error, StackTrace? stackTrace, Typ
   }
   buffer.writeln();
   buffer.writeln(message);
-  buffer.writeln();
 
   if (error != null) {
-    buffer.writeln('Error: $error');
     buffer.writeln();
+    buffer.writeln('Error: $error');
   }
 
   // First lines of StackTrace
   if (stackTrace != null) {
+    buffer.writeln();
     final lines = stackTrace.toString().split('\n');
     for (final line in lines.take(5)) {
       buffer.writeln(line);
     }
-    buffer.writeln();
   }
 
   buffer.writeln(divider);

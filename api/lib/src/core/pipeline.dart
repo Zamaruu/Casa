@@ -21,7 +21,6 @@ Future<Handler> buildPipeline() async {
 
   final cascade = Cascade().add(publicEndpoints.call).add(protectedPipeline).handler;
 
-  // 🔑 CORS + Logging GANZ AUSSEN
   final handler = Pipeline().addMiddleware(logRequests()).addMiddleware(corsHeaders()).addHandler(cascade);
 
   return handler;

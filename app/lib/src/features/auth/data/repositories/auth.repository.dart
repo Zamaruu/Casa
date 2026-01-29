@@ -1,3 +1,5 @@
+import 'package:casa/src/core/api/api_service.dart';
+import 'package:casa/src/core/auth/auth.provider.dart';
 import 'package:casa/src/core/interfaces/auth/i_token_provider.dart';
 import 'package:casa/src/core/services/service_locator.dart';
 import 'package:casa/src/core/utils/logger.util.dart';
@@ -7,14 +9,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared/shared.dart';
 
-final authRepositoryProvider = Provider.autoDispose<AuthRepository>((ref) {
+final authRepositoryProvider = Provider.autoDispose<AuthRepo>((ref) {
   final user = User.initial();
-
-  final authApi = services.api.get<IAuthApi>();
 
   final storage = const FlutterSecureStorage();
 
   final tokenProvider = services.get<ITokenProvider>();
+
+  final authApi = services.api.get<IAuthApi>();
 
   final source = AuthRepoSource(
     user: user,
@@ -29,7 +31,7 @@ final authRepositoryProvider = Provider.autoDispose<AuthRepository>((ref) {
 class AuthRepository extends AuthRepo {
   static const _tokenKey = 'casa.jwt';
 
-  AuthRepository({required super.source});
+  const AuthRepository({required super.source});
 
   @override
   Future<IValueResponse<String>> loginWithEmail({required String email, required String password}) async {

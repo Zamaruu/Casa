@@ -2,7 +2,6 @@ import 'package:casa/src/core/auth/auth.state.dart';
 import 'package:casa/src/features/auth/data/repositories/auth.repository.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared/shared.dart';
 
 class AuthNotifier extends AsyncNotifier<AuthState> {

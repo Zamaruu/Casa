@@ -1,3 +1,4 @@
+import 'package:api/src/models/responses/api.response.dart';
 import 'package:api/src/services/auth/jwt.service.dart';
 import 'package:api/src/services/auth/user_context.dart';
 import 'package:api/src/utils/logger.util.dart';
@@ -10,7 +11,7 @@ Middleware authMiddleware(JwtService verifier) {
       final authHeader = request.headers['authorization'];
 
       if (authHeader == null || !authHeader.startsWith('Bearer ')) {
-        return Response.forbidden('Missing Authorization header');
+        return ApiResponse.unauthorized('Missing Authorization header');
       }
 
       final token = authHeader.substring('Bearer '.length);

@@ -1,15 +1,17 @@
 import 'package:casa/src/core/api/api_client.dart';
 import 'package:casa/src/core/api/api_service.dart';
 import 'package:casa/src/core/auth/token/in_memeory_token_provider.dart';
-import 'package:casa/src/core/config/config_loader.dart';
 import 'package:casa/src/core/interfaces/auth/i_token_provider.dart';
 import 'package:casa/src/core/interfaces/config/i_app_config.dart';
+import 'package:casa/src/core/models/config/config_loader.dart';
 import 'package:casa/src/core/services/service_locator.dart';
 import 'package:casa/src/core/utils/logger.util.dart';
 import 'package:shared/shared.dart';
 
 abstract class ServiceInitializer {
-  static Future<IResponse> startUpServices() async {
+  // region Start-Up Routines
+
+  static Future<IValueResponse<IAppConfig>> startUpServices() async {
     try {
       final configResponse = await _loadConfig();
 
@@ -21,23 +23,74 @@ abstract class ServiceInitializer {
       final tokenProviderResponse = await _startUpTokenProvider();
       final apiResponse = await _startUpCasaApi(config);
 
-      appLog(message: "Casa-App Services started successfully.", callingClass: ServiceInitializer);
+      final response = MultiValueResponse(
+        value: config,
+        responses: [
+          tokenProviderResponse,
+          apiResponse,
+        ],
+      );
 
-      return MultiResponse([
-        tokenProviderResponse,
-        apiResponse,
-      ]);
+      if (response.isSuccess) {
+        appLog(message: "Casa-App Services started successfully.", callingClass: ServiceInitializer);
+      } else {
+        appLog(
+          message: "One or more Casa-App Services failed to start.",
+          callingClass: ServiceInitializer,
+          error: response.error,
+          stackTrace: response.stackTrace,
+        );
+      }
+
+      return response;
     } catch (e, st) {
       final message = "Unexpected error while starting up services.";
+      appLog(message: message, error: e, stackTrace: st);
+      return ValueResponse.failure(
+        message: message,
+        error: e,
+        stackTrace: st,
+      );
+    }
+  }
+
+  static Future<IResponse> startUpAfterUrlConfig(IAppConfig config) async {
+    try {
+      final apiResponse = await _startUpCasaApi(config, refresh: true);
+
+      final response = MultiResponse(
+        responses: [
+          apiResponse,
+        ],
+      );
+
+      if (response.isSuccess) {
+        appLog(message: "Casa-App Services started successfully after url configuration.", callingClass: ServiceInitializer);
+      } else {
+        appLog(
+          message: "One or more Casa-App Services failed to start after url configuration.",
+          callingClass: ServiceInitializer,
+          error: response.error,
+          stackTrace: response.stackTrace,
+        );
+      }
+
+      return response;
+    } catch (e, st) {
+      final message = "Unexpected error while starting up services after url configuration.";
+      appLog(message: message, error: e, stackTrace: st);
       return Response.failure(message: message, error: e, stackTrace: st);
     }
   }
+
+  // endregion
 
   // region Config
 
   static Future<IValueResponse<IAppConfig>> _loadConfig() async {
     try {
-      final config = AppConfigLoader.loadConfig();
+      final config = await AppConfigLoader.loadConfig();
+      appLog(message: "Config loaded successfully.", callingClass: ServiceInitializer);
       return ValueResponse.success(value: config);
     } catch (e, st) {
       final message = "Unexpected error while loading config.";
@@ -53,6 +106,7 @@ abstract class ServiceInitializer {
     try {
       final tokenProvider = InMemoryAuthTokenProvider.empty();
       services.registerSingleton<ITokenProvider>(tokenProvider);
+
       return Response.success();
     } catch (e, st) {
       final message = "Unexpected error while starting up ITokenProvider.";
@@ -60,8 +114,13 @@ abstract class ServiceInitializer {
     }
   }
 
-  static Future<IResponse> _startUpCasaApi(IAppConfig config) async {
+  static Future<IResponse> _startUpCasaApi(IAppConfig config, {bool refresh = false}) async {
     try {
+      final isRegistered = services.isRegistered<ApiServiceManager>();
+      if (refresh && isRegistered) {
+        services.unregister<ApiServiceManager>();
+      }
+
       final baseUrl = config.apiConfig.baseUrl;
       final apiClient = ApiClient.initial(baseUrl);
       final apiService = ApiServiceManager(client: apiClient);

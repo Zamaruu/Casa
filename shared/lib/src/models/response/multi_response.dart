@@ -12,7 +12,7 @@ class MultiResponse implements IResponse {
   @override
   final StackTrace? stackTrace;
 
-  const MultiResponse(this.responses, {this.error, this.message, this.stackTrace});
+  const MultiResponse({required this.responses, this.error, this.message, this.stackTrace});
 
   @override
   bool get hasMessage => message != null && message!.isNotEmpty;

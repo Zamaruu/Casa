@@ -25,6 +25,7 @@ export 'src/interfaces/response/i_value_response.dart';
 export 'src/interfaces/services/i_auth_service.dart';
 export 'src/interfaces/services/i_service_collection.dart';
 export 'src/models/response/multi_response.dart';
+export 'src/models/response/multi_value_response.dart';
 export 'src/models/response/response.dart';
 export 'src/models/response/value_response.dart';
 export 'src/models/todo/todo.model.dart';

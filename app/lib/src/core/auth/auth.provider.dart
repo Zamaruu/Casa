@@ -2,6 +2,7 @@ import 'package:casa/src/core/auth/auth.notifier.dart';
 import 'package:casa/src/core/auth/auth.state.dart';
 import 'package:casa/src/core/models/enums/e_auth_status.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared/shared.dart';
 
 final authProvider = AsyncNotifierProvider<AuthNotifier, AuthState>(() => AuthNotifier());
 
@@ -18,4 +19,14 @@ final authStatusProvider = Provider<EAuthStatus>((ref) {
   }
 
   return EAuthStatus.unauthenticated;
+});
+
+final authUserProvider = Provider<IUser>((ref) {
+  final authAsync = ref.watch(authProvider);
+
+  final auth = authAsync.value;
+
+  final user = auth?.user ?? User.initial();
+
+  return user;
 });

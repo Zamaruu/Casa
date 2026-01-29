@@ -19,11 +19,13 @@ abstract class ServiceInitializer {
       final tokenResponse = await _initializeTokenService(config);
       final authResponse = await _initializeAuthService();
 
-      final serviceResponses = MultiResponse([
-        dbResponse,
-        tokenResponse,
-        authResponse,
-      ]);
+      final serviceResponses = MultiResponse(
+        responses: [
+          dbResponse,
+          tokenResponse,
+          authResponse,
+        ],
+      );
 
       return serviceResponses;
     } catch (e, st) {

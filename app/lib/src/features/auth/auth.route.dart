@@ -1,6 +1,5 @@
 import 'package:casa/src/core/auth/auth.provider.dart';
 import 'package:casa/src/core/models/enums/e_snackbar_type.dart';
-import 'package:casa/src/core/utils/snackbar.util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toastification/toastification.dart';
