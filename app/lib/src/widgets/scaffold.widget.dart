@@ -38,7 +38,7 @@ class _CasaScaffoldState extends ConsumerState<CasaScaffold> {
     final menuUtils = MenuUtils();
 
     navigationItems = menuUtils.buildDrawerItems(context);
-    serviceItems = menuUtils.buildServiceItems(context);
+    serviceItems = menuUtils.buildServiceItems(ref);
     profileItem = menuUtils.buildProfile(context, ref.read(authProvider).asData!.value.user!);
   }
 

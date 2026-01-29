@@ -1,3 +1,4 @@
+import 'package:casa/src/core/auth/auth.provider.dart';
 import 'package:casa/src/core/interfaces/auth/i_token_provider.dart';
 import 'package:casa/src/core/services/service_locator.dart';
 import 'package:casa/src/core/utils/logger.util.dart';
@@ -8,8 +9,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared/shared.dart';
 
 final authRepositoryProvider = Provider.autoDispose<AuthRepo>((ref) {
-  final user = User.initial();
-
   final storage = const FlutterSecureStorage();
 
   final tokenProvider = services.get<ITokenProvider>();
