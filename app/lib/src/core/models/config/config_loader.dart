@@ -2,6 +2,7 @@ import 'package:casa/src/core/models/config/api_config.dart';
 import 'package:casa/src/core/models/config/app_config.dart';
 import 'package:casa/src/core/models/config/router_config.dart';
 import 'package:casa/src/core/utils/logger.util.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared/shared.dart';
 import 'package:universal_platform/universal_platform.dart';
@@ -47,7 +48,13 @@ class AppConfigLoader {
   static AppConfig _loadForWeb() {
     final origin = Uri.base.host;
 
-    final apiBaseUrl = Uri.parse('$origin/api');
+    late Uri apiBaseUrl;
+
+    if (kDebugMode) {
+      apiBaseUrl = Uri.parse('http://$origin:8080/api');
+    } else {
+      apiBaseUrl = Uri.parse('https://$origin/api');
+    }
 
     final routerConfig = const CasaRouterConfig.web();
     final apiConfig = ApiConfig(baseUrl: apiBaseUrl);
