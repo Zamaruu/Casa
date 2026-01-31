@@ -65,7 +65,7 @@ class UserContextDialog extends ConsumerWidget {
           user.username,
           style: TextStyle(
             fontSize: 18,
-            color: context.theme.primaryColor.withValues(alpha: 0.6),
+            color: context.theme.primaryColor.withValues(alpha: 0.5),
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -80,7 +80,7 @@ class UserContextDialog extends ConsumerWidget {
         ElevatedButton.icon(
           onPressed: () => context.go('/settings'),
           icon: Icon(Icons.settings),
-          label: Text("Profileinstellungen"),
+          label: Text("Einstellungen"),
         ),
 
         SizedBox(height: 8),

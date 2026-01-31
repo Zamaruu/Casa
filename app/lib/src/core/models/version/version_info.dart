@@ -51,6 +51,18 @@ class VersionInfo implements IServerVersionInfo {
     );
   }
 
+  factory VersionInfo.inital() {
+    return VersionInfo(
+      version: Version.empty(),
+      buildDate: DateTime.now().toIso8601String(),
+      commit: "local",
+      branch: "unknown",
+      environment: "debug",
+      platform: "unkown",
+      minimumAppVersion: Version.empty(),
+    );
+  }
+
   // region JsonSerializable
 
   factory VersionInfo.fromJson(Map<String, dynamic> json) => _$VersionInfoFromJson(json);

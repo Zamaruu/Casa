@@ -118,7 +118,7 @@ class _AuthRouteState extends ConsumerState<AuthRoute> {
                       children: [
                         ElevatedButton(
                           onPressed: () => performLoginWithEmailAndPassword(ref),
-                          child: const CasaText('Anmelden'),
+                          child: const Text('Anmelden'),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -134,7 +134,7 @@ class _AuthRouteState extends ConsumerState<AuthRoute> {
 
                         ElevatedButton(
                           onPressed: null,
-                          child: const CasaText('OAuth'),
+                          child: const Text('OAuth'),
                         ),
                       ],
                     ),

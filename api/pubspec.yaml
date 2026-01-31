@@ -1,7 +1,7 @@
 name: casa_api
 description: "Providing authentication, feature-endpoints and persistance for the casa app."
 version: 0.0.1+1
-export_to: 'none'
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # repository: https://github.com/my_org/my_repo
 
 
