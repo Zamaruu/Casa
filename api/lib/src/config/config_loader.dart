@@ -8,7 +8,7 @@ class ConfigLoader {
   static IConfig load() {
     final env = DotEnv(includePlatformEnvironment: true);
 
-    // .env nur optional laden (Docker braucht sie nicht)
+    // Load .env only optionally (Docker does not need it)
     env.load();
 
     final databaseConfig = _loadDatabaseConfig(env);
