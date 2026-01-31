@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:casa_api/src/abstract/controller/api.controller.dart';
 import 'package:casa_api/src/models/responses/api.response.dart';
+import 'package:casa_api/src/models/version/server_build_version.dart';
 import 'package:shelf/shelf.dart';
 
 class MetaController extends ApiController {
@@ -19,7 +20,7 @@ class MetaController extends ApiController {
   @override
   Future<void> registerEndpoints() async {
     router.get('/healthcheck', healthcheck);
-    router.get('/verison', version);
+    router.get('/version', version);
   }
 
   Future<ApiResponse> healthcheck(Request request) async {
@@ -37,7 +38,11 @@ class MetaController extends ApiController {
 
   Future<ApiResponse> version(Request request) async {
     return runGuarded(() async {
-      return ApiResponse.noContent("");
+      final version = ServerBuildVersion.fromEnvironment();
+
+      final json = jsonEncode(version);
+
+      return ApiResponse.ok(json);
     });
   }
 }

@@ -7,7 +7,10 @@ part 'server_build_version.g.dart';
 
 @JsonSerializable()
 class ServerBuildVersion implements IServerVersionInfo {
+  // region Parameters
+
   @override
+  @VersionConverter()
   final IVersion version;
 
   @override
@@ -26,7 +29,10 @@ class ServerBuildVersion implements IServerVersionInfo {
   final String platform;
 
   @override
+  @VersionConverter()
   final IVersion minimumAppVersion;
+
+  // endregion
 
   // region Constructors
 
@@ -42,16 +48,16 @@ class ServerBuildVersion implements IServerVersionInfo {
 
   /// Creates a [ServerBuildVersion] based on the Build-Arguments provided by Dart-Build / Docker-Image.
   factory ServerBuildVersion.fromEnvironment() {
-    final buildDate = String.fromEnvironment("BUILD_DATE");
-    final commit = String.fromEnvironment("COMMIT");
-    final branch = String.fromEnvironment("BRANCH");
-    final environment = String.fromEnvironment("ENVIRONMENT");
+    final buildDate = String.fromEnvironment("BUILD_DATE", defaultValue: DateTime.now().toIso8601String());
+    final commit = String.fromEnvironment("COMMIT", defaultValue: "Unknown");
+    final branch = String.fromEnvironment("BRANCH", defaultValue: "Unknown");
+    final environment = String.fromEnvironment("ENVIRONMENT", defaultValue: "Development");
     final platform = getPlatfrom();
 
-    final minimumAppVersionString = String.fromEnvironment("MINIMUM_APP_VERSION");
+    final minimumAppVersionString = String.fromEnvironment("MINIMUM_APP_VERSION", defaultValue: "0.0.0");
     final minimumAppVersion = Version.fromString(minimumAppVersionString);
 
-    final versionString = String.fromEnvironment("VERSION");
+    final versionString = String.fromEnvironment("VERSION", defaultValue: "0.0.0");
     final version = Version.fromString(versionString);
 
     return ServerBuildVersion(
@@ -82,6 +88,7 @@ class ServerBuildVersion implements IServerVersionInfo {
 
   factory ServerBuildVersion.fromJson(Map<String, dynamic> json) => _$ServerBuildVersionFromJson(json);
 
+  @override
   Map<String, dynamic> toJson() => _$ServerBuildVersionToJson(this);
 
   // endregion

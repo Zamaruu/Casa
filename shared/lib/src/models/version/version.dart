@@ -26,6 +26,14 @@ class Version implements IVersion {
     this.build = "",
   });
 
+  factory Version.empty() {
+    return const Version(
+      major: 0,
+      minor: 0,
+      patch: 0,
+    );
+  }
+
   factory Version.fromString(String version) {
     final parts = version.split(".");
 
@@ -159,7 +167,20 @@ class Version implements IVersion {
 
   @override
   String toString() {
-    return "$major.$minor.$patch.$build";
+    final buffer = StringBuffer();
+
+    buffer.write(major);
+    buffer.write(".");
+    buffer.write(minor);
+    buffer.write(".");
+    buffer.write(patch);
+
+    if (build.isNotEmpty) {
+      buffer.write(".");
+      buffer.write(build);
+    }
+
+    return buffer.toString();
   }
 
   // endregion

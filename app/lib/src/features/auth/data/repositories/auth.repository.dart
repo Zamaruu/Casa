@@ -1,4 +1,3 @@
-import 'package:casa/src/core/auth/auth.provider.dart';
 import 'package:casa/src/core/interfaces/auth/i_token_provider.dart';
 import 'package:casa/src/core/services/service_locator.dart';
 import 'package:casa/src/core/utils/logger.util.dart';

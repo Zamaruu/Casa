@@ -1,4 +1,4 @@
-import 'package:shared/src/interfaces/version/i_version.dart';
+import 'package:shared/shared.dart';
 
 abstract interface class IVersionInfo {
   /// Version of the app
@@ -20,7 +20,7 @@ abstract interface class IVersionInfo {
   String get platform;
 }
 
-abstract interface class IServerVersionInfo implements IVersionInfo {
+abstract interface class IServerVersionInfo implements IVersionInfo, ISerializable {
   /// Minimum version the mobile app must have so that it can be used.
   ///
   /// Would only trigger with breaking changes in de api interface (e.g. major version increases)
