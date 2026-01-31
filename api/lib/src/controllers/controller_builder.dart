@@ -1,8 +1,8 @@
-import 'package:api/src/controllers/auth.controller.dart';
-import 'package:api/src/controllers/user.controller.dart';
+import 'package:casa_api/src/controllers/auth.controller.dart';
+import 'package:casa_api/src/controllers/user.controller.dart';
 import 'package:shelf_router/shelf_router.dart';
 
-import 'healthcheck.controller.dart';
+import 'meta.controller.dart';
 
 abstract class ControllerBuilder {
   static String get root => "/api";
@@ -15,7 +15,7 @@ abstract class ControllerBuilder {
     router.mount(mergePaths(root, authController.path), authController.router.call);
 
     // Healthcheck
-    final healthcheckController = HealthCheckController.endpoint();
+    final healthcheckController = MetaController.endpoint();
     router.mount(mergePaths(root, healthcheckController.path), healthcheckController.router.call);
 
     return router;

@@ -1,7 +1,7 @@
-import 'package:api/src/controllers/controller_builder.dart';
-import 'package:api/src/middleware/auth.middleware.dart';
-import 'package:api/src/middleware/header.middleware.dart';
-import 'package:api/src/services/auth/jwt.service.dart';
+import 'package:casa_api/src/controllers/controller_builder.dart';
+import 'package:casa_api/src/middleware/auth.middleware.dart';
+import 'package:casa_api/src/middleware/header.middleware.dart';
+import 'package:casa_api/src/services/auth/jwt.service.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_cors_headers/shelf_cors_headers.dart';
 

@@ -1,9 +1,9 @@
-import 'package:api/src/config/api_config.dart';
-import 'package:api/src/database/database.service.dart';
-import 'package:api/src/services/auth/auth.service.dart';
-import 'package:api/src/services/auth/jwt.service.dart';
-import 'package:api/src/services/service_locator.dart';
-import 'package:api/src/utils/logger.util.dart';
+import 'package:casa_api/src/config/api_config.dart';
+import 'package:casa_api/src/database/database.service.dart';
+import 'package:casa_api/src/services/auth/auth.service.dart';
+import 'package:casa_api/src/services/auth/jwt.service.dart';
+import 'package:casa_api/src/services/service_locator.dart';
+import 'package:casa_api/src/utils/logger.util.dart';
 import 'package:shared/shared.dart';
 
 abstract class ServiceInitializer {
