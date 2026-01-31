@@ -1,8 +1,9 @@
 import 'package:casa/src/app/interfaces/i_menu_item.dart';
 import 'package:casa/src/core/auth/auth.provider.dart';
 import 'package:casa/src/core/utils/menu.util.dart';
-import 'package:casa/src/widgets/appbar.widget.dart';
-import 'package:casa/src/widgets/drawer.widget.dart';
+import 'package:casa/src/widgets/base/appbar.widget.dart';
+import 'package:casa/src/widgets/base/drawer.widget.dart';
+import 'package:casa/src/widgets/base/text.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared/shared.dart';
@@ -95,13 +96,13 @@ class _CasaScaffoldState<R extends IResponse> extends ConsumerState<CasaScaffold
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
+                    return Center(child: CasaText('Error: ${snapshot.error}'));
                   } else if (snapshot.hasData) {
                     final futureResponse = snapshot.data!;
 
                     return widget.futureBuilder!(context, ref, futureResponse);
                   } else {
-                    return const Center(child: Text('No data available'));
+                    return const Center(child: CasaText('No data available'));
                   }
                 },
               );

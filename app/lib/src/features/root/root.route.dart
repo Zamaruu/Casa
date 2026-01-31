@@ -1,5 +1,6 @@
 import 'package:casa/src/core/services/service_initializer.dart';
 import 'package:casa/src/core/utils/rendering.util.dart';
+import 'package:casa/src/widgets/base/text.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared/shared.dart';
@@ -43,7 +44,7 @@ class _RootRouteState extends State<RootRoute> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+            return Center(child: CasaText('Error: ${snapshot.error}'));
           } else {
             if (snapshot.data!.isSuccess) {
               handleNavigate();
