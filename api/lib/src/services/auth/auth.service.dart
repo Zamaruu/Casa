@@ -1,4 +1,4 @@
-import 'package:api/src/services/auth/jwt.service.dart';
+import 'package:casa_api/src/services/auth/jwt.service.dart';
 import 'package:shared/shared.dart';
 
 class ApiAuthService implements IAuthService {

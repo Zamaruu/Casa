@@ -1,5 +1,5 @@
-import 'package:api/src/abstract/repositories/base.repo.dart';
-import 'package:api/src/abstract/repositories/typed_source.dart';
+import 'package:casa_api/src/abstract/repositories/base.repo.dart';
+import 'package:casa_api/src/abstract/repositories/typed_source.dart';
 import 'package:shared/shared.dart';
 
 abstract class TypedApiRepo<T extends IEntity> extends BaseApiRepo<TypedRepoSource<T>> implements ITypedRepository<T> {

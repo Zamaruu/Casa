@@ -1,9 +1,12 @@
 import 'package:casa/src/core/models/enums/e_snackbar_type.dart';
+import 'package:casa/src/widgets/base/text.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:toastification/toastification.dart';
 import 'package:universal_platform/universal_platform.dart';
 
 abstract class CasaSnackbars {
+  const CasaSnackbars();
+
   static void showDefaultSnackbar({
     required String message,
     required BuildContext context,
@@ -15,7 +18,7 @@ abstract class CasaSnackbars {
     toastification.show(
       context: context,
       icon: Icon(type.icon),
-      title: Text(message),
+      title: CasaText(message),
       showProgressBar: true,
       autoCloseDuration: autoCloseAfter,
       primaryColor: type.color,

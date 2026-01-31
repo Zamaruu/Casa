@@ -1,7 +1,7 @@
-import 'package:api/src/models/responses/api.response.dart';
-import 'package:api/src/services/auth/jwt.service.dart';
-import 'package:api/src/services/auth/user_context.dart';
-import 'package:api/src/utils/logger.util.dart';
+import 'package:casa_api/src/models/responses/api.response.dart';
+import 'package:casa_api/src/services/auth/jwt.service.dart';
+import 'package:casa_api/src/services/auth/user_context.dart';
+import 'package:casa_api/src/utils/logger.util.dart';
 import 'package:shared/shared.dart' hide Response;
 import 'package:shelf/shelf.dart';
 

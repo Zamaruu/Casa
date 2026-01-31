@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:api/src/models/responses/api.response.dart';
-import 'package:api/src/services/auth/user_context.dart';
-import 'package:api/src/utils/logger.util.dart';
+import 'package:casa_api/src/models/responses/api.response.dart';
+import 'package:casa_api/src/services/auth/user_context.dart';
+import 'package:casa_api/src/utils/logger.util.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
 

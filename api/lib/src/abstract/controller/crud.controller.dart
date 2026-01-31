@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:api/src/abstract/controller/api.controller.dart';
-import 'package:api/src/models/responses/api.response.dart';
+import 'package:casa_api/src/abstract/controller/api.controller.dart';
+import 'package:casa_api/src/models/responses/api.response.dart';
 import 'package:shared/shared.dart';
 import 'package:shelf/shelf.dart';
 

@@ -1,5 +1,5 @@
-import 'package:api/src/abstract/controller/crud.controller.dart';
-import 'package:api/src/services/service_locator.dart';
+import 'package:casa_api/src/abstract/controller/crud.controller.dart';
+import 'package:casa_api/src/services/service_locator.dart';
 import 'package:shared/shared.dart';
 
 class UserController extends CrudController<IUser, IUserOperations> {

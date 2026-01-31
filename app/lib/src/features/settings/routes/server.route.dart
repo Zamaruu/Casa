@@ -1,5 +1,6 @@
 import 'package:casa/src/core/router/casa_router.dart';
 import 'package:casa/src/features/settings/data/repositories/settings.repository.dart';
+import 'package:casa/src/widgets/base/text.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -53,7 +54,7 @@ class _ServerConfigRouteState extends ConsumerState<ServerConfigRoute> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text('URL-Konfiguration'),
+                    const CasaText('URL-Konfiguration'),
 
                     const SizedBox(height: 16),
 
@@ -67,7 +68,7 @@ class _ServerConfigRouteState extends ConsumerState<ServerConfigRoute> {
 
                     ElevatedButton(
                       onPressed: () => setServerUrl(ref),
-                      child: const Text('Verbinden'),
+                      child: const CasaText('Verbinden'),
                     ),
                   ],
                 ),

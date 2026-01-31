@@ -2,6 +2,7 @@ import 'package:casa/src/core/api/api_client.dart';
 import 'package:casa/src/core/interfaces/i_api.dart';
 import 'package:casa/src/core/interfaces/i_api_response.dart';
 import 'package:casa/src/core/models/responses/api.response.dart';
+import 'package:casa/src/core/models/version/version_info.dart';
 import 'package:shared/shared.dart';
 
 abstract class ApiManager implements IApi {
@@ -28,7 +29,8 @@ abstract class ApiManager implements IApi {
   @override
   Future<IResponse> healthcheck() async {
     return runRequestGuarded(() async {
-      final response = await client.dio.get('/healthcheck');
+      final response = await client.dio.get('/meta/healthcheck');
+
       final responseCode = response.statusCode;
       final statusCode = EHttpStatus.fromCode(responseCode);
 
@@ -37,6 +39,17 @@ abstract class ApiManager implements IApi {
       } else {
         return ApiResponse.failure(httpStatus: statusCode);
       }
+    });
+  }
+
+  @override
+  Future<IApiResponse<IServerVersionInfo>> version() {
+    return runRequestGuarded(() async {
+      final response = await client.dio.get('/meta/version');
+
+      final version = VersionInfo.fromJson(response.data);
+
+      return ApiResponse.success(value: version);
     });
   }
 }

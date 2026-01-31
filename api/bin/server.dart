@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:api/src/config/config_loader.dart';
-import 'package:api/src/core/pipeline.dart';
-import 'package:api/src/services/service_initializer.dart';
-import 'package:api/src/utils/logger.util.dart';
+import 'package:casa_api/src/config/config_loader.dart';
+import 'package:casa_api/src/core/pipeline.dart';
+import 'package:casa_api/src/services/service_initializer.dart';
+import 'package:casa_api/src/utils/logger.util.dart';
 import 'package:shelf/shelf_io.dart';
 
 void main(List<String> args) async {

@@ -1,7 +1,7 @@
-name: api
-description: A server app using the shelf package and Docker.
-version: 1.0.0
-export_to: 'none'
+name: casa_api
+description: "Providing authentication, feature-endpoints and persistance for the casa app."
+version: 0.0.1+1
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # repository: https://github.com/my_org/my_repo
 
 
@@ -26,5 +26,6 @@ dependencies:
   bcrypt: ^1.2.0
 
 dev_dependencies:
+  build_runner: ^2.10.5
   lints: ^6.0.0
   test: ^1.25.6

@@ -2,7 +2,9 @@ import 'package:casa/src/app/theme/casa_theme.dart';
 import 'package:casa/src/core/router/casa_router.dart';
 import 'package:casa/src/core/services/service_initializer.dart';
 import 'package:casa/src/core/utils/logger.util.dart';
+import 'package:casa/src/widgets/base/text.widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:toastification/toastification.dart';
@@ -26,6 +28,8 @@ class CasaApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final routerAsync = ref.watch(routerProvider);
+
+    debugPaintSizeEnabled = false;
 
     return ToastificationWrapper(
       child: routerAsync.when(
@@ -70,8 +74,8 @@ Widget _errorBuilder(Object error, StackTrace stack) {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Casa', style: TextStyle(fontSize: 20)),
-            Text(message, style: TextStyle(fontSize: 12)),
+            CasaText('Casa', style: TextStyle(fontSize: 20)),
+            CasaText(message, style: TextStyle(fontSize: 12)),
           ],
         ),
       ),
@@ -83,7 +87,7 @@ Widget _errorBuilder(Object error, StackTrace stack) {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              CasaText(
                 error.toString(),
                 maxLines: 10,
                 style: const TextStyle(
@@ -92,7 +96,7 @@ Widget _errorBuilder(Object error, StackTrace stack) {
                 ),
               ),
               const SizedBox(height: 32),
-              Text(
+              CasaText(
                 stack.toString(),
                 maxLines: 10,
               ),
@@ -100,7 +104,7 @@ Widget _errorBuilder(Object error, StackTrace stack) {
               Center(
                 child: ElevatedButton.icon(
                   onPressed: () {},
-                  label: const Text("Report Issue"),
+                  label: const CasaText("Report Issue"),
                   icon: const Icon(Icons.bug_report),
                 ),
               ),

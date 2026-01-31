@@ -1,4 +1,4 @@
-import 'package:api/src/database/database.service.dart';
+import 'package:casa_api/src/database/database.service.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared/shared.dart';
 

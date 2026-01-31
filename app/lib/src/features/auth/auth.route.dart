@@ -1,9 +1,9 @@
 import 'package:casa/src/core/auth/auth.provider.dart';
 import 'package:casa/src/core/models/enums/e_snackbar_type.dart';
 import 'package:casa/src/core/utils/snackbar.util.dart';
+import 'package:casa/src/widgets/base/text.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:toastification/toastification.dart';
 
 class AuthRoute extends ConsumerStatefulWidget {
   const AuthRoute({super.key});
@@ -71,7 +71,7 @@ class _AuthRouteState extends ConsumerState<AuthRoute> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const Text(
+                    const CasaText(
                       'Login',
                       style: TextStyle(
                         fontSize: 24,
@@ -126,7 +126,7 @@ class _AuthRouteState extends ConsumerState<AuthRoute> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Divider(height: 1, thickness: 2),
-                              Text("ODER"),
+                              CasaText("ODER"),
                               Divider(height: 1, thickness: 2),
                             ],
                           ),

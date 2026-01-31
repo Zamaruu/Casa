@@ -1,4 +1,4 @@
-import 'package:api/src/config/auth_config.dart';
+import 'package:casa_api/src/config/auth_config.dart';
 import 'package:shared/shared.dart';
 
 class ApiConfig implements IConfig {

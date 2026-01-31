@@ -1,6 +1,6 @@
-import 'package:api/src/config/api_config.dart';
-import 'package:api/src/config/auth_config.dart';
-import 'package:api/src/config/database_config.dart';
+import 'package:casa_api/src/config/api_config.dart';
+import 'package:casa_api/src/config/auth_config.dart';
+import 'package:casa_api/src/config/database_config.dart';
 import 'package:dotenv/dotenv.dart';
 import 'package:shared/shared.dart';
 
