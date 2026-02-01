@@ -83,7 +83,7 @@ jobs:
           context: .
           file: Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}:${{ steps.build_version.outputs.value }}
+          tags: ${{ steps.build_version.outputs.value }}
           build-args: |
             VERSION=${{ steps.build_version.outputs.value }}
             BUILD_DATE=${{ github.event.head_commit.timestamp }}
