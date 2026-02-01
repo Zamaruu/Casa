@@ -1,0 +1,88 @@
+name: Build & Push Casa Docker-Image
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }} # owner/repo → ghcr.io/owner/repo
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=sha
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Read version from pubspec.yaml
+        id: version
+        run: |
+          VERSION=$(grep '^version:' app/pubspec.yaml | awk '{print $2}' | cut -d+ -f1)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Read minimum app version from api pubspec.yaml
+        id: minimum_app_version
+        run: |
+          MINIMUM_APP_VERSION=$(grep '^version:' api/pubspec.yaml | awk '{print $2}' | cut -d+ -f1)
+          echo "minimum_app_version=$MINIMUM_APP_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Compute build version
+        id: build_version
+        run: |
+          BASE_VERSION="${{ steps.version.outputs.version }}"
+      
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            echo "value=${BASE_VERSION}.pr.${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
+            echo "env=Preview" >> $GITHUB_OUTPUT
+      
+          elif [[ "${{ github.ref_name }}" == "develop" ]]; then
+            echo "value=${BASE_VERSION}.dev" >> $GITHUB_OUTPUT
+            echo "env=Development" >> $GITHUB_OUTPUT
+      
+          else
+            echo "value=${BASE_VERSION}" >> $GITHUB_OUTPUT
+            echo "env=Production" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          tags: ghcr.io/${{ github.repository }}:${{ steps.build_version.outputs.value }}
+          build-args: |
+            VERSION=${{ steps.build_version.outputs.value }}
+            BUILD_DATE=${{ github.event.head_commit.timestamp }}
+            COMMIT=${{ github.sha }}
+            BRANCH=${{ github.ref_name }}
+            ENVIRONMENT=${{ steps.build_version.outputs.env }}
+            MINIMUM_APP_VERSION=${{ steps.minimum_app_version.outputs.minimum_app_version }}

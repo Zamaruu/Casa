@@ -48,12 +48,36 @@ class AppConfigLoader {
   static AppConfig _loadForWeb() {
     final origin = Uri.base.host;
 
+    final protocol = Uri.base.scheme;
+    final hasPort = Uri.base.port != 80;
+
     late Uri apiBaseUrl;
 
     if (kDebugMode) {
-      apiBaseUrl = Uri.parse('http://$origin:8080/api');
+      final uriBuffer = StringBuffer();
+      uriBuffer.write("http://");
+      uriBuffer.write(origin);
+      uriBuffer.write(":");
+      uriBuffer.write("8080");
+      uriBuffer.write("/api");
+
+      apiBaseUrl = Uri.parse(uriBuffer.toString());
     } else {
-      apiBaseUrl = Uri.parse('https://$origin/api');
+      final uriBuffer = StringBuffer();
+      if (protocol.isNotEmpty) {
+        uriBuffer.write(protocol);
+        uriBuffer.write("://");
+      } else {
+        uriBuffer.write("http://");
+      }
+      uriBuffer.write(origin);
+      if (hasPort) {
+        uriBuffer.write(":");
+        uriBuffer.write(Uri.base.port);
+      }
+      uriBuffer.write("/api");
+
+      apiBaseUrl = Uri.parse(uriBuffer.toString());
     }
 
     final routerConfig = const CasaRouterConfig.web();
