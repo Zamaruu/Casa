@@ -10,12 +10,27 @@ RUN flutter build web --release
 FROM dart:stable AS api-build
 WORKDIR /build
 
+# Arguments for versioning
+ARG BUILD_DATE
+ARG COMMIT
+ARG BRANCH
+ARG ENVIRONMENT
+ARG VERSION
+ARG MINIMUM_APP_VERSION
+
 COPY api/ api/
 COPY shared/ shared/
 
 WORKDIR /build/api
 RUN dart pub get
-RUN dart compile exe bin/server.dart -o /build/server
+RUN dart compile exe bin/server.dart \
+  --define=BUILD_DATE=${BUILD_DATE} \
+  --define=COMMIT=${COMMIT} \
+  --define=BRANCH=${BRANCH} \
+  --define=ENVIRONMENT=${ENVIRONMENT} \
+  --define=VERSION=${VERSION} \
+  --define=MINIMUM_APP_VERSION=${MINIMUM_APP_VERSION} \
+  -o /build/server
 
 # ---------- Final Image ----------
 FROM debian:bookworm-slim
