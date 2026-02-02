@@ -24,12 +24,12 @@ COPY shared/ shared/
 WORKDIR /build/api
 RUN dart pub get
 RUN dart compile exe bin/server.dart \
-  --define=BUILD_DATE=${BUILD_DATE} \
-  --define=COMMIT=${COMMIT} \
-  --define=BRANCH=${BRANCH} \
-  --define=ENVIRONMENT=${ENVIRONMENT} \
-  --define=VERSION=${VERSION} \
-  --define=MINIMUM_APP_VERSION=${MINIMUM_APP_VERSION} \
+  -DBUILD_DATE="${BUILD_DATE}" \
+  -DCOMMIT="${COMMIT}" \
+  -DBRANCH="${BRANCH}" \
+  -DENVIRONMENT="${ENVIRONMENT}" \
+  -DVERSION="${VERSION}" \
+  -DMINIMUM_APP_VERSION="${MINIMUM_APP_VERSION}" \
   -o /build/server
 
 # ---------- Final Image ----------
