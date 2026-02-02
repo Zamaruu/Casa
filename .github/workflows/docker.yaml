@@ -74,8 +74,8 @@ jobs:
           file: Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ steps.image.outputs.name }}:${{ steps.build_version.outputs.value }}
             ghcr.io/${{ steps.image.outputs.name }}:sha-${{ github.sha }}
+            ghcr.io/${{ steps.image.outputs.name }}:${{ steps.build_version.outputs.value }}
           build-args: |
             VERSION=${{ steps.build_version.outputs.value }}
             BUILD_DATE=${{ github.event.head_commit.timestamp }}
