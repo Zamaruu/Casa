@@ -1,10 +1,20 @@
 # ---------- Flutter Build ----------
 FROM ghcr.io/cirruslabs/flutter:stable AS flutter-build
-WORKDIR /build/app
-COPY app/ .
-COPY shared/ ../shared
+WORKDIR /build
+
+# --- Shared ---
+COPY shared/ /build/shared
+WORKDIR /build/shared
 RUN flutter pub get
+RUN dart run build_runner build --delete-conflicting-outputs
+
+# --- App ---
+COPY app/ /build/app
+WORKDIR /build/app
+RUN flutter pub get
+RUN dart run build_runner build --delete-conflicting-outputs
 RUN flutter build web --release
+
 
 # ---------- API Build ----------
 FROM dart:stable AS api-build
@@ -18,11 +28,18 @@ ARG ENVIRONMENT
 ARG VERSION
 ARG MINIMUM_APP_VERSION
 
-COPY api/ api/
-COPY shared/ shared/
+# --- Shared ---
+COPY shared/ /build/shared
+WORKDIR /build/shared
+RUN dart pub get
+RUN dart run build_runner build --delete-conflicting-outputs
 
+# --- API ---
+COPY api/ /build/api
 WORKDIR /build/api
 RUN dart pub get
+RUN dart run build_runner build --delete-conflicting-outputs
+
 RUN dart compile exe bin/server.dart \
   -DBUILD_DATE="${BUILD_DATE}" \
   -DCOMMIT="${COMMIT}" \
