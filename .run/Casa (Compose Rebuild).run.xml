@@ -1,9 +1,9 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Casa (Compose)" type="docker-deploy" factoryName="docker-compose.yml" server-name="Docker">
+  <configuration default="false" name="Casa (Compose Rebuild)" type="docker-deploy" factoryName="docker-compose.yml" server-name="Docker">
     <deployment type="docker-compose.yml">
       <settings>
         <option name="commandLineOptions" value="--build" />
-        <option name="sourceFilePath" value="docker-compose.yaml" />
+        <option name="sourceFilePath" value="docker-compose-dev.yaml" />
       </settings>
     </deployment>
     <method v="2" />

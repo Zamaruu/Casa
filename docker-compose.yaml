@@ -1,13 +1,12 @@
-version: "3.9"
-
 services:
   casa:
-    image: casa_dev:latest
+    image: ghcr.io/zamaruu/casa:tag
     container_name: casa
-    build:
-      context: .
-      dockerfile: Dockerfile
     ports:
-      - "8088:8080"
-    env_file:
-      - .env
+      - "8080:8080"
+    environment:
+      - LOG_LEVEL=debug
+      - DB_TYPE=mongo
+      - DB_CONNECTION_STRING=mongodb://localhost:27017/casa
+      - JWT_SECRET=changeme
+      - JWT_EXPIRES_IN=48
