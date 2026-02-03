@@ -7,6 +7,7 @@ import 'package:casa/src/widgets/base/text.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared/shared.dart';
+import 'package:universal_platform/universal_platform.dart';
 
 class CasaScaffold<R extends IResponse> extends ConsumerStatefulWidget {
   final String title;
@@ -53,6 +54,8 @@ class CasaScaffold<R extends IResponse> extends ConsumerStatefulWidget {
 }
 
 class _CasaScaffoldState<R extends IResponse> extends ConsumerState<CasaScaffold<R>> {
+  // region State-Parameters
+
   late List<IMenuItem> navigationItems;
 
   late List<IMenuItem> serviceItems;
@@ -60,6 +63,10 @@ class _CasaScaffoldState<R extends IResponse> extends ConsumerState<CasaScaffold
   late Widget profileItem;
 
   late final Future<R>? future;
+
+  // endregion
+
+  // region Lifecycle
 
   @override
   void initState() {
@@ -73,6 +80,19 @@ class _CasaScaffoldState<R extends IResponse> extends ConsumerState<CasaScaffold
     serviceItems = menuUtils.buildServiceItems(ref);
     profileItem = menuUtils.buildProfile(context, ref.read(authProvider).asData!.value.user!);
   }
+
+  // endregion
+
+  // region Widgets
+
+  Widget buildContent(Widget child) {
+    return Padding(
+      padding: EdgeInsets.all(UniversalPlatform.isWeb ? 16 : 8),
+      child: child,
+    );
+  }
+
+  // endregion
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +108,9 @@ class _CasaScaffoldState<R extends IResponse> extends ConsumerState<CasaScaffold
         child: Builder(
           builder: (context) {
             if (widget.builder != null) {
-              return widget.builder!(context, ref);
+              return buildContent(
+                widget.builder!(context, ref),
+              );
             } else if (future != null && widget.futureBuilder != null) {
               return FutureBuilder(
                 future: future,
@@ -100,7 +122,9 @@ class _CasaScaffoldState<R extends IResponse> extends ConsumerState<CasaScaffold
                   } else if (snapshot.hasData) {
                     final futureResponse = snapshot.data!;
 
-                    return widget.futureBuilder!(context, ref, futureResponse);
+                    return buildContent(
+                      widget.futureBuilder!(context, ref, futureResponse),
+                    );
                   } else {
                     return const Center(child: CasaText('No data available'));
                   }

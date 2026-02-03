@@ -1,6 +1,6 @@
 import 'package:casa/src/core/api/api_client.dart';
-import 'package:casa/src/core/interfaces/i_api.dart';
-import 'package:casa/src/core/interfaces/i_api_response.dart';
+import 'package:casa/src/core/interfaces/api/i_api.dart';
+import 'package:casa/src/core/interfaces/api/i_api_response.dart';
 import 'package:casa/src/core/models/responses/api.response.dart';
 import 'package:casa/src/core/models/version/version_info.dart';
 import 'package:casa/src/core/utils/logger.util.dart';
@@ -8,9 +8,13 @@ import 'package:dio/dio.dart';
 import 'package:shared/shared.dart';
 
 abstract class ApiManager implements IApi {
-  final ApiClient client;
+  final ApiClient _client;
 
-  ApiManager(this.client);
+  ApiManager(this._client);
+
+  Dio get http => _client.dio;
+
+  String get _metaController => '/meta';
 
   @override
   Future<IApiResponse<T>> runRequestGuarded<T>(Future<IApiResponse<T>> Function() request) async {
@@ -50,7 +54,7 @@ abstract class ApiManager implements IApi {
   @override
   Future<IResponse> healthcheck() async {
     return runRequestGuarded(() async {
-      final response = await client.dio.get('/meta/healthcheck');
+      final response = await http.get('$_metaController/healthcheck');
 
       final responseCode = response.statusCode;
       final statusCode = EHttpStatus.fromCode(responseCode);
@@ -66,7 +70,7 @@ abstract class ApiManager implements IApi {
   @override
   Future<IApiResponse<IServerVersionInfo>> version() {
     return runRequestGuarded(() async {
-      final response = await client.dio.get('/meta/version');
+      final response = await http.get('$_metaController/version');
 
       final version = VersionInfo.fromJson(response.data);
 

@@ -64,4 +64,7 @@ class User extends Entity implements IUser {
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
+
+  @override
+  bool get isAdmin => groups.contains('admin');
 }

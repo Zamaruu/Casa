@@ -18,4 +18,6 @@ abstract interface class IUser implements IEntity {
     DateTime? createdAt,
     DateTime? updatedAt,
   });
+
+  bool get isAdmin;
 }

@@ -1,4 +1,4 @@
-import 'package:casa/src/core/interfaces/i_api_response.dart';
+import 'package:casa/src/core/interfaces/api/i_api_response.dart';
 import 'package:shared/shared.dart';
 
 class ApiResponse<T> extends ValueResponse<T> implements IApiResponse<T> {

@@ -1,5 +1,5 @@
 import 'package:casa/src/core/api/api_manager.dart';
-import 'package:casa/src/core/interfaces/i_api_response.dart';
+import 'package:casa/src/core/interfaces/api/i_api_response.dart';
 import 'package:casa/src/core/models/responses/api.response.dart';
 import 'package:casa/src/core/utils/logger.util.dart';
 import 'package:casa/src/features/auth/data/interfaces/i_auth_api.dart';
@@ -15,7 +15,7 @@ class AuthApi extends ApiManager implements IAuthApi {
     required String password,
   }) async {
     try {
-      final response = await client.dio.post(
+      final response = await http.post(
         '/auth/login',
         data: {
           'email': email,
