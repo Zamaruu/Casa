@@ -3,6 +3,7 @@ import 'package:casa/src/core/models/enums/e_auth_status.dart';
 import 'package:casa/src/core/router/casa_auth_router_refreshable.dart';
 import 'package:casa/src/core/router/casa_route.dart';
 import 'package:casa/src/features/admin/routes/admin.route.dart';
+import 'package:casa/src/features/admin/widgets/admin_scaffold.widget.dart';
 import 'package:casa/src/features/auth/auth.route.dart';
 import 'package:casa/src/features/home/home.route.dart';
 import 'package:casa/src/features/settings/data/repositories/settings.repository.dart';
@@ -79,7 +80,7 @@ class RouterNotifier extends AsyncNotifier<GoRouter> {
 
   // --- Routen ausgelagert
 
-  static final List<GoRoute> _routes = [
+  static final List<RouteBase> _routes = [
     CasaRoute(
       path: '/',
       builder: (context, state) => const HomeRoute(),
@@ -92,12 +93,22 @@ class RouterNotifier extends AsyncNotifier<GoRouter> {
       path: '/serverconfig',
       builder: (context, state) => const ServerConfigRoute(),
     ),
-    CasaRoute(
-      path: '/admin',
-      builder: (context, state) => const AdminRoute(),
+    ShellRoute(
+      builder: (context, state, child) {
+        final location = state.matchedLocation;
+
+        return CasaAdminScaffold(
+          location: location,
+          child: child,
+        );
+      },
       routes: [
         CasaRoute(
-          path: 'user',
+          path: '/admin',
+          builder: (context, state) => const AdminRoute(),
+        ),
+        CasaRoute(
+          path: '/admin/user',
           builder: (context, state) => const UsersRoute(),
           routes: [
             CasaRoute(

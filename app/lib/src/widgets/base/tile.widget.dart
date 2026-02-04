@@ -32,15 +32,17 @@ class CasaTile extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          subtitle ?? const SizedBox.shrink(),
-          thirdTitle ?? const SizedBox.shrink(),
-        ],
-      ),
+      subtitle: subtitle != null || thirdTitle != null
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                subtitle ?? const SizedBox.shrink(),
+                thirdTitle ?? const SizedBox.shrink(),
+              ],
+            )
+          : null,
       trailing: trailing,
     );
   }

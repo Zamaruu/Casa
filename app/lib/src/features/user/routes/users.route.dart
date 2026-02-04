@@ -10,7 +10,6 @@ import 'package:casa/src/widgets/base/text.widget.dart';
 import 'package:casa/src/widgets/base/tile.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:shared/shared.dart';
 
 import '../data/repositories/user.repository.dart';
@@ -80,6 +79,7 @@ class _UsersRouteState extends ConsumerState<UsersRoute> {
   Widget build(BuildContext context) {
     return CasaScaffold<IValueResponse<List<IUser>>>.future(
       title: "Benutzer",
+      showAppBar: false,
       future: ref.read(userRepositoryProvider).findAll(),
       menu: menu,
       futureBuilder: (context, ref, response) {
