@@ -726,7 +726,7 @@ packages:
       path: "../shared"
       relative: true
     source: path
-    version: "1.0.0"
+    version: "0.0.2"
   shelf:
     dependency: transitive
     description:

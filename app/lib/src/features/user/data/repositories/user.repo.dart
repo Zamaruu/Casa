@@ -1,5 +1,5 @@
 import 'package:casa/src/app/abstract/repositories/repo_source.dart';
-import 'package:casa/src/app/abstract/repositories/typed_repo.dart';
+import 'package:casa/src/app/abstract/repositories/typed_cache_repo.dart';
 import 'package:shared/shared.dart';
 
 class UserRepoSource extends TypedRepoSource<IUser> {
@@ -10,6 +10,6 @@ class UserRepoSource extends TypedRepoSource<IUser> {
   });
 }
 
-abstract class UserRepo extends TypedRepo<IUser> {
-  const UserRepo({required super.source});
+abstract class UserRepo extends TypedCacheRepo<IUser> {
+  UserRepo({required super.source});
 }

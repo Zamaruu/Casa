@@ -21,47 +21,5 @@ final userRepositoryProvider = Provider<UserRepo>((ref) {
 });
 
 class UserRepository extends UserRepo {
-  const UserRepository({required super.source});
-
-  @override
-  Future<IValueResponse<IUser>> find(String id) async {
-    return runGuardedValue(() async {
-      final fromCache = ref.read(usersListProvider.notifier).find(id);
-
-      if (fromCache != null) {
-        return ValueResponse.success(value: fromCache);
-      } else {
-        final response = await super.find(id);
-
-        if (response.isSuccess && response.hasValue) {
-          final user = response.value!;
-          ref.read(usersListProvider.notifier).add(user);
-          return ValueResponse.success(value: user);
-        } else {
-          return ValueResponse.failure(message: response.message);
-        }
-      }
-    });
-  }
-
-  @override
-  Future<IValueResponse<List<IUser>>> findAll() async {
-    return runGuardedValue(() async {
-      final fromCache = ref.read(usersListProvider);
-
-      if (fromCache.isNotEmpty) {
-        return ValueResponse.success(value: fromCache);
-      } else {
-        final response = await super.findAll();
-
-        if (response.isSuccess && response.hasValue) {
-          final users = response.value!;
-          ref.read(usersListProvider.notifier).set(users);
-          return ValueResponse.success(value: users);
-        } else {
-          return ValueResponse.failure(message: response.message);
-        }
-      }
-    });
-  }
+  UserRepository({required super.source});
 }
