@@ -7,6 +7,7 @@ import 'package:casa/src/features/user/widgets/user_context_dialog.dart';
 import 'package:casa/src/widgets/base/contextdialog.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:shared/shared.dart';
 import 'package:universal_platform/universal_platform.dart';
 
@@ -40,12 +41,6 @@ class MenuUtils {
     final user = ref.read(authUserProvider);
 
     final items = <IMenuItem>[
-      if (UniversalPlatform.isMobile)
-        SimpleMenuItem(
-          title: 'Profil',
-          icon: Icons.person,
-          onTap: () => openUserContextMenu(context),
-        ),
       if (UniversalPlatform.isWeb || user.isAdmin)
         SimpleMenuItem(
           title: 'Administration',
@@ -54,9 +49,15 @@ class MenuUtils {
         ),
       if (UniversalPlatform.isWeb)
         SimpleMenuItem(
-          title: 'Einstellungen',
-          icon: Icons.settings,
-          onTap: () => CasaNavigator.go(context, '/settings'),
+          title: 'Profil',
+          icon: MdiIcons.faceManProfile,
+          onTap: () {
+            if (UniversalPlatform.isMobile) {
+              openUserContextMenu(context);
+            } else if (UniversalPlatform.isWeb) {
+              CasaNavigator.go(context, '/profile');
+            }
+          },
         ),
     ];
 

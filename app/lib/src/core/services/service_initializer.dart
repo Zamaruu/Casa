@@ -6,6 +6,7 @@ import 'package:casa/src/core/interfaces/config/i_app_config.dart';
 import 'package:casa/src/core/models/config/config_loader.dart';
 import 'package:casa/src/core/services/service_locator.dart';
 import 'package:casa/src/core/utils/logger.util.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared/shared.dart';
 
 abstract class ServiceInitializer {
@@ -104,7 +105,8 @@ abstract class ServiceInitializer {
 
   static Future<IResponse> _startUpTokenProvider() async {
     try {
-      final tokenProvider = InMemoryAuthTokenProvider.empty();
+      final storage = FlutterSecureStorage();
+      final tokenProvider = InMemoryAuthTokenProvider.empty(storage);
       services.registerSingleton<ITokenProvider>(tokenProvider);
 
       return Response.success();

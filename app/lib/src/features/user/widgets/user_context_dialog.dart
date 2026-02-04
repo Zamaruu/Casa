@@ -78,9 +78,9 @@ class UserContextDialog extends ConsumerWidget {
         SizedBox(height: 16),
 
         ElevatedButton.icon(
-          onPressed: () => CasaNavigator.go(context, '/settings'),
-          icon: Icon(Icons.settings),
-          label: Text("Einstellungen"),
+          onPressed: () => CasaNavigator.go(context, '/profile'),
+          icon: Icon(MdiIcons.faceManProfile),
+          label: Text("Profil"),
         ),
 
         SizedBox(height: 8),

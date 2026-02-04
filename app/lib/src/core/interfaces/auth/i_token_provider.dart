@@ -1,7 +1,7 @@
 import 'package:shared/shared.dart';
 
 abstract interface class ITokenProvider implements ICopyable<ITokenProvider> {
-  String? get accessToken;
+  Future<String?> get accessToken;
 
   bool get hasToken;
 
