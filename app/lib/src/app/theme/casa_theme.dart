@@ -23,6 +23,12 @@ class CasaTheme {
         foregroundColor: Colors.white,
       ),
 
+      iconButtonTheme: IconButtonThemeData(
+        style: ButtonStyle(
+          foregroundColor: WidgetStateProperty.all(CasaColors.primary),
+        ),
+      ),
+
       navigationRailTheme: NavigationRailThemeData(
         backgroundColor: CasaColors.surface,
         selectedIconTheme: const IconThemeData(color: CasaColors.primary),

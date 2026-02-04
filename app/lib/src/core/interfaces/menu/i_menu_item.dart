@@ -8,4 +8,6 @@ abstract interface class IMenuItem {
   VoidCallback get onTap;
 
   List<IMenuItem> get children;
+
+  bool get isIconOnly;
 }

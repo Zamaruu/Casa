@@ -1,4 +1,4 @@
-import 'package:casa/src/app/interfaces/i_menu_item.dart';
+import 'package:casa/src/core/interfaces/menu/i_menu_item.dart';
 import 'package:casa/src/features/settings/widgets/app_version_info.dart';
 import 'package:flutter/material.dart';
 

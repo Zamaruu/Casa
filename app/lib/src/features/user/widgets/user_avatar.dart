@@ -11,7 +11,7 @@ class UserAvatar extends StatelessWidget {
   const UserAvatar({
     super.key,
     this.onTap,
-    this.fontSize = 24.0,
+    this.fontSize = 16.0,
     required this.user,
   });
 

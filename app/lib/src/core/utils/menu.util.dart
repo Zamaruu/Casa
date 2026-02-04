@@ -1,6 +1,6 @@
-import 'package:casa/src/app/interfaces/i_menu_item.dart';
-import 'package:casa/src/app/layout/simple_menu_file.dart';
+import 'package:casa/src/core/models/menus/menu_item.dart';
 import 'package:casa/src/core/auth/auth.provider.dart';
+import 'package:casa/src/core/interfaces/menu/i_menu_item.dart';
 import 'package:casa/src/core/router/casa_navigator.dart';
 import 'package:casa/src/features/profile/widgets/drawerprofile.widget.dart';
 import 'package:casa/src/features/user/widgets/user_context_dialog.dart';
@@ -16,17 +16,17 @@ class MenuUtils {
 
   List<IMenuItem> buildDrawerItems(BuildContext context) {
     final items = <IMenuItem>[
-      SimpleMenuItem(
+      MenuItem(
         title: 'Kalender',
         icon: Icons.calendar_today,
         onTap: () => CasaNavigator.go(context, '/calendar'),
       ),
-      SimpleMenuItem(
+      MenuItem(
         title: 'Todos',
         icon: Icons.checklist,
         onTap: () => CasaNavigator.go(context, '/todos'),
       ),
-      SimpleMenuItem(
+      MenuItem(
         title: 'Rezepte',
         icon: Icons.restaurant,
         onTap: () => CasaNavigator.go(context, '/recipes'),
@@ -42,13 +42,13 @@ class MenuUtils {
 
     final items = <IMenuItem>[
       if (UniversalPlatform.isWeb || user.isAdmin)
-        SimpleMenuItem(
+        MenuItem(
           title: 'Administration',
           icon: Icons.dashboard_customize,
           onTap: () => CasaNavigator.go(context, '/admin'),
         ),
       if (UniversalPlatform.isWeb)
-        SimpleMenuItem(
+        MenuItem(
           title: 'Profil',
           icon: MdiIcons.faceManProfile,
           onTap: () {

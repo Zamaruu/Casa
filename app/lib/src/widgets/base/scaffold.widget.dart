@@ -1,9 +1,11 @@
-import 'package:casa/src/app/interfaces/i_menu_item.dart';
 import 'package:casa/src/core/auth/auth.provider.dart';
+import 'package:casa/src/core/interfaces/menu/i_menu.dart';
+import 'package:casa/src/core/interfaces/menu/i_menu_item.dart';
 import 'package:casa/src/core/utils/menu.util.dart';
 import 'package:casa/src/widgets/base/appbar.widget.dart';
 import 'package:casa/src/widgets/base/drawer.widget.dart';
 import 'package:casa/src/widgets/base/text.widget.dart';
+import 'package:casa/src/widgets/menu/menubar.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared/shared.dart';
@@ -18,7 +20,10 @@ class CasaScaffold<R extends IResponse> extends ConsumerStatefulWidget {
 
   final Widget Function(BuildContext context, WidgetRef ref, R futureResponse)? futureBuilder;
 
-  final List<IMenuItem> menuItems;
+  /// The menu items to be displayed as commandbar or multifab, depending on device layout
+  final IMenu? menu;
+
+  final bool showMenuItems;
 
   // region Constructors
 
@@ -28,14 +33,16 @@ class CasaScaffold<R extends IResponse> extends ConsumerStatefulWidget {
     this.builder,
     this.future,
     this.futureBuilder,
-    this.menuItems = const [],
+    this.menu,
+    this.showMenuItems = true,
   }) : assert(builder != null || futureBuilder != null, 'Either builder or futureBuilder must be provided');
 
   const CasaScaffold.builder({
     super.key,
     required this.title,
     required this.builder,
-    this.menuItems = const [],
+    this.menu,
+    this.showMenuItems = true,
   }) : future = null,
        futureBuilder = null;
 
@@ -44,7 +51,8 @@ class CasaScaffold<R extends IResponse> extends ConsumerStatefulWidget {
     required this.title,
     required this.future,
     required this.futureBuilder,
-    this.menuItems = const [],
+    this.menu,
+    this.showMenuItems = true,
   }) : builder = null;
 
   // endregion
@@ -88,8 +96,22 @@ class _CasaScaffoldState<R extends IResponse> extends ConsumerState<CasaScaffold
   Widget buildContent(Widget child) {
     return Padding(
       padding: EdgeInsets.all(UniversalPlatform.isWeb ? 16 : 8),
-      child: child,
+      child: Column(
+        children: [
+          buildCommandBar(),
+          SizedBox(height: UniversalPlatform.isWeb ? 16 : 8),
+          Expanded(child: child),
+        ],
+      ),
     );
+  }
+
+  Widget buildCommandBar() {
+    if (widget.menu != null) {
+      return Menubar(menu: widget.menu!);
+    } else {
+      return const SizedBox.shrink();
+    }
   }
 
   // endregion
