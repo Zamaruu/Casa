@@ -46,9 +46,9 @@ class _UsersRouteState extends ConsumerState<UsersRoute> {
           onTap: () => CasaNavigator.go(context, "/admin/user/roles"),
         ),
         MenuItem(
-          title: "Automation",
-          icon: Icons.flash_auto_outlined,
-          onTap: () => CasaNavigator.go(context, "/admin/automation"),
+          title: "Aktualisieren",
+          icon: Icons.refresh,
+          onTap: () {},
         ),
         MenuItem(
           title: "Suchen",

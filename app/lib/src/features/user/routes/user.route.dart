@@ -15,6 +15,7 @@ class UserRoute extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return CasaScaffold<IValueResponse<IUser>>.future(
       title: "Benutzerdetails",
+      showAppBar: false,
       future: ref.read(userRepositoryProvider).find(id),
       futureBuilder: (context, ref, response) {
         if (response.isSuccess && response.hasValue) {

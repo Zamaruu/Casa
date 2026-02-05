@@ -10,9 +10,11 @@ import 'package:casa/src/features/settings/data/repositories/settings.repository
 import 'package:casa/src/features/settings/routes/server.route.dart';
 import 'package:casa/src/features/user/routes/user.route.dart';
 import 'package:casa/src/features/user/routes/users.route.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:universal_platform/universal_platform.dart';
 
 final routerProvider = AsyncNotifierProvider<RouterNotifier, GoRouter>(() => RouterNotifier());
 
@@ -44,6 +46,7 @@ class RouterNotifier extends AsyncNotifier<GoRouter> {
     return GoRouter(
       initialLocation: initialLocation,
       refreshListenable: _refreshNotifier,
+      debugLogDiagnostics: kDebugMode,
       redirect: _redirect,
       routes: _routes,
     );
@@ -89,10 +92,11 @@ class RouterNotifier extends AsyncNotifier<GoRouter> {
       path: '/auth',
       builder: (context, state) => const AuthRoute(),
     ),
-    CasaRoute(
-      path: '/serverconfig',
-      builder: (context, state) => const ServerConfigRoute(),
-    ),
+    if (UniversalPlatform.isMobile)
+      CasaRoute(
+        path: '/serverconfig',
+        builder: (context, state) => const ServerConfigRoute(),
+      ),
     ShellRoute(
       builder: (context, state, child) {
         final location = state.matchedLocation;
