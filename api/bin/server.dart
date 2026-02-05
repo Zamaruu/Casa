@@ -25,7 +25,7 @@ void main(List<String> args) async {
   }
 
   // Configure a pipeline that logs requests.
-  final handler = await buildPipeline();
+  final handler = await buildPipeline(config);
 
   print('✅ Pipeline created. Starting server...');
 

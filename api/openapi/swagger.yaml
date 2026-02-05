@@ -1,0 +1,147 @@
+openapi: 3.0.3
+
+info:
+  title: Casa API
+  description: >
+    Private Familien-API für die Casa App.
+    Diese API wird von der Flutter App sowie externen Tools (z.B. n8n) verwendet.
+  version: 0.1.0
+
+servers:
+  - url: http://localhost:8080/api
+    description: Local development
+  - url: https://api.casa.local
+    description: Production
+
+tags:
+  - name: Health
+    description: System & Health Endpoints
+  - name: Users
+    description: Benutzerverwaltung
+  - name: Todos
+    description: Aufgaben & Todos
+
+paths:
+
+  /meta/healthcheck:
+    get:
+      tags: [Health]
+      summary: Health Check
+      description: Prüft, ob die API erreichbar ist
+      responses:
+        "200":
+          description: API ist erreichbar
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
+
+  /users:
+    get:
+      tags: [Users]
+      summary: Alle Benutzer abrufen
+      security:
+        - oauth2: [openid, profile, email]
+      responses:
+        "200":
+          description: Liste aller Benutzer
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+
+    post:
+      tags: [Users]
+      summary: Benutzer erstellen
+      security:
+        - oauth2: [openid]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUserRequest"
+      responses:
+        "201":
+          description: Benutzer wurde erstellt
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /users/{userId}:
+    get:
+      tags: [Users]
+      summary: Benutzer anhand der ID abrufen
+      security:
+        - oauth2: [openid]
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Benutzer gefunden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "404":
+          description: Benutzer nicht gefunden
+
+components:
+
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://auth.casa.local/application/o/authorize/
+          tokenUrl: https://auth.casa.local/application/o/token/
+          scopes:
+            openid: OpenID Connect
+            profile: Benutzerprofil
+            email: E-Mail-Adresse
+
+  schemas:
+
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: ok
+        timestamp:
+          type: string
+          format: date-time
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "user_123"
+        displayName:
+          type: string
+          example: "Max"
+        email:
+          type: string
+          example: "max@example.com"
+        createdAt:
+          type: string
+          format: date-time
+
+    CreateUserRequest:
+      type: object
+      required:
+        - displayName
+        - email
+      properties:
+        displayName:
+          type: string
+        email:
+          type: string

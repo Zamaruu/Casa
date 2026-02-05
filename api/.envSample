@@ -1,5 +1,6 @@
 # Misc
 LOG_LEVEL=info
+ENABLE_OPENAPI=true
 
 # Database
 DB_TYPE=mongodb

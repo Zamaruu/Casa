@@ -8,7 +8,12 @@ class ApiResponse extends shelf.Response {
 
   ApiResponse(super.statusCode, {super.body, super.headers, super.context});
 
-  ApiResponse.ok(String body) : super(EHttpStatus.ok.code, body: body, headers: defaultHeaders);
+  ApiResponse.ok(String body, {Map<String, String>? headers})
+    : super(
+        EHttpStatus.ok.code,
+        body: body,
+        headers: headers ?? defaultHeaders,
+      );
 
   ApiResponse.noContent(String body) : super(EHttpStatus.noContent.code, body: body, headers: defaultHeaders);
 

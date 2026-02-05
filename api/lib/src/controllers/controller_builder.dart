@@ -1,5 +1,7 @@
 import 'package:casa_api/src/controllers/auth.controller.dart';
+import 'package:casa_api/src/controllers/swagger.controller.dart';
 import 'package:casa_api/src/controllers/user.controller.dart';
+import 'package:casa_api/src/interfaces/i_api_config.dart';
 import 'package:shelf_router/shelf_router.dart';
 
 import 'meta.controller.dart';
@@ -7,8 +9,14 @@ import 'meta.controller.dart';
 abstract class ControllerBuilder {
   static String get root => "/api";
 
-  static Router buildPublicEndpoints() {
+  static Router buildPublicEndpoints(IApiConfig config) {
     final router = Router();
+
+    if (config.enableOpenApi) {
+      // OpenAPI
+      final swaggerController = SwaggerController.endpoint();
+      router.mount(mergePaths(root, swaggerController.path), swaggerController.router.call);
+    }
 
     // Auth
     final authController = AuthController.endpoint();
