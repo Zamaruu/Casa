@@ -3,27 +3,42 @@ openapi: 3.0.3
 info:
   title: Casa API
   description: >
-    Private Familien-API für die Casa App.
-    Diese API wird von der Flutter App sowie externen Tools (z.B. n8n) verwendet.
+    Private family API for the Casa app.
+    This API is used by the Flutter app and external tools (e.g., n8n).
   version: 0.1.0
-
-servers:
-  - url: http://localhost:8080/api
-    description: Local development
-  - url: https://api.casa.local
-    description: Production
 
 tags:
   - name: Health
     description: System & Health Endpoints
   - name: Users
-    description: Benutzerverwaltung
+    description: User & User-Management
   - name: Todos
-    description: Aufgaben & Todos
+    description: Planned Work & Todos
+  - name: Auth
+    description: Authentication & Authorization
+
 
 paths:
+  /api/auth/login:
+    post:
+      tags: [Auth]
+      summary: Login mit Email und Passwort
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        "200":
+          description: Login erfolgreich
 
-  /meta/healthcheck:
+  /api/meta/healthcheck:
     get:
       tags: [Health]
       summary: Health Check
@@ -36,7 +51,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/HealthResponse"
 
-  /users:
+  /api/users:
     get:
       tags: [Users]
       summary: Alle Benutzer abrufen
@@ -71,7 +86,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/User"
 
-  /users/{userId}:
+  /api/users/{userId}:
     get:
       tags: [Users]
       summary: Benutzer anhand der ID abrufen
@@ -96,19 +111,12 @@ paths:
 components:
 
   securitySchemes:
-    oauth2:
-      type: oauth2
-      flows:
-        authorizationCode:
-          authorizationUrl: https://auth.casa.local/application/o/authorize/
-          tokenUrl: https://auth.casa.local/application/o/token/
-          scopes:
-            openid: OpenID Connect
-            profile: Benutzerprofil
-            email: E-Mail-Adresse
+    jwt:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
 
   schemas:
-
     HealthResponse:
       type: object
       properties:
