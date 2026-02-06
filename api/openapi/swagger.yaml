@@ -51,12 +51,12 @@ paths:
               schema:
                 $ref: "#/components/schemas/HealthResponse"
 
-  /api/users:
+  /api/user:
     get:
       tags: [Users]
       summary: Alle Benutzer abrufen
       security:
-        - oauth2: [openid, profile, email]
+        - jwt: [jwt]
       responses:
         "200":
           description: Liste aller Benutzer
@@ -86,12 +86,12 @@ paths:
               schema:
                 $ref: "#/components/schemas/User"
 
-  /api/users/{userId}:
+  /api/user/{userId}:
     get:
       tags: [Users]
       summary: Benutzer anhand der ID abrufen
       security:
-        - oauth2: [openid]
+        - jwt: [jwt]
       parameters:
         - name: userId
           in: path
