@@ -1,5 +1,6 @@
 import 'package:casa/src/core/interfaces/menu/i_routable_menu_item.dart';
 import 'package:casa/src/core/models/menus/nav_menu_item.dart';
+import 'package:casa/src/widgets/base/navigationbar.widget.dart';
 import 'package:casa/src/widgets/base/navigationrail.widget.dart';
 import 'package:casa/src/widgets/base/scaffold.widget.dart';
 import 'package:flutter/material.dart';
@@ -95,6 +96,7 @@ class _CasaAdminScaffoldState extends State<CasaAdminScaffold> {
               ],
             );
           },
+          bottomNavigationBar: isMobile ? CasaNavigationBar(location: widget.location, items: navItems) : null,
         );
       },
     );

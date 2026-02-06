@@ -5,20 +5,19 @@ import 'package:flutter/material.dart';
 class CasaNavigationRail extends StatelessWidget {
   final List<IRoutableMenuItem> items;
 
-  final String? location;
+  final String location;
 
   const CasaNavigationRail({
     super.key,
     required this.items,
-    this.location,
+    required this.location,
   });
 
   bool isRouteSelected(String route) {
-    if (location == null) return false;
     if (location == route) return true;
 
     // Segment-sicheres Prefix-Matching
-    return location!.startsWith('$route/');
+    return location.startsWith('$route/');
   }
 
   @override
