@@ -1,11 +1,12 @@
 import 'package:casa_api/src/config/api_config.dart';
 import 'package:casa_api/src/config/auth_config.dart';
 import 'package:casa_api/src/config/database_config.dart';
+import 'package:casa_api/src/interfaces/i_api_config.dart';
 import 'package:dotenv/dotenv.dart';
 import 'package:shared/shared.dart';
 
 class ConfigLoader {
-  static IConfig load() {
+  static IApiConfig load() {
     final env = DotEnv(includePlatformEnvironment: true);
 
     // Load .env only optionally (Docker does not need it)
@@ -17,10 +18,13 @@ class ConfigLoader {
 
     final logLevel = ELogLevel.getByName(env['LOG_LEVEL']);
 
+    final enableOpenApi = env['ENABLE_OPENAPI'] == "true";
+
     final config = ApiConfig(
       logLevel: logLevel,
       authConfig: authConfig,
       databaseConfig: databaseConfig,
+      enableOpenApi: enableOpenApi,
     );
 
     return config;
