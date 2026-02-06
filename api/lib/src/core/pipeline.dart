@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:casa_api/src/controllers/controller_builder.dart';
+import 'package:casa_api/src/interfaces/i_api_config.dart';
 import 'package:casa_api/src/middleware/auth.middleware.dart';
 import 'package:casa_api/src/middleware/header.middleware.dart';
 import 'package:casa_api/src/services/auth/jwt.service.dart';
@@ -10,12 +11,12 @@ import 'package:shelf_static/shelf_static.dart';
 
 import '../services/service_locator.dart';
 
-Future<Handler> buildPipeline() async {
+Future<Handler> buildPipeline(IApiConfig config) async {
   final jwtService = services.get<JwtService>();
 
   final protectedEndpoints = ControllerBuilder.buildProtectedEndpoints();
 
-  final publicEndpoints = ControllerBuilder.buildPublicEndpoints();
+  final publicEndpoints = ControllerBuilder.buildPublicEndpoints(config);
 
   final protectedPipeline = Pipeline()
       .addMiddleware(authMiddleware(jwtService))
