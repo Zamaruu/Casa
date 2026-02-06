@@ -13,9 +13,42 @@
     {
       "name": "Users",
       "description": "Benutzerverwaltung"
+    },
+    {
+      "name": "Auth",
+      "description": "Authentifizierung"
     }
   ],
   "paths": {
+    "/api/auth/login": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Benutzer einloggen",
+        "description": "Meldet den Benutzer mittels E-Mail und Passwort ein. Bei erfolg wirf JWT zurückgegeben.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JwtLoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "JWT zurückgegeben",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/meta/healthcheck": {
       "get": {
         "tags": ["Health"],
@@ -58,7 +91,7 @@
         "summary": "Alle Benutzer abrufen",
         "security": [
           {
-            "oauth2": ["openid", "profile", "email"]
+            "jwt": []
           }
         ],
         "responses": {
@@ -115,7 +148,7 @@
         "summary": "Benutzer anhand der ID abrufen",
         "security": [
           {
-            "oauth2": ["openid"]
+            "jwt": []
           }
         ],
         "parameters": [
@@ -186,6 +219,26 @@
           "createdAt": {
             "type": "string",
             "format": "date-time"
+          }
+        }
+      },
+      "JwtLoginRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "JwtLoginResponse": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string"
           }
         }
       },
