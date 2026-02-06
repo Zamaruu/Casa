@@ -16,7 +16,7 @@
     }
   ],
   "paths": {
-    "/api/meta/health": {
+    "/api/meta/healthcheck": {
       "get": {
         "tags": ["Health"],
         "summary": "Health Check",
@@ -29,6 +29,23 @@
                 "schema": {
                   "$ref": "#/components/schemas/HealthResponse"
                 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/meta/version": {
+      "get": {
+        "tags": ["Health"],
+        "summary": "Version des Servers abrufen",
+        "description": "Gibt die Version des Servers zurück",
+        "responses": {
+          "200": {
+            "description": "Version des Servers",
+            "content": {
+              "application/json": {
+
               }
             }
           }

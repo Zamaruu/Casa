@@ -25,11 +25,15 @@ class SwaggerController extends ApiController {
 
   Future<ApiResponse> openapi(Request request) async {
     return runGuarded(() async {
-      final path = 'lib/src/openapi/openapi.json';
-      final yaml = File(path);
+      final path = 'openapi/openapi.json';
+      final spec = File(path);
+
+      if (!spec.existsSync()) {
+        return ApiResponse.internalServerError('OpenAPI spec not found');
+      }
 
       return ApiResponse.ok(
-        yaml.readAsStringSync(),
+        spec.readAsStringSync(),
         headers: {'content-type': 'application/json'},
       );
     });

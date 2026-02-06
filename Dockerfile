@@ -36,6 +36,7 @@ RUN dart run build_runner build --delete-conflicting-outputs
 
 # --- API ---
 COPY api/ /build/api
+COPY api/openapi/openapi.json /build/api/openapi/openapi.json
 WORKDIR /build/api
 RUN dart pub get
 RUN dart run build_runner build --delete-conflicting-outputs
@@ -54,7 +55,9 @@ FROM debian:bookworm-slim
 WORKDIR /app
 
 COPY --from=api-build /build/server /app/server
+COPY --from=api-build /build/api/openapi/openapi.json /app/openapi/openapi.json
 COPY --from=flutter-build /build/app/build/web /app/web
+
 
 EXPOSE 8080
 CMD ["/app/server"]
