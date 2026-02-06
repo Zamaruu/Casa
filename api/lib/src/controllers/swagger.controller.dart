@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:casa_api/src/abstract/controller/api.controller.dart';
 import 'package:casa_api/src/models/responses/api.response.dart';
+import 'package:casa_api/src/openapi/openapi_builder.dart';
 import 'package:shelf/shelf.dart';
 
 class SwaggerController extends ApiController {
@@ -24,19 +25,23 @@ class SwaggerController extends ApiController {
 
   Future<ApiResponse> openapi(Request request) async {
     return runGuarded(() async {
-      final path = 'openapi/swagger.yaml';
-      final yaml = File(path);
+      final path = 'openapi/openapi.json';
+      final spec = File(path);
+
+      if (!spec.existsSync()) {
+        return ApiResponse.internalServerError('OpenAPI spec not found');
+      }
 
       return ApiResponse.ok(
-        yaml.readAsStringSync(),
-        headers: {'content-type': 'application/yaml'},
+        spec.readAsStringSync(),
+        headers: {'content-type': 'application/json'},
       );
     });
   }
 
   Future<ApiResponse> swagger(Request request) async {
     return runGuarded(() async {
-      final html = await File('openapi/swagger.html').readAsString();
+      final html = OpenapiBuilder.buildSwaggerHtml();
 
       return ApiResponse.ok(
         html,
