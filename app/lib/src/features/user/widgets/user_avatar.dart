@@ -57,7 +57,8 @@ class UserAvatar extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(90),
       child: CircleAvatar(
-        foregroundColor: _colorBasedOnId,
+        backgroundColor: _colorBasedOnId,
+        foregroundColor: Colors.white,
         child: Center(
           child: Text(
             _initials,

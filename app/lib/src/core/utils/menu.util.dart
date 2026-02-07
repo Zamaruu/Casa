@@ -1,6 +1,6 @@
-import 'package:casa/src/core/models/menus/menu_item.dart';
 import 'package:casa/src/core/auth/auth.provider.dart';
 import 'package:casa/src/core/interfaces/menu/i_menu_item.dart';
+import 'package:casa/src/core/models/menus/menu_item.dart';
 import 'package:casa/src/core/router/casa_navigator.dart';
 import 'package:casa/src/features/profile/widgets/drawerprofile.widget.dart';
 import 'package:casa/src/features/user/widgets/user_context_dialog.dart';
@@ -41,7 +41,7 @@ class MenuUtils {
     final user = ref.read(authUserProvider);
 
     final items = <IMenuItem>[
-      if (UniversalPlatform.isWeb || user.isAdmin)
+      if (UniversalPlatform.isWeb && user.isAdmin)
         MenuItem(
           title: 'Administration',
           icon: Icons.dashboard_customize,
