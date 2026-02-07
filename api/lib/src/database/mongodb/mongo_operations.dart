@@ -75,20 +75,23 @@ abstract class MongoOperations<T extends IEntity> implements IDefaultEntityOpera
   }
 
   @override
-  Future<IValueResponse<T>> save(IEntity entity) async {
+  Future<IValueResponse<T>> save(T entity) async {
     try {
       if (entity.hasId == false) {
-        entity = entity.copyWith(id: createId());
+        entity = entity.copyWith(id: createId()) as T;
       }
 
       final json = entity.toJson();
 
       final result = await collection.insertOne(json);
-      final id = result.id.toHexString();
 
-      return ValueResponse.success(
-        value: entity.copyWith(id: id) as T,
-      );
+      if (result.isFailure) {
+        final message = 'Error while saving entity of type ${T.toString()}.';
+        apiLog(message: message, callingClass: runtimeType);
+        return ValueResponse.failure(message: message);
+      } else {
+        return ValueResponse.success(value: entity);
+      }
     } catch (e, st) {
       final message = 'Error while saving entity of type ${T.toString()}.';
       apiLog(message: message, error: e, stackTrace: st, callingClass: runtimeType);
@@ -118,9 +121,9 @@ abstract class MongoOperations<T extends IEntity> implements IDefaultEntityOpera
         final message = 'Error while saving ${result.writeErrorsNumber} entities of type ${T.toString()}.';
         apiLog(message: message, callingClass: runtimeType);
         return ValueResponse.failure(message: message);
+      } else {
+        return ValueResponse.success(value: saveEntities);
       }
-
-      return ValueResponse.success(value: saveEntities);
     } catch (e, st) {
       final message = 'Error while saving ${entities.length} entities of type ${T.toString()}.';
       apiLog(message: message, error: e, stackTrace: st, callingClass: runtimeType);
