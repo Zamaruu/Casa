@@ -15,6 +15,7 @@ abstract interface class IUser implements IEntity {
     String? email,
     String? username,
     List<String>? groups,
+    String? passwordHash,
     DateTime? createdAt,
     DateTime? updatedAt,
   });

@@ -1,6 +1,7 @@
 import 'package:casa_api/src/utils/logger.util.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:shared/shared.dart';
+import 'package:uuid/uuid.dart';
 
 abstract class MongoOperations<T extends IEntity> implements IDefaultEntityOperations<T> {
   final Db db;
@@ -14,6 +15,14 @@ abstract class MongoOperations<T extends IEntity> implements IDefaultEntityOpera
 
   /// Function which deserializes a Mongo-Document into an Entity of type [T].
   T Function(Map<String, dynamic> doc) get fromMongo;
+
+  // endregion
+
+  // region Helper
+
+  String createId() {
+    return Uuid().v4();
+  }
 
   // endregion
 
@@ -68,6 +77,10 @@ abstract class MongoOperations<T extends IEntity> implements IDefaultEntityOpera
   @override
   Future<IValueResponse<T>> save(IEntity entity) async {
     try {
+      if (entity.hasId == false) {
+        entity = entity.copyWith(id: createId());
+      }
+
       final json = entity.toJson();
 
       final result = await collection.insertOne(json);
@@ -84,21 +97,30 @@ abstract class MongoOperations<T extends IEntity> implements IDefaultEntityOpera
   }
 
   @override
-  Future<IValueResponse<List<T>>> saveMany(List<IEntity> entities) async {
+  Future<IValueResponse<List<T>>> saveMany(List<T> entities) async {
     try {
-      final docs = entities.map((e) => e.toJson()).toList();
+      // Check for missing ids
+      final saveEntities = <T>[];
+
+      for (var entity in entities) {
+        if (entity.hasId == false) {
+          saveEntities.add(entity.copyWith(id: createId()) as T);
+        } else {
+          saveEntities.add(entity);
+        }
+      }
+
+      final docs = saveEntities.map((e) => e.toJson()).toList();
 
       final result = await collection.insertMany(docs);
-      final ids = result.ids?.map((e) => e.id.toHexString()).toList();
 
-      if (ids == null) {
-        final message = 'Error while saving ${entities.length} entities of type ${T.toString()}.\nIds are null.';
+      if (result.hasWriteErrors) {
+        final message = 'Error while saving ${result.writeErrorsNumber} entities of type ${T.toString()}.';
+        apiLog(message: message, callingClass: runtimeType);
         return ValueResponse.failure(message: message);
       }
 
-      final updatedEntities = entities.map((e) => e.copyWith(id: ids.firstWhere((id) => id == e.id)) as T).toList();
-
-      return ValueResponse.success(value: updatedEntities);
+      return ValueResponse.success(value: saveEntities);
     } catch (e, st) {
       final message = 'Error while saving ${entities.length} entities of type ${T.toString()}.';
       apiLog(message: message, error: e, stackTrace: st, callingClass: runtimeType);

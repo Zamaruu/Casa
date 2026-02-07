@@ -4,6 +4,8 @@ import 'package:casa/src/core/interfaces/menu/i_menu.dart';
 import 'package:casa/src/core/models/menus/menu.dart';
 import 'package:casa/src/core/models/menus/menu_item.dart';
 import 'package:casa/src/core/router/casa_navigator.dart';
+import 'package:casa/src/features/user/data/provider/users_list_provider.dart';
+import 'package:casa/src/features/user/data/utils/user.util.dart';
 import 'package:casa/src/features/user/widgets/user_avatar.dart';
 import 'package:casa/src/widgets/base/scaffold.widget.dart';
 import 'package:casa/src/widgets/base/text.widget.dart';
@@ -11,8 +13,6 @@ import 'package:casa/src/widgets/base/tile.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared/shared.dart';
-
-import '../data/repositories/user.repository.dart';
 
 class UsersRoute extends ConsumerStatefulWidget {
   const UsersRoute({super.key});
@@ -24,10 +24,13 @@ class UsersRoute extends ConsumerStatefulWidget {
 class _UsersRouteState extends ConsumerState<UsersRoute> {
   late final IMenu menu;
 
+  late final UserUtil userUtil;
+
   @override
   void initState() {
     super.initState();
     menu = setupMenu();
+    userUtil = const UserUtil();
   }
 
   // region Methods
@@ -38,7 +41,7 @@ class _UsersRouteState extends ConsumerState<UsersRoute> {
         MenuItem(
           title: "Benutzer",
           icon: Icons.person_add_alt,
-          onTap: () => CasaNavigator.go(context, "/admin/user/create"),
+          onTap: () => userUtil.create(context, ref),
         ),
         MenuItem(
           title: "Rollen",
@@ -48,7 +51,7 @@ class _UsersRouteState extends ConsumerState<UsersRoute> {
         MenuItem(
           title: "Aktualisieren",
           icon: Icons.refresh,
-          onTap: () {},
+          onTap: () => ref.invalidate(usersListProvider),
         ),
         MenuItem(
           title: "Suchen",
@@ -80,7 +83,7 @@ class _UsersRouteState extends ConsumerState<UsersRoute> {
     return CasaScaffold<IValueResponse<List<IUser>>>.future(
       title: "Benutzer",
       showAppBar: false,
-      future: ref.read(userRepositoryProvider).findAll(),
+      future: ref.watch(usersListProvider.future),
       menu: menu,
       futureBuilder: (context, ref, response, layout) {
         if (response.isSuccess && response.hasValue) {

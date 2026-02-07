@@ -1,28 +1,13 @@
-import 'package:casa/src/core/extensions/list.extensions.dart';
+import 'package:casa/src/features/user/data/repositories/user.repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared/shared.dart';
 
-final usersListProvider = NotifierProvider.autoDispose<UsersListNotifier, List<IUser>>(() => UsersListNotifier());
+final usersListProvider = AsyncNotifierProvider.autoDispose<UsersListNotifier, IValueResponse<List<IUser>>>(() => UsersListNotifier());
 
-class UsersListNotifier extends AutoDisposeNotifier<List<IUser>> {
+class UsersListNotifier extends AutoDisposeAsyncNotifier<IValueResponse<List<IUser>>> {
   @override
-  List<IUser> build() {
-    return [];
-  }
-
-  void add(IUser user) {
-    if (state.contains(user)) {
-      return;
-    }
-
-    state = [...state, user];
-  }
-
-  void set(List<IUser> users) {
-    state = [...users];
-  }
-
-  IUser? find(String id) {
-    return state.firstWhereOrNull((user) => user.id == id);
+  Future<IValueResponse<List<IUser>>> build() async {
+    final response = await ref.read(userRepositoryProvider).findAll();
+    return response;
   }
 }

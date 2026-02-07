@@ -70,7 +70,15 @@ abstract class TypedCacheRepo<T extends IEntity> extends TypedRepo<T> implements
     lastCacheChange = DateTime.now();
   }
 
+  void addAllToCache(List<T> entities) {
+    final currentCache = cache;
+    final newCache = [...currentCache, ...entities];
+    setCache(newCache);
+  }
+
   // endregion
+
+  // region Overrides
 
   @override
   Future<IValueResponse<T>> find(String id) async {
@@ -105,14 +113,46 @@ abstract class TypedCacheRepo<T extends IEntity> extends TypedRepo<T> implements
         final response = await super.findAll();
 
         if (response.isSuccess && response.hasValue) {
-          final users = response.value!;
-          setCache(users);
+          final items = response.value!;
+          setCache(items);
 
-          return ValueResponse.success(value: users);
+          return ValueResponse.success(value: items);
         } else {
           return ValueResponse.failure(message: response.message);
         }
       }
     });
   }
+
+  @override
+  Future<IValueResponse<T>> save(T entity) {
+    return runGuardedValue(() async {
+      final response = await super.save(entity);
+
+      if (response.isSuccess) {
+        final item = response.value!;
+        addToCache(item);
+        return ValueResponse.success(value: item);
+      } else {
+        return response;
+      }
+    });
+  }
+
+  @override
+  Future<IValueResponse<List<T>>> saveMany(List<T> entities) {
+    return runGuardedValue(() async {
+      final response = await super.saveMany(entities);
+
+      if (response.isSuccess) {
+        final items = response.value!;
+        setCache(items);
+        return ValueResponse.success(value: items);
+      } else {
+        return response;
+      }
+    });
+  }
+
+  // endregion
 }

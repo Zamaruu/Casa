@@ -19,6 +19,7 @@ class CasaFab extends StatelessWidget {
   // region Constructors
 
   const CasaFab._({
+    // ignore: unused_element_parameter
     super.key,
     required this.items,
   });
@@ -58,21 +59,6 @@ class CasaFab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ExpandableFab(
-      type: ExpandableFabType.up,
-      pos: ExpandableFabPos.right,
-      distance: 60,
-      openButtonBuilder: RotateFloatingActionButtonBuilder(
-        child: const Icon(Icons.menu),
-        fabSize: ExpandableFabSize.regular,
-      ),
-      closeButtonBuilder: DefaultFloatingActionButtonBuilder(
-        child: const Icon(Icons.close),
-        fabSize: ExpandableFabSize.small,
-      ),
-      children: _buildChildren(),
-    );
-
     if (isSingle) {
       final item = items.first;
 
@@ -83,19 +69,15 @@ class CasaFab extends StatelessWidget {
     } else {
       return ExpandableFab(
         type: ExpandableFabType.up,
+        pos: ExpandableFabPos.right,
+        distance: 60,
         openButtonBuilder: RotateFloatingActionButtonBuilder(
           child: const Icon(Icons.menu),
           fabSize: ExpandableFabSize.regular,
-          foregroundColor: Colors.amber,
-          backgroundColor: Colors.green,
-          shape: const CircleBorder(),
         ),
         closeButtonBuilder: DefaultFloatingActionButtonBuilder(
           child: const Icon(Icons.close),
           fabSize: ExpandableFabSize.small,
-          foregroundColor: Colors.deepOrangeAccent,
-          backgroundColor: Colors.lightGreen,
-          shape: const CircleBorder(),
         ),
         children: _buildChildren(),
       );

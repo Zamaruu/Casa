@@ -18,6 +18,10 @@ class User extends Entity implements IUser {
   @override
   final List<String> groups;
 
+  /// Only used when a new user is created.
+  /// Will directly be set to the hashed password.
+  final String? password;
+
   const User({
     required super.id,
     super.createdAt,
@@ -26,6 +30,7 @@ class User extends Entity implements IUser {
     required this.email,
     required this.username,
     this.groups = const [],
+    this.password,
   });
 
   factory User.initial() {
@@ -34,6 +39,23 @@ class User extends Entity implements IUser {
       email: '',
       username: '',
       passwordHash: '',
+    );
+  }
+
+  factory User.create({
+    required String email,
+    required String username,
+    required String password,
+    List<String> groups = const [],
+  }) {
+    return User(
+      id: '',
+      email: email,
+      username: username,
+      password: password,
+      groups: groups,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
     );
   }
 
@@ -53,6 +75,7 @@ class User extends Entity implements IUser {
     List<String>? groups,
     DateTime? createdAt,
     DateTime? updatedAt,
+    String? password,
   }) {
     return User(
       id: id ?? this.id,
@@ -62,6 +85,7 @@ class User extends Entity implements IUser {
       groups: groups ?? this.groups,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      password: password ?? this.password,
     );
   }
 

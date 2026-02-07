@@ -73,7 +73,8 @@ abstract class CrudController<E extends IEntity, O extends IDefaultEntityOperati
       final body = await request.readAsString();
       final data = jsonDecode(body);
 
-      final entity = entityFromJson(data);
+      var entity = entityFromJson(data);
+
       final saveResponse = await operations.save(entity);
 
       if (saveResponse.isError) {
@@ -89,6 +90,7 @@ abstract class CrudController<E extends IEntity, O extends IDefaultEntityOperati
     return runGuarded(() async {
       final body = await request.readAsString();
       final data = jsonDecode(body);
+
       final entities = (data as List).map((e) => entityFromJson(e)).toList();
 
       final saveResponse = await operations.saveMany(entities);

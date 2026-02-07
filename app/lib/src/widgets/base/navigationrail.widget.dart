@@ -13,20 +13,10 @@ class CasaNavigationRail extends StatelessWidget {
     required this.location,
   });
 
-  bool isRouteSelected(String route) {
-    if (location == route) return true;
-
-    // Segment-sicheres Prefix-Matching
-    return location.startsWith('$route/');
-  }
-
   @override
   Widget build(BuildContext context) {
-    final selectedItem = items.where((item) => isRouteSelected(item.route));
-    final selectedIndex = selectedItem.isEmpty ? -1 : items.indexOf(selectedItem.first);
-
     return NavigationRail(
-      selectedIndex: selectedIndex == -1 ? 0 : selectedIndex,
+      selectedIndex: null,
       onDestinationSelected: (index) {
         final item = items[index];
         CasaNavigator.go(context, item.route);

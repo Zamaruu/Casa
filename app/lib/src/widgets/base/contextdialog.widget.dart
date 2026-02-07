@@ -14,6 +14,8 @@ class ContextDialog extends ConsumerWidget {
 
   final Widget? content;
 
+  final bool fullScreen;
+
   final Widget Function(BuildContext context, WidgetRef ref)? builder;
 
   /// Callback to be called shortly before the dialog is closed.
@@ -29,6 +31,7 @@ class ContextDialog extends ConsumerWidget {
     required this.title,
     this.subtitle,
     this.onClose,
+    this.fullScreen = false,
     required this.content,
   }) : builder = null;
 
@@ -37,20 +40,32 @@ class ContextDialog extends ConsumerWidget {
     this.icon,
     required this.title,
     this.subtitle,
+    this.fullScreen = false,
     required this.builder,
   }) : content = null,
        onClose = null;
 
   static Future<T?> openDialog<T>(
     BuildContext context,
-    ContextDialog dialog,
-  ) {
-    return showDialog<T>(
-      context: context,
-      builder: (context) {
-        return dialog;
-      },
-    );
+    ContextDialog dialog, {
+    bool fullScreen = false,
+  }) {
+    if (fullScreen) {
+      return showDialog(
+        context: context,
+        fullscreenDialog: fullScreen,
+        builder: (context) {
+          return dialog;
+        },
+      );
+    } else {
+      return showDialog<T>(
+        context: context,
+        builder: (context) {
+          return dialog;
+        },
+      );
+    }
   }
 
   // endregion
