@@ -8,6 +8,8 @@ abstract class OpenapiBuilder {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="description" content="SwaggerUI"/>
         <title>Casa OpenAPI / Swagger</title>
+        <link href="https://static1.smartbear.co/swagger/media/assets/swagger_fav.png" type="image/png" rel="shortcut icon"/>
+        <link href="https://static1.smartbear.co/swagger/media/assets/swagger_fav.png" type="image/png" rel="icon"/>
         <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@4.5.0/swagger-ui.css" />
       </head>
       <body>

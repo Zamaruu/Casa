@@ -96,6 +96,7 @@ class _ApiRouteState extends ConsumerState<ApiRoute> {
                         launcher.launchWebsite(context: context, url: swaggerUrl);
                       },
                       icon: Icon(Icons.open_in_new),
+                      tooltip: "Swagger öffnen",
                     ),
                   );
                 },
