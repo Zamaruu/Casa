@@ -1,5 +1,6 @@
 import 'package:casa_api/src/config/api_config.dart';
 import 'package:casa_api/src/database/database.service.dart';
+import 'package:casa_api/src/interfaces/i_api_config.dart';
 import 'package:casa_api/src/services/auth/auth.service.dart';
 import 'package:casa_api/src/services/auth/jwt.service.dart';
 import 'package:casa_api/src/services/service_locator.dart';
@@ -7,9 +8,11 @@ import 'package:casa_api/src/utils/logger.util.dart';
 import 'package:shared/shared.dart';
 
 abstract class ServiceInitializer {
-  static Future<IResponse> startUpServices(IConfig config) async {
+  static Future<IResponse> startUpServices(IApiConfig config) async {
     try {
-      // Database
+      final configResponse = await _initializeConfig(config);
+
+      // Storage
       final dbResponse = await _initializeDatabases(
         config.databaseConfig.databaseType,
         config.databaseConfig.connectionString,
@@ -21,6 +24,7 @@ abstract class ServiceInitializer {
 
       final serviceResponses = MultiResponse(
         responses: [
+          configResponse,
           dbResponse,
           tokenResponse,
           authResponse,
@@ -35,7 +39,23 @@ abstract class ServiceInitializer {
     }
   }
 
-  // region Databases
+  // region Config
+
+  static Future<IResponse> _initializeConfig(IApiConfig config) async {
+    try {
+      services.registerSingleton<IApiConfig>(config);
+
+      return Response.success();
+    } catch (e, st) {
+      final message = 'Error while initializing config.';
+      apiLog(message: message, error: e, stackTrace: st, callingClass: ServiceInitializer);
+      return Response.failure(message: message, error: e, stackTrace: st);
+    }
+  }
+
+  // endregion
+
+  // region Storage
 
   static Future<IResponse> _initializeDatabases(EDatabase databaseType, String databaseConnectionString) async {
     try {

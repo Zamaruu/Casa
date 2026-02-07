@@ -5,6 +5,7 @@ import 'package:shared/shared.dart';
 class ApiConfig implements IApiConfig {
   @override
   final bool enableOpenApi;
+
   @override
   final ELogLevel logLevel;
 

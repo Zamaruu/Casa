@@ -30,7 +30,7 @@ class UserController extends CrudController<IUser, IUserOperations> {
       final hashedPassword = hasher.hash(entity.password!);
       entity = entity.copyWith(passwordHash: hashedPassword);
 
-      return entity;
+      return (entity as User).withoutPassword();
     } else {
       return entity;
     }

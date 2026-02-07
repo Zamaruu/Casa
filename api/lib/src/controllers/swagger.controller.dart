@@ -1,15 +1,23 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:casa_api/src/abstract/controller/api.controller.dart';
+import 'package:casa_api/src/interfaces/i_api_config.dart';
 import 'package:casa_api/src/models/responses/api.response.dart';
 import 'package:casa_api/src/openapi/openapi_builder.dart';
 import 'package:shelf/shelf.dart';
 
+import '../services/service_locator.dart';
+
 class SwaggerController extends ApiController {
-  SwaggerController();
+  final IApiConfig config;
+
+  SwaggerController({required this.config});
 
   factory SwaggerController.endpoint() {
-    final controller = SwaggerController();
+    final config = services.get<IApiConfig>();
+
+    final controller = SwaggerController(config: config);
     controller.registerEndpoints();
     return controller;
   }
@@ -21,6 +29,16 @@ class SwaggerController extends ApiController {
   Future<void> registerEndpoints() async {
     router.get('/specs', openapi);
     router.get('/ui', swagger);
+    router.get('/', enabled);
+  }
+
+  Future<ApiResponse> enabled(Request request) async {
+    return runGuarded(() async {
+      final enabled = config.enableOpenApi;
+      final json = {"openApiEnabled": enabled};
+
+      return ApiResponse.ok(jsonEncode(json));
+    });
   }
 
   Future<ApiResponse> openapi(Request request) async {

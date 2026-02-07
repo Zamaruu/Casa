@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:shared/shared.dart';
 import 'package:shared/src/abstract/entity.dart';
-import 'package:shared/src/interfaces/i_user.dart';
 
 part 'user.model.g.dart';
 
@@ -20,6 +20,7 @@ class User extends Entity implements IUser {
 
   /// Only used when a new user is created.
   /// Will directly be set to the hashed password.
+
   final String? password;
 
   const User({
@@ -86,6 +87,18 @@ class User extends Entity implements IUser {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       password: password ?? this.password,
+    );
+  }
+
+  IUser withoutPassword() {
+    return User(
+      id: id,
+      email: email,
+      username: username,
+      passwordHash: passwordHash,
+      groups: groups,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
     );
   }
 
