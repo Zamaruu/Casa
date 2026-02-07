@@ -1,11 +1,13 @@
-import 'package:casa/src/app/interfaces/i_menu_item.dart';
-import 'package:casa/src/app/layout/simple_menu_file.dart';
+import 'package:casa/src/core/auth/auth.provider.dart';
+import 'package:casa/src/core/interfaces/menu/i_menu_item.dart';
+import 'package:casa/src/core/models/menus/menu_item.dart';
+import 'package:casa/src/core/router/casa_navigator.dart';
 import 'package:casa/src/features/profile/widgets/drawerprofile.widget.dart';
 import 'package:casa/src/features/user/widgets/user_context_dialog.dart';
 import 'package:casa/src/widgets/base/contextdialog.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:shared/shared.dart';
 import 'package:universal_platform/universal_platform.dart';
 
@@ -14,20 +16,20 @@ class MenuUtils {
 
   List<IMenuItem> buildDrawerItems(BuildContext context) {
     final items = <IMenuItem>[
-      SimpleMenuItem(
+      MenuItem(
         title: 'Kalender',
         icon: Icons.calendar_today,
-        onTap: () => context.go('/calendar'),
+        onTap: () => CasaNavigator.go(context, '/calendar'),
       ),
-      SimpleMenuItem(
+      MenuItem(
         title: 'Todos',
         icon: Icons.checklist,
-        onTap: () => context.go('/todos'),
+        onTap: () => CasaNavigator.go(context, '/todos'),
       ),
-      SimpleMenuItem(
+      MenuItem(
         title: 'Rezepte',
         icon: Icons.restaurant,
-        onTap: () => context.go('/recipes'),
+        onTap: () => CasaNavigator.go(context, '/recipes'),
       ),
     ];
 
@@ -36,19 +38,26 @@ class MenuUtils {
 
   List<IMenuItem> buildServiceItems(WidgetRef ref) {
     final context = ref.context;
+    final user = ref.read(authUserProvider);
 
     final items = <IMenuItem>[
-      if (UniversalPlatform.isMobile)
-        SimpleMenuItem(
-          title: 'Profil',
-          icon: Icons.person,
-          onTap: () => openUserContextMenu(context),
+      if (UniversalPlatform.isWeb && user.isAdmin)
+        MenuItem(
+          title: 'Administration',
+          icon: Icons.dashboard_customize,
+          onTap: () => CasaNavigator.go(context, '/admin'),
         ),
       if (UniversalPlatform.isWeb)
-        SimpleMenuItem(
-          title: 'Einstellungen',
-          icon: Icons.settings,
-          onTap: () => context.go('/settings'),
+        MenuItem(
+          title: 'Profil',
+          icon: MdiIcons.faceManProfile,
+          onTap: () {
+            if (UniversalPlatform.isMobile) {
+              openUserContextMenu(context);
+            } else if (UniversalPlatform.isWeb) {
+              CasaNavigator.go(context, '/profile');
+            }
+          },
         ),
     ];
 

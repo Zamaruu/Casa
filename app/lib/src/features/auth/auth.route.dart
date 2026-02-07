@@ -84,8 +84,10 @@ class _AuthRouteState extends ConsumerState<AuthRoute> {
 
                     TextFormField(
                       controller: emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      autofillHints: [AutofillHints.email],
                       decoration: InputDecoration(
-                        labelText: 'Email',
+                        labelText: 'E-Mail',
                       ),
                       validator: (email) {
                         if (email == null || email.isEmpty) {
@@ -98,6 +100,8 @@ class _AuthRouteState extends ConsumerState<AuthRoute> {
 
                     TextFormField(
                       controller: passwordController,
+                      keyboardType: TextInputType.visiblePassword,
+                      autofillHints: [AutofillHints.password],
                       decoration: InputDecoration(
                         labelText: 'Password',
                       ),

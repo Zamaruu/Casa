@@ -9,6 +9,7 @@ export 'src/enums/e_database.dart';
 export 'src/enums/e_http_status.dart';
 export 'src/enums/e_log_level.dart';
 export 'src/enums/e_response_status.dart';
+export 'src/enums/e_api_controller.dart';
 export 'src/interfaces/config/i_config.dart';
 export 'src/interfaces/config/i_database_config.dart';
 export 'src/interfaces/data/i_default_entity_operations.dart';

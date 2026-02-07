@@ -575,7 +575,7 @@ packages:
       path: "../shared"
       relative: true
     source: path
-    version: "1.0.0"
+    version: "0.0.2"
   shelf:
     dependency: "direct main"
     description:
@@ -745,7 +745,7 @@ packages:
     source: hosted
     version: "0.3.2"
   uuid:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: uuid
       sha256: a11b666489b1954e01d992f3d601b1804a33937b5a8fe677bd26b8a9f96f96e8

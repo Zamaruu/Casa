@@ -15,4 +15,7 @@ abstract class Entity implements IEntity {
     this.createdAt,
     this.updatedAt,
   });
+
+  @override
+  bool get hasId => id.isNotEmpty;
 }

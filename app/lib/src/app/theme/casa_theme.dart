@@ -23,6 +23,24 @@ class CasaTheme {
         foregroundColor: Colors.white,
       ),
 
+      iconTheme: IconThemeData(
+        color: CasaColors.primary,
+      ),
+
+      iconButtonTheme: IconButtonThemeData(
+        style: ButtonStyle(
+          foregroundColor: WidgetStateProperty.all(CasaColors.primary),
+        ),
+      ),
+
+      listTileTheme: ListTileThemeData(
+        iconColor: CasaColors.primary,
+        textColor: CasaColors.textPrimary,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+
       navigationRailTheme: NavigationRailThemeData(
         backgroundColor: CasaColors.surface,
         selectedIconTheme: const IconThemeData(color: CasaColors.primary),

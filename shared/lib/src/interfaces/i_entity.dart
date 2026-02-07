@@ -5,6 +5,8 @@ import 'i_serializable.dart';
 abstract interface class IEntity implements ICopyable<IEntity>, ISerializable {
   String get id;
 
+  bool get hasId;
+
   DateTime? get createdAt;
 
   DateTime? get updatedAt;

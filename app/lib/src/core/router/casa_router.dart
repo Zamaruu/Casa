@@ -1,13 +1,20 @@
 import 'package:casa/src/core/auth/auth.provider.dart';
 import 'package:casa/src/core/models/enums/e_auth_status.dart';
 import 'package:casa/src/core/router/casa_auth_router_refreshable.dart';
+import 'package:casa/src/core/router/casa_route.dart';
+import 'package:casa/src/features/admin/routes/admin.route.dart';
+import 'package:casa/src/features/admin/widgets/admin_scaffold.widget.dart';
 import 'package:casa/src/features/auth/auth.route.dart';
 import 'package:casa/src/features/home/home.route.dart';
 import 'package:casa/src/features/settings/data/repositories/settings.repository.dart';
 import 'package:casa/src/features/settings/routes/server.route.dart';
+import 'package:casa/src/features/user/routes/user.route.dart';
+import 'package:casa/src/features/user/routes/users.route.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:universal_platform/universal_platform.dart';
 
 final routerProvider = AsyncNotifierProvider<RouterNotifier, GoRouter>(() => RouterNotifier());
 
@@ -39,6 +46,7 @@ class RouterNotifier extends AsyncNotifier<GoRouter> {
     return GoRouter(
       initialLocation: initialLocation,
       refreshListenable: _refreshNotifier,
+      debugLogDiagnostics: kDebugMode,
       redirect: _redirect,
       routes: _routes,
     );
@@ -75,18 +83,58 @@ class RouterNotifier extends AsyncNotifier<GoRouter> {
 
   // --- Routen ausgelagert
 
-  static final List<GoRoute> _routes = [
-    GoRoute(
+  static final List<RouteBase> _routes = [
+    CasaRoute(
       path: '/',
       builder: (context, state) => const HomeRoute(),
     ),
-    GoRoute(
+    CasaRoute(
       path: '/auth',
       builder: (context, state) => const AuthRoute(),
     ),
-    GoRoute(
-      path: '/serverconfig',
-      builder: (context, state) => const ServerConfigRoute(),
+    if (UniversalPlatform.isMobile)
+      CasaRoute(
+        path: '/serverconfig',
+        builder: (context, state) => const ServerConfigRoute(),
+      ),
+    ShellRoute(
+      builder: (context, state, child) {
+        final location = state.matchedLocation;
+
+        return CasaAdminScaffold(
+          location: location,
+          child: child,
+        );
+      },
+      routes: [
+        CasaRoute(
+          path: '/admin',
+          builder: (context, state) => const AdminRoute(),
+        ),
+        CasaRoute(
+          path: '/admin/user',
+          builder: (context, state) => const UsersRoute(),
+          routes: [
+            CasaRoute(
+              path: ':id',
+              builder: (context, state) {
+                final id = state.pathParameters['id'];
+                return UserRoute(id: id!);
+              },
+              redirect: (context, state) {
+                // When no id is provided, redirect to the first user
+
+                final id = state.pathParameters['id'];
+                if (id == null) {
+                  return '/admin/user';
+                }
+
+                return null;
+              },
+            ),
+          ],
+        ),
+      ],
     ),
   ];
 }

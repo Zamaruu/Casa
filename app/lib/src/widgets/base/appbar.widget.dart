@@ -33,7 +33,6 @@ class CasaAppBar extends StatelessWidget implements PreferredSizeWidget {
 
             return UserAvatar(
               user: user,
-              fontSize: 16,
               onTap: () => menuUtils.openUserContextMenu(ref.context),
             );
           },

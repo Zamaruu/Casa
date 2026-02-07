@@ -14,11 +14,12 @@ abstract class CrudController<E extends IEntity, O extends IDefaultEntityOperati
 
   @override
   void registerEndpoints() {
-    router.get('/', getAll);
-    router.get('/<id>', getById);
-    router.post('/', create);
-    // router.put('/$path/<id>', update);
+    router.post('/', save);
+    router.post('/many', saveMany);
     router.delete('/<id>', delete);
+    router.get('/<id>', getById);
+    router.get('/', getAll);
+    router.get('/many/<ids>', getByIds);
   }
 
   // region CRUD-Endpoints
@@ -53,12 +54,27 @@ abstract class CrudController<E extends IEntity, O extends IDefaultEntityOperati
     });
   }
 
-  Future<ApiResponse> create(Request request) async {
+  Future<ApiResponse> getByIds(Request request, List<String> ids) async {
+    return runGuarded(() async {
+      final response = await operations.findMany(ids);
+
+      if (response.isError) {
+        return ApiResponse.internalServerError(response.message ?? "Error while getting entities");
+      } else {
+        final entities = response.value!;
+        final json = jsonEncode(entities.map((e) => e.toJson()).toList());
+        return ApiResponse.ok(json);
+      }
+    });
+  }
+
+  Future<ApiResponse> save(Request request) async {
     return runGuarded(() async {
       final body = await request.readAsString();
       final data = jsonDecode(body);
 
-      final entity = entityFromJson(data);
+      var entity = entityFromJson(data);
+
       final saveResponse = await operations.save(entity);
 
       if (saveResponse.isError) {
@@ -67,6 +83,25 @@ abstract class CrudController<E extends IEntity, O extends IDefaultEntityOperati
 
       final json = jsonEncode(saveResponse.value!.toJson());
       return ApiResponse.created(json);
+    });
+  }
+
+  Future<ApiResponse> saveMany(Request request) async {
+    return runGuarded(() async {
+      final body = await request.readAsString();
+      final data = jsonDecode(body);
+
+      final entities = (data as List).map((e) => entityFromJson(e)).toList();
+
+      final saveResponse = await operations.saveMany(entities);
+
+      if (saveResponse.isError) {
+        return ApiResponse.internalServerError(saveResponse.message ?? "Error while saving entities");
+      } else {
+        final items = saveResponse.value!.map((e) => e.toJson()).toList();
+        final json = jsonEncode(items);
+        return ApiResponse.created(json);
+      }
     });
   }
 

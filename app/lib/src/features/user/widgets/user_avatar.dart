@@ -11,7 +11,7 @@ class UserAvatar extends StatelessWidget {
   const UserAvatar({
     super.key,
     this.onTap,
-    this.fontSize = 24.0,
+    this.fontSize = 16.0,
     required this.user,
   });
 
@@ -57,7 +57,8 @@ class UserAvatar extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(90),
       child: CircleAvatar(
-        foregroundColor: _colorBasedOnId,
+        backgroundColor: _colorBasedOnId,
+        foregroundColor: Colors.white,
         child: Center(
           child: Text(
             _initials,

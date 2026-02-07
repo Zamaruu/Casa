@@ -1,13 +1,13 @@
 import 'package:casa/src/core/auth/auth.provider.dart';
 import 'package:casa/src/core/constants/link.constants.dart';
 import 'package:casa/src/core/extensions/context.extension.dart';
+import 'package:casa/src/core/router/casa_navigator.dart';
 import 'package:casa/src/core/utils/launcher.util.dart';
 import 'package:casa/src/features/user/widgets/user_avatar.dart';
 import 'package:casa/src/widgets/base/contextdialog.widget.dart';
 import 'package:casa/src/widgets/base/text.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class UserContextDialog extends ConsumerWidget {
@@ -78,9 +78,9 @@ class UserContextDialog extends ConsumerWidget {
         SizedBox(height: 16),
 
         ElevatedButton.icon(
-          onPressed: () => context.go('/settings'),
-          icon: Icon(Icons.settings),
-          label: Text("Einstellungen"),
+          onPressed: () => CasaNavigator.go(context, '/profile'),
+          icon: Icon(MdiIcons.faceManProfile),
+          label: Text("Profil"),
         ),
 
         SizedBox(height: 8),

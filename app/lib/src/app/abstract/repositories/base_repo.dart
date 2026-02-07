@@ -1,10 +1,13 @@
-import 'package:casa/src/app/abstract/repositories/repo_source.dart';
+import 'package:casa/src/core/interfaces/repositories/i_repo_source.dart';
 import 'package:casa/src/core/utils/logger.util.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared/shared.dart';
 
-abstract class BaseRepo<S extends RepoSource> implements IRepository {
+abstract class BaseRepo<S extends IRepoSource> implements IRepository {
   @override
   final S source;
+
+  Ref get ref => source.ref;
 
   const BaseRepo({required this.source});
 
