@@ -1,12 +1,17 @@
 import 'package:casa/src/core/auth/auth.provider.dart';
 import 'package:casa/src/core/interfaces/menu/i_menu.dart';
 import 'package:casa/src/core/interfaces/menu/i_menu_item.dart';
+import 'package:casa/src/core/models/enums/e_screen_type.dart';
+import 'package:casa/src/core/models/layout/layout.dart';
 import 'package:casa/src/core/utils/menu.util.dart';
 import 'package:casa/src/widgets/base/appbar.widget.dart';
 import 'package:casa/src/widgets/base/drawer.widget.dart';
+import 'package:casa/src/widgets/base/fab.widget.dart';
+import 'package:casa/src/widgets/base/layoutbuilder.widget.dart';
 import 'package:casa/src/widgets/base/text.widget.dart';
 import 'package:casa/src/widgets/menu/menubar.widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared/shared.dart';
 import 'package:universal_platform/universal_platform.dart';
@@ -14,11 +19,11 @@ import 'package:universal_platform/universal_platform.dart';
 class CasaScaffold<R extends IResponse> extends ConsumerStatefulWidget {
   final String title;
 
-  final Widget Function(BuildContext context, WidgetRef ref)? builder;
+  final Widget Function(BuildContext context, WidgetRef ref, Layout layout)? builder;
 
   final Future<R>? future;
 
-  final Widget Function(BuildContext context, WidgetRef ref, R futureResponse)? futureBuilder;
+  final Widget Function(BuildContext context, WidgetRef ref, R futureResponse, Layout layout)? futureBuilder;
 
   /// The menu items to be displayed as commandbar or multifab, depending on device layout
   final IMenu? menu;
@@ -108,12 +113,12 @@ class _CasaScaffoldState<R extends IResponse> extends ConsumerState<CasaScaffold
 
   // region Widgets
 
-  Widget buildContent(Widget child) {
+  Widget buildContent(Widget child, Layout layout) {
     return Padding(
       padding: widget.bodyPadding ?? EdgeInsets.all(UniversalPlatform.isWeb ? 16 : 8),
       child: Column(
         children: [
-          buildCommandBar(),
+          if (layout.screenType != EScreenType.mobil) buildCommandBar(),
 
           Expanded(child: child),
         ],
@@ -141,44 +146,54 @@ class _CasaScaffoldState<R extends IResponse> extends ConsumerState<CasaScaffold
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: widget.showAppBar ? CasaAppBar(title: widget.title) : null,
-      drawer: CasaDrawer(
-        items: navigationItems,
-        service: serviceItems,
-        header: profileItem,
-      ),
-      body: Builder(
-        builder: (context) {
-          if (widget.builder != null) {
-            return buildContent(
-              widget.builder!(context, ref),
-            );
-          } else if (future != null && widget.futureBuilder != null) {
-            return FutureBuilder(
-              future: future,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: CasaText('Error: ${snapshot.error}'));
-                } else if (snapshot.hasData) {
-                  final futureResponse = snapshot.data!;
+    return CasaLayoutBuilder(
+      builder: (context, layout) {
+        return Scaffold(
+          appBar: widget.showAppBar ? CasaAppBar(title: widget.title) : null,
+          drawer: CasaDrawer(
+            items: navigationItems,
+            service: serviceItems,
+            header: profileItem,
+          ),
+          body: Builder(
+            builder: (context) {
+              if (widget.builder != null) {
+                return buildContent(
+                  widget.builder!(context, ref, layout),
+                  layout,
+                );
+              } else if (future != null && widget.futureBuilder != null) {
+                return FutureBuilder(
+                  future: future,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: CasaText('Error: ${snapshot.error}'));
+                    } else if (snapshot.hasData) {
+                      final futureResponse = snapshot.data!;
 
-                  return buildContent(
-                    widget.futureBuilder!(context, ref, futureResponse),
-                  );
-                } else {
-                  return const Center(child: CasaText('No data available'));
-                }
-              },
-            );
-          } else {
-            throw Exception('Either builder or futureBuilder must be provided');
-          }
-        },
-      ),
-      bottomNavigationBar: widget.bottomNavigationBar,
+                      return buildContent(
+                        widget.futureBuilder!(context, ref, futureResponse, layout),
+                        layout,
+                      );
+                    } else {
+                      return const Center(child: CasaText('No data available'));
+                    }
+                  },
+                );
+              } else {
+                throw Exception('Either builder or futureBuilder must be provided');
+              }
+            },
+          ),
+          bottomNavigationBar: widget.bottomNavigationBar,
+          floatingActionButtonLocation: ExpandableFab.location,
+          floatingActionButton: widget.menu != null && layout.screenType == EScreenType.mobil
+              ? CasaFab.multiple(items: widget.menu!.items)
+              : null,
+        );
+      },
     );
   }
 }

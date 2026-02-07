@@ -9,7 +9,7 @@ class HomeRoute extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return CasaScaffold(
       title: "Home",
-      builder: (context, ref) {
+      builder: (context, ref, layout) {
         return Center(
           child: Text("Home"),
         );

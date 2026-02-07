@@ -17,7 +17,7 @@ class UserRoute extends ConsumerWidget {
       title: "Benutzerdetails",
       showAppBar: false,
       future: ref.read(userRepositoryProvider).find(id),
-      futureBuilder: (context, ref, response) {
+      futureBuilder: (context, ref, response, layout) {
         if (response.isSuccess && response.hasValue) {
           final user = response.value!;
 

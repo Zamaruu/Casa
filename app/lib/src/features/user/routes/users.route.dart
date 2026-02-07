@@ -82,7 +82,7 @@ class _UsersRouteState extends ConsumerState<UsersRoute> {
       showAppBar: false,
       future: ref.read(userRepositoryProvider).findAll(),
       menu: menu,
-      futureBuilder: (context, ref, response) {
+      futureBuilder: (context, ref, response, layout) {
         if (response.isSuccess && response.hasValue) {
           final users = response.value!;
 

@@ -84,7 +84,7 @@ class _CasaAdminScaffoldState extends State<CasaAdminScaffold> {
         return CasaScaffold.builder(
           title: "Administration",
           bodyPadding: EdgeInsets.zero,
-          builder: (context, ref) {
+          builder: (context, ref, layout) {
             return Row(
               children: [
                 if (!isMobile)
