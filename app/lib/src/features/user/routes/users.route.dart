@@ -128,17 +128,18 @@ class _UsersRouteState extends ConsumerState<UsersRoute> {
                         IconButton(
                           onPressed: () {},
                           color: context.theme.primaryColor,
-                          icon: const Icon(Icons.edit),
+                          icon: const Icon(Icons.edit_outlined),
                         ),
                         IconButton(
                           onPressed: () {},
                           color: context.theme.primaryColor,
-                          icon: const Icon(Icons.delete),
+                          icon: const Icon(Icons.delete_outline),
                         ),
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () => CasaNavigator.go(context, "/admin/user/${user.id}"),
                           color: context.theme.primaryColor,
-                          icon: const Icon(Icons.info),
+                          icon: const Icon(Icons.info_outline),
+                          tooltip: "Details about ${user.username}",
                         ),
                       ],
                     ),
