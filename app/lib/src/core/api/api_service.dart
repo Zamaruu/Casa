@@ -13,6 +13,8 @@ class ApiServiceManager extends ServiceCollection<Type, IApi> {
 
   ApiServiceManager({required this.client});
 
+  String get url => client.dio.options.baseUrl;
+
   @override
   Future<void> initalize() async {
     addAll({

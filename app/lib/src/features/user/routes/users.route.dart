@@ -26,12 +26,16 @@ class _UsersRouteState extends ConsumerState<UsersRoute> {
 
   late final UserUtil userUtil;
 
+  // region LifeCycle
+
   @override
   void initState() {
     super.initState();
     menu = setupMenu();
     userUtil = const UserUtil();
   }
+
+  // endregion
 
   // region Methods
 

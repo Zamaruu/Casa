@@ -4,6 +4,7 @@ import 'package:casa/src/core/router/casa_auth_router_refreshable.dart';
 import 'package:casa/src/core/router/casa_route.dart';
 import 'package:casa/src/features/admin/routes/admin.route.dart';
 import 'package:casa/src/features/admin/widgets/admin_scaffold.widget.dart';
+import 'package:casa/src/features/api/routes/api.route.dart';
 import 'package:casa/src/features/auth/auth.route.dart';
 import 'package:casa/src/features/home/home.route.dart';
 import 'package:casa/src/features/settings/data/repositories/settings.repository.dart';
@@ -110,6 +111,10 @@ class RouterNotifier extends AsyncNotifier<GoRouter> {
         CasaRoute(
           path: '/admin',
           builder: (context, state) => const AdminRoute(),
+        ),
+        CasaRoute(
+          path: '/admin/api',
+          builder: (context, state) => const ApiRoute(),
         ),
         CasaRoute(
           path: '/admin/user',
