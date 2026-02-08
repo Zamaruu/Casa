@@ -11,7 +11,7 @@ abstract class Entity implements IEntity {
   final DateTime? updatedAt;
 
   const Entity({
-    required this.id,
+    this.id = '',
     this.createdAt,
     this.updatedAt,
   });

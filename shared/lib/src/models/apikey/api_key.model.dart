@@ -34,12 +34,12 @@ class ApiKey extends Entity implements IApiKey {
   // region Constructors
 
   const ApiKey({
-    required super.id,
+    super.id,
     super.createdAt,
     super.updatedAt,
     required this.name,
     this.description,
-    required this.keyHash,
+    this.keyHash = '',
     this.expiresAt,
     this.revokedAt,
     this.lastUsedAt,

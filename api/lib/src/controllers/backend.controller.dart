@@ -26,11 +26,11 @@ class BackendController extends ApiController {
   }
 
   @override
-  String get path => "meta";
+  String get path => "backend";
 
   @override
   void registerEndpoints() {
-    //router.get('/apikeys', getApiKeys);
+    router.get('/apikeys', getApiKeys);
     router.post('/apikeys', createApiKey);
     // router.delete('/apikeys', deleteApiKey);
   }
@@ -47,10 +47,10 @@ class BackendController extends ApiController {
 
       final apiKey = entity.copyWith(keyHash: hash);
 
-      final saveResponse = await apiKeyOperations.save(apiKey);
+      final response = await apiKeyOperations.save(apiKey);
 
-      if (saveResponse.isSuccess && saveResponse.hasValue) {
-        final savedKey = saveResponse.value!;
+      if (response.isSuccess && response.hasValue) {
+        final savedKey = response.value!;
 
         final json = {
           "rawKey": rawKey,
@@ -59,7 +59,32 @@ class BackendController extends ApiController {
 
         return ApiResponse.created(jsonEncode(json));
       } else {
-        return ApiResponse.internalServerError(saveResponse.message ?? "Error while saving apikey");
+        final error = encodeError(
+          message: response.message ?? "Error while saving apikey",
+          error: response.error,
+          stackTrace: response.stackTrace,
+        );
+        return ApiResponse.internalServerError(error);
+      }
+    });
+  }
+
+  Future<ApiResponse> getApiKeys(Request request) async {
+    return runGuarded(() async {
+      final response = await apiKeyOperations.findAll();
+
+      if (response.isSuccess && response.hasValue) {
+        final entities = response.value!;
+        final json = entities.map((e) => e.toJson()).toList();
+
+        return ApiResponse.ok(jsonEncode(json));
+      } else {
+        final error = encodeError(
+          message: response.message ?? "Error while getting apikeys",
+          error: response.error,
+          stackTrace: response.stackTrace,
+        );
+        return ApiResponse.internalServerError(error);
       }
     });
   }

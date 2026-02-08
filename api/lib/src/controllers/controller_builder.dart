@@ -1,4 +1,5 @@
 import 'package:casa_api/src/controllers/auth.controller.dart';
+import 'package:casa_api/src/controllers/backend.controller.dart';
 import 'package:casa_api/src/controllers/swagger.controller.dart';
 import 'package:casa_api/src/controllers/user.controller.dart';
 import 'package:casa_api/src/interfaces/i_api_config.dart';
@@ -35,6 +36,10 @@ abstract class ControllerBuilder {
     // User
     final userController = UserController.endpoint();
     router.mount(mergePaths(root, userController.path), userController.router.call);
+
+    // Backend
+    final backendController = BackendController.endpoint();
+    router.mount(mergePaths(root, backendController.path), backendController.router.call);
 
     return router;
   }

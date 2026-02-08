@@ -17,6 +17,16 @@ abstract class ApiController {
 
   void registerEndpoints();
 
+  String encodeError({required String message, Object? error, StackTrace? stackTrace}) {
+    final errorMap = <String, String>{
+      "message": message,
+      "error": error.toString(),
+      "stackTrace": stackTrace.toString(),
+    };
+
+    return jsonEncode(errorMap);
+  }
+
   Future<ApiResponse> runGuarded(Future<ApiResponse> Function() endpointHandler) async {
     try {
       return await endpointHandler();

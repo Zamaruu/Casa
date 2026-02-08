@@ -24,6 +24,20 @@ abstract class MongoOperations<T extends IEntity> implements IDefaultEntityOpera
     return Uuid().v4();
   }
 
+  T createAdditions(T entity) {
+    if (entity.hasId == false) {
+      entity = entity.copyWith(id: createId()) as T;
+    }
+
+    if (entity.createdAt == null) {
+      entity = entity.copyWith(createdAt: DateTime.now()) as T;
+    }
+
+    entity = entity.copyWith(updatedAt: DateTime.now()) as T;
+
+    return entity;
+  }
+
   // endregion
 
   // region Basic Data Operation
@@ -78,7 +92,7 @@ abstract class MongoOperations<T extends IEntity> implements IDefaultEntityOpera
   Future<IValueResponse<T>> save(T entity) async {
     try {
       if (entity.hasId == false) {
-        entity = entity.copyWith(id: createId()) as T;
+        entity = createAdditions(entity);
       }
 
       final json = entity.toJson();
@@ -102,15 +116,10 @@ abstract class MongoOperations<T extends IEntity> implements IDefaultEntityOpera
   @override
   Future<IValueResponse<List<T>>> saveMany(List<T> entities) async {
     try {
-      // Check for missing ids
       final saveEntities = <T>[];
 
       for (var entity in entities) {
-        if (entity.hasId == false) {
-          saveEntities.add(entity.copyWith(id: createId()) as T);
-        } else {
-          saveEntities.add(entity);
-        }
+        saveEntities.add(createAdditions(entity));
       }
 
       final docs = saveEntities.map((e) => e.toJson()).toList();

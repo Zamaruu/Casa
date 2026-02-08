@@ -1,5 +1,7 @@
 import 'package:casa/src/core/api/api_client.dart';
 import 'package:casa/src/core/interfaces/api/i_api.dart';
+import 'package:casa/src/features/api/api/api.api.dart';
+import 'package:casa/src/features/api/data/interfaces/i_apikey.api.dart';
 import 'package:casa/src/features/auth/api/auth.api.dart';
 import 'package:casa/src/features/auth/data/interfaces/i_auth_api.dart';
 import 'package:casa/src/features/infos/api/meta.api.dart';
@@ -21,6 +23,7 @@ class ApiServiceManager extends ServiceCollection<Type, IApi> {
       IAuthApi: AuthApi(client),
       IMetaApi: MetaApi(client),
       IUserApi: UserApi(client),
+      IApiKeyApi: ApiKeyApi(client),
     });
   }
 }
