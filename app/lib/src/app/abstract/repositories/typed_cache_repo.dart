@@ -1,9 +1,10 @@
 import 'package:casa/src/app/abstract/repositories/typed_repo.dart';
 import 'package:casa/src/core/extensions/list.extensions.dart';
+import 'package:casa/src/core/interfaces/api/i_typed_api.dart';
 import 'package:casa/src/core/interfaces/repositories/i_repo_cache.dart';
 import 'package:shared/shared.dart';
 
-abstract class TypedCacheRepo<T extends IEntity> extends TypedRepo<T> implements IRepoCache<T> {
+abstract class TypedCacheRepo<T extends IEntity, A extends ITypedApi<T>> extends TypedRepo<T, A> implements IRepoCache<T> {
   // ignore: prefer_final_fields
   late List<T> _cache;
 

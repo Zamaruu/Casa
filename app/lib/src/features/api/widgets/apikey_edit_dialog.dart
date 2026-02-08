@@ -1,9 +1,13 @@
 import 'package:casa/src/core/extensions/context.extension.dart';
+import 'package:casa/src/core/extensions/datetime.extensions.dart';
 import 'package:casa/src/core/models/enums/e_snackbar_type.dart';
 import 'package:casa/src/core/utils/snackbar.util.dart';
 import 'package:casa/src/features/api/data/repositories/api.repository.dart';
+import 'package:casa/src/widgets/base/contextdialog.widget.dart';
 import 'package:casa/src/widgets/base/primarybutton.widget.dart';
+import 'package:casa/src/widgets/base/text.widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared/shared.dart';
 
@@ -67,7 +71,7 @@ class _ApiKeyEditDialogState extends ConsumerState<ApiKeyEditDialog> {
     if (expirationDate != null) {
       setState(() {
         expiresAt = expirationDate;
-        expiresAtController.text = expirationDate.toString();
+        expiresAtController.text = expirationDate.toDateString();
       });
     }
   }
@@ -82,13 +86,45 @@ class _ApiKeyEditDialogState extends ConsumerState<ApiKeyEditDialog> {
         expiresAt: expiresAt,
       );
 
-      final saveResponse = await ref.read(apiKeyRepositoryProvider).save(apiKey);
+      final saveResponse = await ref.read(apiKeyRepositoryProvider).createApiKey(apiKey);
 
       if (mounted) {
         setLoading(false);
 
-        if (saveResponse.isSuccess) {
-          Navigator.of(context).pop(saveResponse);
+        if (saveResponse.isSuccess && saveResponse.hasValue) {
+          final key = saveResponse.value!.rawKey;
+
+          await ContextDialog.openDialog(
+            context,
+            ContextDialog.builder(
+              title: 'API-Schlüssel',
+              builder: (context, ref) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CasaText("API-Schlüssel sicher verwahren", style: TextStyle(fontWeight: FontWeight.bold)),
+                    CasaText(key),
+                    SizedBox(height: 16),
+                    ElevatedButton(
+                      child: Text('In Zwischenablage kopieren'),
+                      onPressed: () {
+                        Clipboard.setData(ClipboardData(text: key));
+                        CasaSnackbars.showDefaultSnackbar(
+                          message: 'API-Schlüssel in Zwischenablage kopiert',
+                          context: context,
+                          type: ESnackbarType.success,
+                        );
+                      },
+                    ),
+                  ],
+                );
+              },
+            ),
+          );
+
+          if (mounted) {
+            Navigator.of(context).pop(saveResponse);
+          }
         } else {
           CasaSnackbars.showDefaultSnackbar(
             message: saveResponse.message ?? 'Fehler beim Speichern des API-Schlüssels',
