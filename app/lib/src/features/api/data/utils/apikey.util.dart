@@ -1,0 +1,49 @@
+import 'package:casa/src/core/interfaces/utils/i_crud_util.dart';
+import 'package:casa/src/core/models/enums/e_snackbar_type.dart';
+import 'package:casa/src/core/utils/snackbar.util.dart';
+import 'package:casa/src/features/api/data/provider/apikeys_list_provider.dart';
+import 'package:casa/src/features/api/widgets/apikey_edit_dialog.dart';
+import 'package:casa/src/widgets/base/contextdialog.widget.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared/shared.dart';
+
+class ApiKeyUtil implements ICrudUtil<IApiKey> {
+  const ApiKeyUtil();
+
+  @override
+  Future<IValueResponse<IApiKey>?> create(BuildContext context, WidgetRef ref) async {
+    final userResponse = await ContextDialog.openDialog<IValueResponse<IApiKey>>(
+      context,
+      ContextDialog(
+        title: "API-Schlüssel erstellen",
+        content: const ApiKeyEditDialog(),
+      ),
+    );
+
+    if (userResponse != null && context.mounted) {
+      if (userResponse.isSuccess && userResponse.hasValue) {
+        final key = userResponse.value!;
+        CasaSnackbars.showDefaultSnackbar(message: "API-Schlüssel '${key.name}' angelegt", context: context, type: ESnackbarType.success);
+
+        ref.invalidate(apiKeysListProvider); // Auto-refresh of the users list
+      }
+
+      return userResponse;
+    }
+
+    return null;
+  }
+
+  @override
+  Future<IValueResponse<IApiKey>?> edit(BuildContext context, WidgetRef ref, IApiKey entity) {
+    // TODO: implement edit
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<IResponse> delete(BuildContext context, WidgetRef ref, IApiKey entity) {
+    // TODO: implement delete
+    throw UnimplementedError();
+  }
+}

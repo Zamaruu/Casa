@@ -16,7 +16,7 @@ class UserUtil implements ICrudUtil<IUser> {
     final userResponse = await ContextDialog.openDialog<IValueResponse<IUser>>(
       context,
       ContextDialog(
-        title: "Benutzermenü",
+        title: "Benutzer erstellen",
         content: const UserEditDialog(),
       ),
     );

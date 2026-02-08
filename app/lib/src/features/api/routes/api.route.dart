@@ -2,6 +2,7 @@ import 'package:casa/src/core/interfaces/menu/i_menu.dart';
 import 'package:casa/src/core/models/menus/menu.dart';
 import 'package:casa/src/core/models/menus/menu_item.dart';
 import 'package:casa/src/features/api/data/provider/apikeys_list_provider.dart';
+import 'package:casa/src/features/api/data/utils/apikey.util.dart';
 import 'package:casa/src/features/api/widgets/swagger_info_card.dart';
 import 'package:casa/src/widgets/base/scaffold.widget.dart';
 import 'package:casa/src/widgets/base/text.widget.dart';
@@ -19,12 +20,15 @@ class ApiRoute extends ConsumerStatefulWidget {
 class _ApiRouteState extends ConsumerState<ApiRoute> {
   late final IMenu menu;
 
+  late final ApiKeyUtil apiKeyUtil;
+
   // region LifeCycle
 
   @override
   void initState() {
     super.initState();
     menu = setupMenu();
+    apiKeyUtil = const ApiKeyUtil();
   }
 
   // endregion
@@ -37,12 +41,12 @@ class _ApiRouteState extends ConsumerState<ApiRoute> {
         MenuItem(
           title: "API-Schlüssel",
           icon: Icons.add,
-          onTap: () {},
+          onTap: () => apiKeyUtil.create(context, ref),
         ),
         MenuItem(
           title: "Aktualisieren",
           icon: Icons.refresh,
-          onTap: () => ref.invalidate(apiKeysListProvider),
+          onTap: () => ref.refresh(apiKeysListProvider),
         ),
         MenuItem(
           title: "Suchen",
