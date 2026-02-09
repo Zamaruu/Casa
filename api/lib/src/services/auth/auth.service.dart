@@ -1,28 +1,18 @@
-import 'package:casa_api/src/services/auth/jwt.service.dart';
+import 'package:casa_api/src/interfaces/auth/i_user_authenticator.dart';
 import 'package:shared/shared.dart';
 
 class ApiAuthService implements IAuthService {
   final PasswordHasher hasher;
 
-  final JwtService jwtService;
+  final IUserAuthenticator userAuthenticator;
 
   final IUserOperations userOperations;
 
   const ApiAuthService({
     this.hasher = const PasswordHasher(),
     required this.userOperations,
-    required this.jwtService,
+    required this.userAuthenticator,
   });
-
-  @override
-  IUser fromClaims(Map<String, dynamic> claims) {
-    return User.fromJson(claims);
-  }
-
-  @override
-  String hashPassword(String password) {
-    return hasher.hash(password);
-  }
 
   @override
   bool verifyPassword(String password, String hash) {
@@ -51,7 +41,7 @@ class ApiAuthService implements IAuthService {
         return ValueResponse.failure(message: 'Invalid password');
       }
 
-      final token = jwtService.generate(user);
+      final token = userAuthenticator.generate(user);
 
       return ValueResponse.success(value: token);
     } catch (e, st) {

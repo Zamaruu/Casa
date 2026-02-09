@@ -1,26 +1,31 @@
 import 'dart:convert';
 
 import 'package:casa_api/src/abstract/controller/api.controller.dart';
+import 'package:casa_api/src/interfaces/auth/i_api_key_authenticator.dart';
 import 'package:casa_api/src/models/responses/api.response.dart';
-import 'package:casa_api/src/services/auth/apikey.service.dart';
 import 'package:casa_api/src/services/service_locator.dart';
 import 'package:shared/shared.dart';
 import 'package:shelf/shelf.dart';
 
 class BackendController extends ApiController {
-  final ApiKeyService apikeyService;
+  final IApiKeyAuthenticator apikeyService;
 
   final IApiKeyOperations apiKeyOperations;
 
   BackendController({
     required this.apiKeyOperations,
-    this.apikeyService = const ApiKeyService(),
+    required this.apikeyService,
   });
 
   factory BackendController.endpoint() {
     final apiKeyOperations = services.database.get<IApiKeyOperations>();
+    final apikeyService = services.get<IApiKeyAuthenticator>();
 
-    final controller = BackendController(apiKeyOperations: apiKeyOperations);
+    final controller = BackendController(
+      apiKeyOperations: apiKeyOperations,
+      apikeyService: apikeyService,
+    );
+
     controller.registerEndpoints();
     return controller;
   }

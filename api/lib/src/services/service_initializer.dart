@@ -1,6 +1,9 @@
 import 'package:casa_api/src/config/api_config.dart';
 import 'package:casa_api/src/database/database.service.dart';
+import 'package:casa_api/src/interfaces/auth/i_api_key_authenticator.dart';
+import 'package:casa_api/src/interfaces/auth/i_user_authenticator.dart';
 import 'package:casa_api/src/interfaces/i_api_config.dart';
+import 'package:casa_api/src/services/auth/apikey.service.dart';
 import 'package:casa_api/src/services/auth/auth.service.dart';
 import 'package:casa_api/src/services/auth/jwt.service.dart';
 import 'package:casa_api/src/services/service_locator.dart';
@@ -20,6 +23,7 @@ abstract class ServiceInitializer {
 
       // Auth
       final tokenResponse = await _initializeTokenService(config);
+      final apiKeyResponse = await _initalizeApiKeyService();
       final authResponse = await _initializeAuthService();
 
       final serviceResponses = MultiResponse(
@@ -27,6 +31,7 @@ abstract class ServiceInitializer {
           configResponse,
           dbResponse,
           tokenResponse,
+          apiKeyResponse,
           authResponse,
         ],
       );
@@ -89,7 +94,7 @@ abstract class ServiceInitializer {
         tokenLifetime: authConfig.expiresIn,
       );
 
-      services.registerSingleton<JwtService>(jwtService);
+      services.registerSingleton<IUserAuthenticator>(jwtService);
 
       return Response.success();
     } catch (e, st) {
@@ -99,11 +104,28 @@ abstract class ServiceInitializer {
     }
   }
 
+  static Future<IResponse> _initalizeApiKeyService() async {
+    try {
+      final keyOperations = services.database.get<IApiKeyOperations>();
+
+      final apiKeyService = ApiKeyService(
+        keyOperations: keyOperations,
+      );
+
+      services.registerSingleton<IApiKeyAuthenticator>(apiKeyService);
+      return Response.success();
+    } catch (e, st) {
+      final message = 'Error while initializing api key service.';
+      apiLog(message: message, error: e, stackTrace: st, callingClass: ServiceInitializer);
+      return Response.failure(message: message, error: e, stackTrace: st);
+    }
+  }
+
   static Future<IResponse> _initializeAuthService() async {
     try {
       final authService = ApiAuthService(
         userOperations: services.database.get<IUserOperations>(),
-        jwtService: services.get<JwtService>(),
+        userAuthenticator: services.get<IUserAuthenticator>(),
       );
 
       services.registerSingleton<IAuthService>(authService);

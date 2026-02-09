@@ -1,10 +1,11 @@
 import 'dart:io';
 
 import 'package:casa_api/src/controllers/controller_builder.dart';
+import 'package:casa_api/src/interfaces/auth/i_api_key_authenticator.dart';
+import 'package:casa_api/src/interfaces/auth/i_user_authenticator.dart';
 import 'package:casa_api/src/interfaces/i_api_config.dart';
 import 'package:casa_api/src/middleware/auth.middleware.dart';
 import 'package:casa_api/src/middleware/header.middleware.dart';
-import 'package:casa_api/src/services/auth/jwt.service.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_cors_headers/shelf_cors_headers.dart';
 import 'package:shelf_static/shelf_static.dart';
@@ -12,14 +13,15 @@ import 'package:shelf_static/shelf_static.dart';
 import '../services/service_locator.dart';
 
 Future<Handler> buildPipeline(IApiConfig config) async {
-  final jwtService = services.get<JwtService>();
+  final jwtService = services.get<IUserAuthenticator>();
+  final apiKeyService = services.get<IApiKeyAuthenticator>();
 
   final protectedEndpoints = ControllerBuilder.buildProtectedEndpoints();
 
   final publicEndpoints = ControllerBuilder.buildPublicEndpoints(config);
 
   final protectedPipeline = Pipeline()
-      .addMiddleware(authMiddleware(jwtService))
+      .addMiddleware(authMiddleware(userAuth: jwtService, apiKeyAuth: apiKeyService))
       .addMiddleware(defaultHeaders())
       .addHandler(protectedEndpoints.call);
 

@@ -1,0 +1,4 @@
+enum EAuthType {
+  user,
+  apiKey,
+}

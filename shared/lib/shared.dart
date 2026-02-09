@@ -4,6 +4,7 @@
 library;
 
 export 'src/abstract/service_collection.dart';
+export 'src/abstract/guarded_operations.dart';
 export 'src/enums/e_auth_provider.dart';
 export 'src/enums/e_database.dart';
 export 'src/enums/e_http_status.dart';

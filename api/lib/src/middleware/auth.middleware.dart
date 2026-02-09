@@ -1,39 +1,51 @@
-import 'package:casa_api/src/models/responses/api.response.dart';
-import 'package:casa_api/src/services/auth/jwt.service.dart';
-import 'package:casa_api/src/services/auth/user_context.dart';
-import 'package:casa_api/src/utils/logger.util.dart';
-import 'package:shared/shared.dart' hide Response;
+import 'package:casa_api/src/interfaces/auth/i_api_key_authenticator.dart';
+import 'package:casa_api/src/interfaces/auth/i_user_authenticator.dart';
+import 'package:casa_api/src/models/auth/auth_context.dart';
 import 'package:shelf/shelf.dart';
 
-Middleware authMiddleware(JwtService verifier) {
-  return (Handler innerHandler) {
-    return (Request request) async {
+Middleware authMiddleware({
+  required IUserAuthenticator userAuth,
+  required IApiKeyAuthenticator apiKeyAuth,
+}) {
+  return (innerHandler) {
+    return (request) async {
       final authHeader = request.headers['authorization'];
 
-      if (authHeader == null || !authHeader.startsWith('Bearer ')) {
-        return ApiResponse.unauthorized('Missing Authorization header');
+      if (authHeader == null) {
+        return Response.unauthorized('Missing Authorization header');
       }
 
-      final token = authHeader.substring('Bearer '.length);
+      // -------- Bearer JWT --------
+      if (authHeader.startsWith('Bearer ')) {
+        final token = authHeader.substring(7);
 
-      try {
-        final claims = verifier.verify(token);
-        final user = User.fromJson(claims);
+        final user = await userAuth.authenticate(token);
+        if (user == null) {
+          return Response.unauthorized('Invalid bearer token');
+        }
 
-        final userContext = UserContext(user);
-
-        final newRequestContext = <String, Object>{};
-        newRequestContext['UserContext'] = userContext;
-        newRequestContext.addAll(request.context);
-
-        final userContextRequest = request.change(context: request.context);
-
-        return innerHandler(userContextRequest);
-      } catch (e, st) {
-        final message = 'Invalid or expired user token.';
-        apiLog(message: message, error: e, stackTrace: st);
-        return Response.forbidden(message);
+        final ctx = AuthContext.user(user);
+        return innerHandler(
+          request.change(context: {'AuthContext': ctx}),
+        );
       }
+
+      // -------- ApiKey --------
+      if (authHeader.startsWith('ApiKey ')) {
+        final rawKey = authHeader.substring(7);
+
+        final apiKey = await apiKeyAuth.authenticate(rawKey);
+        if (apiKey == null) {
+          return Response.unauthorized('Invalid API key');
+        }
+
+        final ctx = AuthContext.apiKey(apiKey);
+        return innerHandler(
+          request.change(context: {'AuthContext': ctx}),
+        );
+      }
+
+      return Response.unauthorized('Unsupported authorization scheme');
     };
   };
 }

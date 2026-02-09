@@ -3,7 +3,7 @@ import 'package:mongo_dart/mongo_dart.dart';
 import 'package:shared/shared.dart';
 import 'package:uuid/uuid.dart';
 
-abstract class MongoOperations<T extends IEntity> implements IDefaultEntityOperations<T> {
+abstract class MongoOperations<T extends IEntity> extends GuardedOperations implements IDefaultEntityOperations<T> {
   final Db db;
 
   const MongoOperations({required this.db});
@@ -38,118 +38,127 @@ abstract class MongoOperations<T extends IEntity> implements IDefaultEntityOpera
     return entity;
   }
 
+  @override
+  Future<void> guardedErrorCallback(String message, Object error, StackTrace stackTrace) async {
+    apiLog(message: message, error: error, stackTrace: stackTrace, callingClass: runtimeType);
+  }
+
   // endregion
 
   // region Basic Data Operation
 
   @override
   Future<IValueResponse<T>> find(String id) async {
-    try {
-      final doc = await collection.findOne(where.eq("id", id));
-      if (doc == null) {
-        final message = 'Entity of type ${T.toString()} with id $id not found';
-        return ValueResponse.notFound(message: message);
-      }
+    return runGuardedValue<T>(
+      () async {
+        final doc = await collection.findOne(where.eq("id", id));
+        if (doc == null) {
+          final message = 'Entity of type ${T.toString()} with id $id not found';
+          return ValueResponse.notFound(message: message);
+        }
 
-      final entity = fromMongo(doc);
+        final entity = fromMongo(doc);
 
-      return ValueResponse.success(value: entity);
-    } catch (e, st) {
-      final message = 'Error while finding entity of type ${T.toString()} with id $id';
-      apiLog(message: message, error: e, stackTrace: st, callingClass: runtimeType);
-      return ValueResponse.failure(message: message, error: e, stackTrace: st);
-    }
+        return ValueResponse.success(value: entity);
+      },
+      operationErrorMessage: 'Error while finding entity of type ${T.toString()} with id $id',
+    );
   }
 
   @override
   Future<IValueResponse<List<T>>> findMany(List<String> ids) async {
-    try {
-      // TODO: implement findMany
-      throw UnimplementedError();
-    } catch (e, st) {
-      final concatenatedIds = ids.join(', ');
-      final message = 'Error while finding entities of type ${T.toString()} with ids $concatenatedIds';
-      apiLog(message: message, error: e, stackTrace: st, callingClass: runtimeType);
-      return ValueResponse.failure(message: message, error: e, stackTrace: st);
-    }
+    return runGuardedValue(
+      () async {
+        // TODO: implement findMany
+        throw UnimplementedError();
+      },
+      operationErrorMessage: 'Error while finding entities of type ${T.toString()} with ids ${ids.join(', ')}',
+    );
   }
 
   @override
   Future<IValueResponse<List<T>>> findAll() async {
-    try {
-      final docs = await collection.find().toList();
-      final entities = docs.map((doc) => fromMongo(doc)).toList();
-
-      return ValueResponse.success(value: entities);
-    } catch (e, st) {
-      final message = 'Error while finding all entities of type ${T.toString()}';
-      apiLog(message: message, error: e, stackTrace: st, callingClass: runtimeType);
-      return ValueResponse.failure(message: message, error: e, stackTrace: st);
-    }
+    return runGuardedValue(
+      () async {
+        final docs = await collection.find().toList();
+        final entities = docs.map((doc) => fromMongo(doc)).toList();
+        return ValueResponse.success(value: entities);
+      },
+      operationErrorMessage: 'Error while finding all entities of type ${T.toString()}',
+    );
   }
 
   @override
   Future<IValueResponse<T>> save(T entity) async {
-    try {
-      if (entity.hasId == false) {
-        entity = createAdditions(entity);
-      }
+    return runGuardedValue(
+      () async {
+        if (entity.hasId == false) {
+          entity = createAdditions(entity);
+        }
 
-      final json = entity.toJson();
+        final json = entity.toJson();
 
-      final result = await collection.insertOne(json);
+        final result = await collection.insertOne(json);
 
-      if (result.isFailure) {
-        final message = 'Error while saving entity of type ${T.toString()}.';
-        apiLog(message: message, callingClass: runtimeType);
-        return ValueResponse.failure(message: message);
-      } else {
-        return ValueResponse.success(value: entity);
-      }
-    } catch (e, st) {
-      final message = 'Error while saving entity of type ${T.toString()}.';
-      apiLog(message: message, error: e, stackTrace: st, callingClass: runtimeType);
-      return ValueResponse.failure(message: message, error: e, stackTrace: st);
-    }
+        if (result.isFailure) {
+          final message = 'Error while saving entity of type ${T.toString()}.';
+          apiLog(message: message, callingClass: runtimeType);
+          return ValueResponse.failure(message: message);
+        } else {
+          return ValueResponse.success(value: entity);
+        }
+      },
+      operationErrorMessage: 'Error while saving entity of type ${T.toString()}',
+    );
   }
 
   @override
   Future<IValueResponse<List<T>>> saveMany(List<T> entities) async {
-    try {
-      final saveEntities = <T>[];
+    return runGuardedValue(
+      () async {
+        final saveEntities = <T>[];
 
-      for (var entity in entities) {
-        saveEntities.add(createAdditions(entity));
-      }
+        for (var entity in entities) {
+          saveEntities.add(createAdditions(entity));
+        }
 
-      final docs = saveEntities.map((e) => e.toJson()).toList();
+        final docs = saveEntities.map((e) => e.toJson()).toList();
 
-      final result = await collection.insertMany(docs);
+        final result = await collection.insertMany(docs);
 
-      if (result.hasWriteErrors) {
-        final message = 'Error while saving ${result.writeErrorsNumber} entities of type ${T.toString()}.';
-        apiLog(message: message, callingClass: runtimeType);
-        return ValueResponse.failure(message: message);
-      } else {
-        return ValueResponse.success(value: saveEntities);
-      }
-    } catch (e, st) {
-      final message = 'Error while saving ${entities.length} entities of type ${T.toString()}.';
-      apiLog(message: message, error: e, stackTrace: st, callingClass: runtimeType);
-      return ValueResponse.failure(message: message, error: e, stackTrace: st);
-    }
+        if (result.hasWriteErrors) {
+          final message = 'Error while saving ${result.writeErrorsNumber} entities of type ${T.toString()}.';
+          apiLog(message: message, callingClass: runtimeType);
+          return ValueResponse.failure(message: message);
+        } else {
+          return ValueResponse.success(value: saveEntities);
+        }
+      },
+      operationErrorMessage: 'Error while saving ${entities.length} entities of type ${T.toString()}',
+    );
   }
 
   @override
   Future<IResponse> delete(IEntity entity) async {
-    try {
-      await collection.deleteOne(where.id(ObjectId.parse(entity.id)));
-      return Response.success();
-    } catch (e, st) {
-      final message = 'Error while deleting entity of type ${T.toString()} with id ${entity.id}';
-      apiLog(message: message, error: e, stackTrace: st, callingClass: runtimeType);
-      return Response.failure(message: message, error: e, stackTrace: st);
-    }
+    return runGuarded(
+      () async {
+        if (entity.hasId == false) {
+          final message = 'Entity of type ${T.toString()} with id ${entity.id} has no id.';
+          return Response.failure(message: message);
+        }
+
+        final result = await collection.deleteOne(where.eq('id', entity.id));
+
+        if (result.isFailure) {
+          final message = 'Error while deleting entity of type ${T.toString()} with id ${entity.id}.';
+          apiLog(message: message, callingClass: runtimeType);
+          return Response.failure(message: message);
+        } else {
+          return Response.success();
+        }
+      },
+      operationErrorMessage: 'Error while deleting entity of type ${T.toString()} with id ${entity.id}',
+    );
   }
 
   // endregion
