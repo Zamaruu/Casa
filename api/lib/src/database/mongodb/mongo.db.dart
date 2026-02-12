@@ -1,3 +1,4 @@
+import 'package:casa_api/src/database/mongodb/errorlog.operations.dart';
 import 'package:casa_api/src/database/mongodb/user.operations.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
 import 'package:shared/shared.dart';
@@ -16,6 +17,7 @@ class MongoDatabaseService extends ServiceCollection<Type, IDefaultEntityOperati
     addAll({
       IUserOperations: MongoUserOperations(db: mongoInstance),
       IApiKeyOperations: MongoApiKeyOperations(db: mongoInstance),
+      IErrorLogOperations: MongoErrorLogOperations(db: mongoInstance),
     });
   }
 }

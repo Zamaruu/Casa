@@ -1,5 +1,6 @@
 import 'package:casa_api/src/controllers/auth.controller.dart';
 import 'package:casa_api/src/controllers/backend.controller.dart';
+import 'package:casa_api/src/controllers/errorlog.controller.dart';
 import 'package:casa_api/src/controllers/swagger.controller.dart';
 import 'package:casa_api/src/controllers/user.controller.dart';
 import 'package:casa_api/src/interfaces/i_api_config.dart';
@@ -40,6 +41,10 @@ abstract class ControllerBuilder {
     // Backend
     final backendController = BackendController.endpoint();
     router.mount(mergePaths(root, backendController.path), backendController.router.call);
+
+    // Logs
+    final errorLogController = ErrorLogController.endpoint();
+    router.mount(mergePaths(root, errorLogController.path), errorLogController.router.call);
 
     return router;
   }

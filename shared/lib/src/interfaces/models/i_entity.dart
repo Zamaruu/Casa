@@ -1,6 +1,6 @@
-import 'package:shared/src/interfaces/i_copyable.dart';
+import 'package:shared/src/interfaces/misc/i_copyable.dart';
 
-import 'i_serializable.dart';
+import '../misc/i_serializable.dart';
 
 abstract interface class IEntity implements ICopyable<IEntity>, ISerializable {
   String get id;

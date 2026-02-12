@@ -1,8 +1,8 @@
-import 'package:shared/src/enums/e_response_status.dart';
-import 'package:shared/src/interfaces/i_serializable.dart';
+import 'package:shared/src/enums/e_status.dart';
+import 'package:shared/src/interfaces/misc/i_serializable.dart';
 
 abstract interface class IResponse implements ISerializable {
-  EResponseStatus get status;
+  EStatus get status;
 
   String? get message;
 

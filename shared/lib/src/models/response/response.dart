@@ -2,7 +2,7 @@ import 'package:shared/shared.dart';
 
 class Response implements IResponse {
   @override
-  final EResponseStatus status;
+  final EStatus status;
 
   @override
   final String? message;
@@ -20,21 +20,21 @@ class Response implements IResponse {
     this.stackTrace,
   });
 
-  const Response.success({String? message}) : this(status: EResponseStatus.success, message: message);
+  const Response.success({String? message}) : this(status: EStatus.success, message: message);
 
   const Response.failure({
     String? message,
     Object? error,
     StackTrace? stackTrace,
-  }) : this(status: EResponseStatus.failure, error: error, stackTrace: stackTrace, message: message);
+  }) : this(status: EStatus.failure, error: error, stackTrace: stackTrace, message: message);
 
-  const Response.skipped({String? message}) : this(status: EResponseStatus.skipped, message: message);
-
-  @override
-  bool get isError => status == EResponseStatus.failure;
+  const Response.skipped({String? message}) : this(status: EStatus.skipped, message: message);
 
   @override
-  bool get isSuccess => status == EResponseStatus.success;
+  bool get isError => status == EStatus.failure;
+
+  @override
+  bool get isSuccess => status == EStatus.success;
 
   @override
   bool get hasMessage => message != null && message!.isNotEmpty;
