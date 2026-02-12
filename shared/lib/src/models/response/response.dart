@@ -28,6 +28,8 @@ class Response implements IResponse {
     StackTrace? stackTrace,
   }) : this(status: EResponseStatus.failure, error: error, stackTrace: stackTrace, message: message);
 
+  const Response.skipped({String? message}) : this(status: EResponseStatus.skipped, message: message);
+
   @override
   bool get isError => status == EResponseStatus.failure;
 

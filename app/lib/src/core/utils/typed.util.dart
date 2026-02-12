@@ -1,0 +1,42 @@
+import 'package:casa/src/widgets/base/contextdialog.widget.dart';
+import 'package:casa/src/widgets/base/text.widget.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared/shared.dart';
+
+abstract class TypedUtil<T extends IEntity> extends GuardedOperations {
+  const TypedUtil();
+
+  // region Dialog-Helper
+
+  /// Returns true if the user wants to delete the entity.
+  Future<bool> showDeleteDialog(BuildContext context, WidgetRef ref, T entity) async {
+    final shouldDelete = await ContextDialog.openDialog<bool>(
+      context,
+      ContextDialog(
+        title: "Löschen",
+        content: CasaText("Möchtest du das Objekt '${entity.runtimeType}' wirklich löschen?"),
+        actionsBuilder: (context, ref) {
+          return [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text("Abbrechen"),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text("Löschen"),
+            ),
+          ];
+        },
+      ),
+    );
+
+    if (shouldDelete == null) {
+      return false;
+    } else {
+      return shouldDelete;
+    }
+  }
+
+  // endregion
+}
