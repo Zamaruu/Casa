@@ -115,9 +115,12 @@ abstract class CrudController<E extends IEntity, O extends IDefaultEntityOperati
       final response = await operations.delete(entity);
 
       if (response.isError) {
-        return ApiResponse.internalServerError(response.message ?? "Error while deleting entity");
+        final message = response.message ?? "Error while deleting entity";
+        final result = encodeError(message: message, error: response.error, stackTrace: response.stackTrace);
+        return ApiResponse.internalServerError(result);
       } else {
-        return ApiResponse.ok("Entity with id $id deleted");
+        final result = encodeResult(message: "Entity with id $id deleted");
+        return ApiResponse.ok(result);
       }
     });
   }

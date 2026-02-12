@@ -1,3 +1,4 @@
+import 'package:casa/src/core/extensions/datetime.extensions.dart';
 import 'package:casa/src/core/interfaces/menu/i_menu.dart';
 import 'package:casa/src/core/models/menus/menu.dart';
 import 'package:casa/src/core/models/menus/menu_item.dart';
@@ -113,6 +114,9 @@ class _ApiRouteState extends ConsumerState<ApiRoute> {
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
+                          CasaText(
+                            "Ablaufdatum: ${apiKey.expiresAt?.toDateTimeString() ?? "-"}",
+                          ),
                           IconButton(
                             onPressed: () {},
                             icon: const Icon(
@@ -120,7 +124,7 @@ class _ApiRouteState extends ConsumerState<ApiRoute> {
                             ),
                           ),
                           IconButton(
-                            onPressed: () {},
+                            onPressed: () => apiKeyUtil.delete(context, ref, apiKey),
                             icon: const Icon(
                               Icons.delete_outline,
                             ),

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:casa_api/src/models/responses/api.response.dart';
 import 'package:casa_api/src/services/auth/user_context.dart';
 import 'package:casa_api/src/utils/logger.util.dart';
+import 'package:shared/shared.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
 
@@ -18,13 +19,26 @@ abstract class ApiController {
   void registerEndpoints();
 
   String encodeError({required String message, Object? error, StackTrace? stackTrace}) {
-    final errorMap = <String, String>{
-      "message": message,
-      "error": error.toString(),
-      "stackTrace": stackTrace.toString(),
-    };
+    final result = Result(
+      message: message,
+      error: error?.toString(),
+      stackTrace: stackTrace,
+    );
 
-    return jsonEncode(errorMap);
+    final json = result.toJson();
+
+    return jsonEncode(json);
+  }
+
+  String encodeResult({required String message, ISerializable? value}) {
+    final result = Result(
+      message: message,
+      value: value,
+    );
+
+    final json = result.toJson();
+
+    return jsonEncode(json);
   }
 
   Future<ApiResponse> runGuarded(Future<ApiResponse> Function() endpointHandler) async {

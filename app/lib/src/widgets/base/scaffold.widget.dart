@@ -21,6 +21,9 @@ class CasaScaffold<R extends IResponse> extends ConsumerStatefulWidget {
 
   final Widget Function(BuildContext context, WidgetRef ref, Layout layout)? builder;
 
+  /// When runFutureOnce is true, the [future] will only be executed the first time the scaffold is build.
+  final bool runFutureOnce;
+
   final Future<R>? future;
 
   final Widget Function(BuildContext context, WidgetRef ref, R futureResponse, Layout layout)? futureBuilder;
@@ -49,6 +52,7 @@ class CasaScaffold<R extends IResponse> extends ConsumerStatefulWidget {
     this.bottomNavigationBar,
     this.showAppBar = true,
     this.bodyPadding,
+    this.runFutureOnce = false,
   }) : assert(builder != null || futureBuilder != null, 'Either builder or futureBuilder must be provided');
 
   const CasaScaffold.builder({
@@ -61,7 +65,8 @@ class CasaScaffold<R extends IResponse> extends ConsumerStatefulWidget {
     this.showAppBar = true,
     this.bodyPadding,
   }) : future = null,
-       futureBuilder = null;
+       futureBuilder = null,
+       runFutureOnce = false;
 
   const CasaScaffold.future({
     super.key,
@@ -73,6 +78,7 @@ class CasaScaffold<R extends IResponse> extends ConsumerStatefulWidget {
     this.bottomNavigationBar,
     this.showAppBar = true,
     this.bodyPadding,
+    this.runFutureOnce = false,
   }) : builder = null;
 
   // endregion
@@ -102,7 +108,9 @@ class _CasaScaffoldState<R extends IResponse> extends ConsumerState<CasaScaffold
 
     final menuUtils = MenuUtils();
 
-    future = widget.future;
+    if (widget.runFutureOnce) {
+      future = widget.future;
+    }
 
     navigationItems = menuUtils.buildDrawerItems(context);
     serviceItems = menuUtils.buildServiceItems(ref);
@@ -162,9 +170,9 @@ class _CasaScaffoldState<R extends IResponse> extends ConsumerState<CasaScaffold
                   widget.builder!(context, ref, layout),
                   layout,
                 );
-              } else if (future != null && widget.futureBuilder != null) {
+              } else if (widget.futureBuilder != null) {
                 return FutureBuilder(
-                  future: future,
+                  future: widget.runFutureOnce ? future : widget.future,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(child: CircularProgressIndicator());

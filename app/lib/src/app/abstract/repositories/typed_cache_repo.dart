@@ -77,6 +77,11 @@ abstract class TypedCacheRepo<T extends IEntity, A extends ITypedApi<T>> extends
     setCache(newCache);
   }
 
+  @override
+  void clearCache() {
+    _cache = [];
+  }
+
   // endregion
 
   // region Overrides

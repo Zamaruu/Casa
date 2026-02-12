@@ -9,3 +9,7 @@ abstract interface class ICrudUtil<T extends IEntity> {
 
   Future<IResponse> delete(BuildContext context, WidgetRef ref, T entity);
 }
+
+abstract interface class ICachedCrudUtil<T extends IEntity> implements ICrudUtil<T> {
+  Future<IResponse> refresh(BuildContext context, WidgetRef ref);
+}

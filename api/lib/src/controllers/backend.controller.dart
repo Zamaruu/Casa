@@ -37,7 +37,7 @@ class BackendController extends ApiController {
   void registerEndpoints() {
     router.get('/apikeys', getApiKeys);
     router.post('/apikeys', createApiKey);
-    // router.delete('/apikeys', deleteApiKey);
+    router.delete('/apikeys/<id>', deleteApiKey);
   }
 
   Future<ApiResponse> createApiKey(Request request) async {
@@ -89,6 +89,34 @@ class BackendController extends ApiController {
           error: response.error,
           stackTrace: response.stackTrace,
         );
+        return ApiResponse.internalServerError(error);
+      }
+    });
+  }
+
+  /// Reads id form query and deletes the corresponding entity.
+  Future<ApiResponse> deleteApiKey(Request request, String id) async {
+    return runGuarded(() async {
+      final entityResponse = await apiKeyOperations.find(id);
+
+      if (entityResponse.isError || entityResponse.hasValue == false) {
+        return ApiResponse.notFound("Entity not found");
+      }
+
+      final entity = entityResponse.value!;
+      final deleteResponse = await apiKeyOperations.delete(entity);
+
+      if (deleteResponse.isSuccess) {
+        final result = encodeResult(message: "Entity with id $id deleted");
+
+        return ApiResponse.ok(result);
+      } else {
+        final error = encodeError(
+          message: deleteResponse.message ?? "Error while deleting apikey",
+          error: deleteResponse.error,
+          stackTrace: deleteResponse.stackTrace,
+        );
+
         return ApiResponse.internalServerError(error);
       }
     });
