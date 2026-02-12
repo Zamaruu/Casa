@@ -4,6 +4,7 @@ enum EApiController {
   user("user"),
   meta("meta"),
   backend("backend"),
+  errorLogs("logs/error"),
   ;
 
   final String path;

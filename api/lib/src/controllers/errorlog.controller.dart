@@ -15,7 +15,7 @@ class ErrorLogController extends CrudController<IErrorLog, IErrorLogOperations> 
   }
 
   @override
-  String get path => "logs/error";
+  String get path => EApiController.errorLogs.path;
 
   @override
   IErrorLog Function(Map<String, dynamic> json) get entityFromJson => ErrorLog.fromJson;

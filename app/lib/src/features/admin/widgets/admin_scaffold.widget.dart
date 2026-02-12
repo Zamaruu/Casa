@@ -69,6 +69,11 @@ class _CasaAdminScaffoldState extends State<CasaAdminScaffold> {
         title: "Logging",
       ),
       NavigationMenuItem(
+        route: "/admin/audit",
+        icon: Icons.history,
+        title: "Audit",
+      ),
+      NavigationMenuItem(
         route: "/admin/system",
         icon: Icons.info,
         title: "Systeminformationen",

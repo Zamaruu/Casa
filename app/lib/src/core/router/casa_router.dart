@@ -7,6 +7,7 @@ import 'package:casa/src/features/admin/widgets/admin_scaffold.widget.dart';
 import 'package:casa/src/features/api/routes/api.route.dart';
 import 'package:casa/src/features/auth/auth.route.dart';
 import 'package:casa/src/features/home/home.route.dart';
+import 'package:casa/src/features/logs/routes/errorlogs.route.dart';
 import 'package:casa/src/features/settings/data/repositories/settings.repository.dart';
 import 'package:casa/src/features/settings/routes/server.route.dart';
 import 'package:casa/src/features/user/routes/user.route.dart';
@@ -139,6 +140,14 @@ class RouterNotifier extends AsyncNotifier<GoRouter> {
             ),
           ],
         ),
+        CasaRoute(
+          path: '/admin/logging',
+          builder: (context, state) => const ErrorLogsRoute(),
+        ),
+        // CasaRoute(
+        //  path: '/admin/audit',
+        //  builder: (context, state) => const ErrorLogsRoute(),
+        // ),
       ],
     ),
   ];
