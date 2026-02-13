@@ -13,7 +13,7 @@ class ErrorLog extends Log implements IErrorLog {
 
   @override
   @StackTraceConverter()
-  final StackTrace stacktrace;
+  final StackTrace stackTrace;
 
   @override
   final String? httpMethod;
@@ -24,17 +24,17 @@ class ErrorLog extends Log implements IErrorLog {
   // region Constructors
 
   const ErrorLog({
-    required super.id,
-    required super.createdAt,
-    required super.updatedAt,
+    super.id,
+    super.createdAt,
+    super.updatedAt,
     required super.title,
     required super.message,
     required super.logLevel,
-    required super.feature,
+    super.feature,
     super.userId,
     super.correlationId,
     required this.exceptionType,
-    required this.stacktrace,
+    required this.stackTrace,
     this.httpMethod,
     this.requestPath,
   });
@@ -64,7 +64,7 @@ class ErrorLog extends Log implements IErrorLog {
     String? userId,
     String? correlationId,
     String? exceptionType,
-    StackTrace? stacktrace,
+    StackTrace? stackTrace,
     String? httpMethod,
     String? requestPath,
   }) {
@@ -79,7 +79,7 @@ class ErrorLog extends Log implements IErrorLog {
       userId: userId ?? this.userId,
       correlationId: correlationId ?? this.correlationId,
       exceptionType: exceptionType ?? this.exceptionType,
-      stacktrace: stacktrace ?? this.stacktrace,
+      stackTrace: stackTrace ?? this.stackTrace,
       httpMethod: httpMethod ?? this.httpMethod,
       requestPath: requestPath ?? this.requestPath,
     );

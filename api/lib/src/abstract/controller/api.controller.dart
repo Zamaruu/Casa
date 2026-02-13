@@ -2,15 +2,16 @@ import 'dart:convert';
 
 import 'package:casa_api/src/models/responses/api.response.dart';
 import 'package:casa_api/src/services/auth/user_context.dart';
-import 'package:casa_api/src/utils/logger.util.dart';
 import 'package:shared/shared.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
 
-abstract class ApiController {
+abstract class ApiController extends GuardedOperations {
   final Router router;
 
-  ApiController() : router = Router();
+  final ILogger logger;
+
+  ApiController({required this.logger}) : router = Router();
 
   String get path;
 
@@ -41,23 +42,24 @@ abstract class ApiController {
     return jsonEncode(json);
   }
 
-  Future<ApiResponse> runGuarded(Future<ApiResponse> Function() endpointHandler) async {
-    try {
-      return await endpointHandler();
-    } catch (e, st) {
-      final message = "Unexpected exeption in ${runtimeType.toString()}";
-      apiLog(message: message, error: e, stackTrace: st, callingClass: runtimeType);
+  ApiResponse onGuardedError(String message, Object error, StackTrace stackTrace) {
+    final errorResult = encodeError(message: message, error: error, stackTrace: stackTrace);
+    final json = jsonEncode(errorResult);
 
-      final errorMap = <String, String>{
-        "message": message,
-        "error": e.toString(),
-        "stackTrace": st.toString(),
-      };
+    return ApiResponse.internalServerError(json);
+  }
 
-      final json = jsonEncode(errorMap);
+  @override
+  Future<void> guardedErrorCallback(String title, Object error, StackTrace stackTrace) async {
+    final errorLog = ErrorLog(
+      title: title,
+      message: error.toString(),
+      stackTrace: stackTrace,
+      logLevel: ELogLevel.error,
+      exceptionType: error.runtimeType.toString(),
+    );
 
-      return ApiResponse.internalServerError(json);
-    }
+    await logger.log(errorLog);
   }
 
   UserContext userContext(Request request) {

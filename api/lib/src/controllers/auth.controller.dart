@@ -11,12 +11,15 @@ class AuthController extends ApiController {
   final IAuthService authService;
 
   AuthController({
+    required super.logger,
     required this.authService,
   });
 
   factory AuthController.endpoint() {
     final authService = services.get<IAuthService>();
-    final controller = AuthController(authService: authService);
+    final logger = services.logger;
+
+    final controller = AuthController(authService: authService, logger: logger);
     controller.registerEndpoints();
     return controller;
   }
@@ -30,7 +33,7 @@ class AuthController extends ApiController {
   }
 
   Future<ApiResponse> login(Request request) async {
-    return runGuarded(() async {
+    return runCustomGuarded(() async {
       final body = await request.readAsString();
       final data = jsonDecode(body) as Map<String, dynamic>;
 
@@ -60,6 +63,6 @@ class AuthController extends ApiController {
           );
         }
       }
-    });
+    }, onError: onGuardedError);
   }
 }

@@ -68,5 +68,22 @@ abstract class GuardedOperations {
     }
   }
 
+  Future<T> runCustomGuarded<T>(
+    Future<T> Function() operation, {
+    String? operationErrorMessage,
+    required T Function(String message, Object error, StackTrace stackTrace) onError,
+  }) async {
+    try {
+      return operation();
+    } catch (e, st) {
+      final guardedMessage = 'Unexpected error ${e.runtimeType} catched in $runtimeType custom guarded operation.';
+      final message = _messageBuilder(guardedMessage, operationErrorMessage);
+
+      await guardedErrorCallback(message, e, st);
+
+      return onError(message, e, st);
+    }
+  }
+
   // endregion
 }

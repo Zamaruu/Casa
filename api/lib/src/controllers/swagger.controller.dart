@@ -12,12 +12,13 @@ import '../services/service_locator.dart';
 class SwaggerController extends ApiController {
   final IApiConfig config;
 
-  SwaggerController({required this.config});
+  SwaggerController({required this.config, required super.logger});
 
   factory SwaggerController.endpoint() {
+    final logger = services.logger;
     final config = services.get<IApiConfig>();
 
-    final controller = SwaggerController(config: config);
+    final controller = SwaggerController(config: config, logger: logger);
     controller.registerEndpoints();
     return controller;
   }
@@ -33,16 +34,16 @@ class SwaggerController extends ApiController {
   }
 
   Future<ApiResponse> enabled(Request request) async {
-    return runGuarded(() async {
+    return runCustomGuarded(() async {
       final enabled = config.enableOpenApi;
       final json = {"openApiEnabled": enabled};
 
       return ApiResponse.ok(jsonEncode(json));
-    });
+    }, onError: onGuardedError);
   }
 
   Future<ApiResponse> openapi(Request request) async {
-    return runGuarded(() async {
+    return runCustomGuarded(() async {
       final path = 'openapi/openapi.json';
       final spec = File(path);
 
@@ -54,17 +55,17 @@ class SwaggerController extends ApiController {
         spec.readAsStringSync(),
         headers: {'content-type': 'application/json'},
       );
-    });
+    }, onError: onGuardedError);
   }
 
   Future<ApiResponse> swagger(Request request) async {
-    return runGuarded(() async {
+    return runCustomGuarded(() async {
       final html = OpenapiBuilder.buildSwaggerHtml();
 
       return ApiResponse.ok(
         html,
         headers: {'content-type': 'text/html'},
       );
-    });
+    }, onError: onGuardedError);
   }
 }

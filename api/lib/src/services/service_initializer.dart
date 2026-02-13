@@ -6,6 +6,7 @@ import 'package:casa_api/src/interfaces/i_api_config.dart';
 import 'package:casa_api/src/services/auth/apikey.service.dart';
 import 'package:casa_api/src/services/auth/auth.service.dart';
 import 'package:casa_api/src/services/auth/jwt.service.dart';
+import 'package:casa_api/src/services/logs/database_logger.service.dart';
 import 'package:casa_api/src/services/service_locator.dart';
 import 'package:casa_api/src/utils/logger.util.dart';
 import 'package:shared/shared.dart';
@@ -21,6 +22,9 @@ abstract class ServiceInitializer {
         config.databaseConfig.connectionString,
       );
 
+      // Logging
+      final logResponse = await _initializeLogging(config);
+
       // Auth
       final tokenResponse = await _initializeTokenService(config);
       final apiKeyResponse = await _initalizeApiKeyService();
@@ -30,6 +34,7 @@ abstract class ServiceInitializer {
         responses: [
           configResponse,
           dbResponse,
+          logResponse,
           tokenResponse,
           apiKeyResponse,
           authResponse,
@@ -133,6 +138,30 @@ abstract class ServiceInitializer {
       return Response.success();
     } catch (e, st) {
       final message = 'Error while initializing auth service.';
+      apiLog(message: message, error: e, stackTrace: st, callingClass: ServiceInitializer);
+      return Response.failure(message: message, error: e, stackTrace: st);
+    }
+  }
+
+  // endregion
+
+  // region Logging
+
+  static Future<IResponse> _initializeLogging(IConfig config) async {
+    try {
+      final logLevel = config.logLevel;
+
+      final consoleLogger = ConsoleErrorLogger(level: logLevel);
+
+      final errorOperations = services.database.get<IErrorLogOperations>();
+      final databaseLogger = DatabaseErrorLogger(level: logLevel, operations: errorOperations);
+
+      final compositeLogger = CompositeLogger<IErrorLog>(level: logLevel, loggers: [consoleLogger, databaseLogger]);
+      services.registerSingleton<ILogger<IErrorLog>>(compositeLogger);
+
+      return Response.success();
+    } catch (e, st) {
+      final message = 'Error while initializing logging.';
       apiLog(message: message, error: e, stackTrace: st, callingClass: ServiceInitializer);
       return Response.failure(message: message, error: e, stackTrace: st);
     }

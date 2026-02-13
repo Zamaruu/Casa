@@ -7,12 +7,21 @@ import 'package:shared/shared.dart';
 import 'package:shelf/shelf.dart';
 
 class UserController extends CrudController<IUser, IUserOperations> {
-  UserController({required super.operations});
+  UserController({
+    required super.operations,
+    required super.logger,
+  });
 
   factory UserController.endpoint() {
+    final logger = services.logger;
     final operations = services.database.get<IUserOperations>();
-    final controller = UserController(operations: operations);
+
+    final controller = UserController(
+      operations: operations,
+      logger: logger,
+    );
     controller.registerEndpoints();
+
     return controller;
   }
 
@@ -42,7 +51,7 @@ class UserController extends CrudController<IUser, IUserOperations> {
 
   @override
   Future<ApiResponse> save(Request request) async {
-    return runGuarded(() async {
+    return runCustomGuarded(() async {
       final body = await request.readAsString();
       final data = jsonDecode(body);
 
@@ -58,12 +67,12 @@ class UserController extends CrudController<IUser, IUserOperations> {
 
       final json = jsonEncode(saveResponse.value!.toJson());
       return ApiResponse.created(json);
-    });
+    }, onError: onGuardedError);
   }
 
   @override
   Future<ApiResponse> saveMany(Request request) async {
-    return runGuarded(() async {
+    return runCustomGuarded(() async {
       final body = await request.readAsString();
       final data = jsonDecode(body);
 
@@ -84,7 +93,7 @@ class UserController extends CrudController<IUser, IUserOperations> {
         final json = jsonEncode(items);
         return ApiResponse.created(json);
       }
-    });
+    }, onError: onGuardedError);
   }
 
   // endregion

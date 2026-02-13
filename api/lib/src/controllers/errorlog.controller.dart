@@ -3,12 +3,19 @@ import 'package:casa_api/src/services/service_locator.dart';
 import 'package:shared/shared.dart';
 
 class ErrorLogController extends CrudController<IErrorLog, IErrorLogOperations> {
-  ErrorLogController({required super.operations});
+  ErrorLogController({
+    required super.logger,
+    required super.operations,
+  });
 
   factory ErrorLogController.endpoint() {
+    final logger = services.logger;
     final errorLogOperations = services.database.get<IErrorLogOperations>();
 
-    final controller = ErrorLogController(operations: errorLogOperations);
+    final controller = ErrorLogController(
+      operations: errorLogOperations,
+      logger: logger,
+    );
 
     controller.registerEndpoints();
     return controller;

@@ -8,7 +8,7 @@ abstract interface class ILog implements IEntity {
 
   ELogLevel get logLevel;
 
-  EFeature get feature;
+  EFeature? get feature;
 
   String? get userId;
 

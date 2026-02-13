@@ -14,7 +14,7 @@ abstract class Log extends Entity implements ILog {
   final ELogLevel logLevel;
 
   @override
-  final EFeature feature;
+  final EFeature? feature;
 
   @override
   final String? userId;
@@ -23,13 +23,13 @@ abstract class Log extends Entity implements ILog {
   final String? correlationId;
 
   const Log({
-    required super.id,
-    required super.createdAt,
-    required super.updatedAt,
+    super.id,
+    super.createdAt,
+    super.updatedAt,
     required this.title,
     required this.message,
     required this.logLevel,
-    required this.feature,
+    this.feature,
     this.userId,
     this.correlationId,
   });

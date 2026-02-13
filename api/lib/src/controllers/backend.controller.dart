@@ -13,15 +13,18 @@ class BackendController extends ApiController {
   final IApiKeyOperations apiKeyOperations;
 
   BackendController({
+    required super.logger,
     required this.apiKeyOperations,
     required this.apikeyService,
   });
 
   factory BackendController.endpoint() {
+    final logger = services.logger;
     final apiKeyOperations = services.database.get<IApiKeyOperations>();
     final apikeyService = services.get<IApiKeyAuthenticator>();
 
     final controller = BackendController(
+      logger: logger,
       apiKeyOperations: apiKeyOperations,
       apikeyService: apikeyService,
     );
@@ -41,7 +44,7 @@ class BackendController extends ApiController {
   }
 
   Future<ApiResponse> createApiKey(Request request) async {
-    return runGuarded(() async {
+    return runCustomGuarded(() async {
       final body = await request.readAsString();
       final data = jsonDecode(body);
 
@@ -71,11 +74,11 @@ class BackendController extends ApiController {
         );
         return ApiResponse.internalServerError(error);
       }
-    });
+    }, onError: onGuardedError);
   }
 
   Future<ApiResponse> getApiKeys(Request request) async {
-    return runGuarded(() async {
+    return runCustomGuarded(() async {
       final response = await apiKeyOperations.findAll();
 
       if (response.isSuccess && response.hasValue) {
@@ -91,12 +94,12 @@ class BackendController extends ApiController {
         );
         return ApiResponse.internalServerError(error);
       }
-    });
+    }, onError: onGuardedError);
   }
 
   /// Reads id form query and deletes the corresponding entity.
   Future<ApiResponse> deleteApiKey(Request request, String id) async {
-    return runGuarded(() async {
+    return runCustomGuarded(() async {
       final entityResponse = await apiKeyOperations.find(id);
 
       if (entityResponse.isError || entityResponse.hasValue == false) {
@@ -119,6 +122,6 @@ class BackendController extends ApiController {
 
         return ApiResponse.internalServerError(error);
       }
-    });
+    }, onError: onGuardedError);
   }
 }

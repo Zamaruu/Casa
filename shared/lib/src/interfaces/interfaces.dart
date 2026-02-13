@@ -22,5 +22,6 @@ export 'response/i_response.dart';
 export 'response/i_value_response.dart';
 export 'services/i_auth_service.dart';
 export 'services/i_service_collection.dart';
+export 'services/i_logger.dart';
 export 'version/i_version.dart';
 export 'version/i_version_info.dart';
