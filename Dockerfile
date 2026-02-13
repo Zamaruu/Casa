@@ -1,5 +1,5 @@
 # ---------- Flutter Build ----------
-FROM ghcr.io/cirruslabs/flutter:stable AS flutter-build
+FROM ghcr.io/cirruslabs/flutter:3.38.7 AS flutter-build
 WORKDIR /build
 
 # --- Shared ---
