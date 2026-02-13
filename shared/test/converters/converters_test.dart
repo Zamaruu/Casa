@@ -1,6 +1,5 @@
 import 'package:shared/shared.dart';
 import 'package:shared/src/converters/stacktrace.converter.dart';
-import 'package:shared/src/converters/version.converter.dart';
 import 'package:test/test.dart';
 
 void main() {

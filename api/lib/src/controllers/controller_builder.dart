@@ -2,6 +2,9 @@ import 'package:casa_api/src/controllers/auth.controller.dart';
 import 'package:casa_api/src/controllers/backend.controller.dart';
 import 'package:casa_api/src/controllers/errorlog.controller.dart';
 import 'package:casa_api/src/controllers/swagger.controller.dart';
+import 'package:casa_api/src/controllers/todo_attachment.controller.dart';
+import 'package:casa_api/src/controllers/todo_item.controller.dart';
+import 'package:casa_api/src/controllers/todo_list.controller.dart';
 import 'package:casa_api/src/controllers/user.controller.dart';
 import 'package:casa_api/src/interfaces/i_api_config.dart';
 import 'package:shelf_router/shelf_router.dart';
@@ -45,6 +48,16 @@ abstract class ControllerBuilder {
     // Logs
     final errorLogController = ErrorLogController.endpoint();
     router.mount(mergePaths(root, errorLogController.path), errorLogController.router.call);
+
+    // Todos
+    final todoListController = TodoListController.endpoint();
+    router.mount(mergePaths(root, todoListController.path), todoListController.router.call);
+
+    final todoItemController = TodoItemController.endpoint();
+    router.mount(mergePaths(root, todoItemController.path), todoItemController.router.call);
+
+    final todoAttachmentController = TodoAttachmentController.endpoint();
+    router.mount(mergePaths(root, todoAttachmentController.path), todoAttachmentController.router.call);
 
     return router;
   }

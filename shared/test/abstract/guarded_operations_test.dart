@@ -104,7 +104,7 @@ void main() {
 
       final result = await guarded.runCustomGuarded<String>(
         () async => 'ok',
-        onError: (_, __, ___) {
+        onError: (_, _, _) {
           onErrorCalled = true;
           return 'fallback';
         },
