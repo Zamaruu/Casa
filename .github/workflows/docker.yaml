@@ -10,7 +10,47 @@ env:
   REGISTRY: ghcr.io
 
 jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up Dart
+        uses: dart-lang/setup-dart@v1
+
+      - name: Install shared dependencies
+        working-directory: shared
+        run: dart pub get
+
+      - name: Run shared tests
+        working-directory: shared
+        run: dart test
+
+      # - name: Install API dependencies
+      #   working-directory: api
+      #   run: dart pub get
+      #
+      # - name: Run API tests
+      #   working-directory: api
+      #   run: dart test
+      #
+      # - name: Set up Flutter
+      #   uses: subosito/flutter-action@v2
+      #   with:
+      #     channel: stable
+      #
+      # - name: Install app dependencies
+      #   working-directory: app
+      #   run: flutter pub get
+      #
+      # - name: Run app tests
+      #   working-directory: app
+      #   run: flutter test
+
   build:
+    needs: tests
     runs-on: ubuntu-latest
 
     permissions:
