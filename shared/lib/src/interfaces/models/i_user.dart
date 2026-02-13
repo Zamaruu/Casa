@@ -9,6 +9,8 @@ abstract interface class IUser implements IEntity {
 
   List<String> get groups;
 
+  bool get isActive;
+
   @override
   IUser copyWith({
     String? id,
@@ -18,6 +20,7 @@ abstract interface class IUser implements IEntity {
     String? passwordHash,
     DateTime? createdAt,
     DateTime? updatedAt,
+    bool? isActive,
   });
 
   bool get isAdmin;

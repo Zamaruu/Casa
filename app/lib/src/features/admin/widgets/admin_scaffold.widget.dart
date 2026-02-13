@@ -59,6 +59,11 @@ class _CasaAdminScaffoldState extends State<CasaAdminScaffold> {
       //  title: "Authenthication",
       //),
       NavigationMenuItem(
+        route: "/admin/notifications",
+        icon: Icons.notifications,
+        title: "Benachrichtigungen",
+      ),
+      NavigationMenuItem(
         route: "/admin/api",
         icon: Icons.api,
         title: "API-Zugriff",
