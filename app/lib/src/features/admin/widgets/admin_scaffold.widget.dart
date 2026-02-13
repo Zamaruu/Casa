@@ -43,21 +43,21 @@ class _CasaAdminScaffoldState extends State<CasaAdminScaffold> {
         icon: Icons.person,
         title: "Benutzer",
       ),
-      NavigationMenuItem(
-        route: "/admin/roles",
-        icon: Icons.lock_person,
-        title: "Rollen",
-      ),
-      NavigationMenuItem(
-        route: "/admin/automation",
-        icon: Icons.flash_auto,
-        title: "Automation",
-      ),
-      NavigationMenuItem(
-        route: "/admin/authentication",
-        icon: Icons.lock,
-        title: "Authenthication",
-      ),
+      //NavigationMenuItem(
+      //  route: "/admin/roles",
+      //  icon: Icons.lock_person,
+      //  title: "Rollen",
+      //),
+      //NavigationMenuItem(
+      //  route: "/admin/automation",
+      //  icon: Icons.flash_auto,
+      //  title: "Automation",
+      //),
+      //NavigationMenuItem(
+      //  route: "/admin/authentication",
+      //  icon: Icons.lock,
+      //  title: "Authenthication",
+      //),
       NavigationMenuItem(
         route: "/admin/api",
         icon: Icons.api,
@@ -68,16 +68,16 @@ class _CasaAdminScaffoldState extends State<CasaAdminScaffold> {
         icon: Icons.bug_report,
         title: "Logging",
       ),
-      NavigationMenuItem(
-        route: "/admin/audit",
-        icon: Icons.history,
-        title: "Audit",
-      ),
-      NavigationMenuItem(
-        route: "/admin/system",
-        icon: Icons.info,
-        title: "Systeminformationen",
-      ),
+      //NavigationMenuItem(
+      //  route: "/admin/audit",
+      //  icon: Icons.history,
+      //  title: "Audit",
+      //),
+      //NavigationMenuItem(
+      //  route: "/admin/system",
+      //  icon: Icons.info,
+      //  title: "Systeminformationen",
+      //),
     ];
 
     return navItems;

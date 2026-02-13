@@ -165,13 +165,12 @@ class _CasaScaffoldState<R extends IResponse> extends ConsumerState<CasaScaffold
           ),
           body: Builder(
             builder: (context) {
+              late Widget content;
+
               if (widget.builder != null) {
-                return buildContent(
-                  widget.builder!(context, ref, layout),
-                  layout,
-                );
+                content = widget.builder!(context, ref, layout);
               } else if (widget.futureBuilder != null) {
-                return FutureBuilder(
+                content = FutureBuilder(
                   future: widget.runFutureOnce ? future : widget.future,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
@@ -181,18 +180,17 @@ class _CasaScaffoldState<R extends IResponse> extends ConsumerState<CasaScaffold
                     } else if (snapshot.hasData) {
                       final futureResponse = snapshot.data!;
 
-                      return buildContent(
-                        widget.futureBuilder!(context, ref, futureResponse, layout),
-                        layout,
-                      );
+                      return widget.futureBuilder!(context, ref, futureResponse, layout);
                     } else {
                       return const Center(child: CasaText('No data available'));
                     }
                   },
                 );
               } else {
-                throw Exception('Either builder or futureBuilder must be provided');
+                content = const Center(child: CasaText('No content available'));
               }
+
+              return buildContent(content, layout);
             },
           ),
           bottomNavigationBar: widget.bottomNavigationBar,
