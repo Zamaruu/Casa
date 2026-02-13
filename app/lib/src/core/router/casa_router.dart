@@ -10,6 +10,9 @@ import 'package:casa/src/features/home/home.route.dart';
 import 'package:casa/src/features/logs/routes/errorlogs.route.dart';
 import 'package:casa/src/features/settings/data/repositories/settings.repository.dart';
 import 'package:casa/src/features/settings/routes/server.route.dart';
+import 'package:casa/src/features/todos/routes/todo_item.route.dart';
+import 'package:casa/src/features/todos/routes/todo_list.route.dart';
+import 'package:casa/src/features/todos/routes/todos.route.dart';
 import 'package:casa/src/features/user/routes/user.route.dart';
 import 'package:casa/src/features/user/routes/users.route.dart';
 import 'package:flutter/foundation.dart';
@@ -89,6 +92,32 @@ class RouterNotifier extends AsyncNotifier<GoRouter> {
     CasaRoute(
       path: '/',
       builder: (context, state) => const HomeRoute(),
+    ),
+    CasaRoute(
+      path: '/todos',
+      builder: (context, state) => const TodosRoute(),
+      routes: [
+        CasaRoute(
+          path: ':listId',
+          builder: (context, state) {
+            final listId = state.pathParameters['listId'];
+            return TodoListRoute(listId: listId!);
+          },
+          routes: [
+            CasaRoute(
+              path: 'item/:itemId',
+              builder: (context, state) {
+                final listId = state.pathParameters['listId'];
+                final itemId = state.pathParameters['itemId'];
+                return TodoItemRoute(
+                  listId: listId!,
+                  itemId: itemId!,
+                );
+              },
+            ),
+          ],
+        ),
+      ],
     ),
     CasaRoute(
       path: '/auth',

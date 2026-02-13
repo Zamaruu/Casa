@@ -8,6 +8,12 @@ import 'package:casa/src/features/infos/api/meta.api.dart';
 import 'package:casa/src/features/infos/data/interfaces/i_meta_api.dart';
 import 'package:casa/src/features/logs/api/errorlog.api.dart';
 import 'package:casa/src/features/logs/data/interfaces/i_errorlog.api.dart';
+import 'package:casa/src/features/todos/api/todo_attachment.api.dart';
+import 'package:casa/src/features/todos/api/todo_item.api.dart';
+import 'package:casa/src/features/todos/api/todo_list.api.dart';
+import 'package:casa/src/features/todos/data/interfaces/i_todo_attachment.api.dart';
+import 'package:casa/src/features/todos/data/interfaces/i_todo_item.api.dart';
+import 'package:casa/src/features/todos/data/interfaces/i_todo_list.api.dart';
 import 'package:casa/src/features/user/api/user.api.dart';
 import 'package:casa/src/features/user/data/interfaces/i_user.api.dart';
 import 'package:shared/shared.dart';
@@ -27,6 +33,9 @@ class ApiServiceManager extends ServiceCollection<Type, IApi> {
       IUserApi: UserApi(client),
       IApiKeyApi: ApiKeyApi(client),
       IErrorLogApi: ErrorLogApi(client),
+      ITodoListApi: TodoListApi(client),
+      ITodoItemApi: TodoItemApi(client),
+      ITodoAttachmentApi: TodoAttachmentApi(client),
     });
   }
 }
