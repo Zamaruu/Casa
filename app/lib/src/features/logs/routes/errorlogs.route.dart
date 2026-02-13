@@ -47,6 +47,11 @@ class _ErrorLogsRouteState extends ConsumerState<ErrorLogsRoute> {
           onTap: () => ref.invalidate(errorLogsListProvider),
         ),
         MenuItem(
+          title: "Herunterladen",
+          icon: Icons.download,
+          onTap: () {},
+        ),
+        MenuItem(
           title: "Suchen",
           icon: Icons.search,
           onTap: () {},
@@ -77,6 +82,12 @@ class _ErrorLogsRouteState extends ConsumerState<ErrorLogsRoute> {
       futureBuilder: (context, ref, response, layout) {
         if (response.isSuccess && response.hasValue) {
           final errorLogs = response.value!;
+
+          if (errorLogs.isEmpty) {
+            return Center(
+              child: CasaText("Keine Fehlermeldungen gefunden"),
+            );
+          }
 
           return Column(
             mainAxisSize: MainAxisSize.min,

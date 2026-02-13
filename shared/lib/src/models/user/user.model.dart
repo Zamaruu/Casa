@@ -18,6 +18,9 @@ class User extends Entity implements IUser {
   @override
   final List<String> groups;
 
+  @override
+  final bool isActive;
+
   /// Only used when a new user is created.
   /// Will directly be set to the hashed password.
 
@@ -32,6 +35,7 @@ class User extends Entity implements IUser {
     required this.username,
     this.groups = const [],
     this.password,
+    this.isActive = true,
   });
 
   factory User.initial() {
@@ -77,6 +81,7 @@ class User extends Entity implements IUser {
     DateTime? createdAt,
     DateTime? updatedAt,
     String? password,
+    bool? isActive,
   }) {
     return User(
       id: id ?? this.id,
@@ -87,6 +92,7 @@ class User extends Entity implements IUser {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       password: password ?? this.password,
+      isActive: isActive ?? this.isActive,
     );
   }
 

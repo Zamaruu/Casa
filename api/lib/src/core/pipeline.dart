@@ -32,42 +32,53 @@ Future<Handler> buildPipeline(IApiConfig config) async {
 
   final staticFilesHandler = await _buildStaticFiles();
 
-  final cascade = Cascade()
-      .add(apiHandler) // 1️⃣ API FIRST
-      .add(staticFilesHandler ?? _notFoundHandler)
-      .handler;
+  final handler = Pipeline().addMiddleware(logRequests()).addMiddleware(corsHeaders()).addHandler((request) {
+    if (request.url.path.startsWith('api')) {
+      return apiHandler(request);
+    }
 
-  final handler = Pipeline().addMiddleware(logRequests()).addMiddleware(corsHeaders()).addHandler(cascade);
+    return staticFilesHandler != null ? staticFilesHandler(request) : _notFoundHandler(request);
+  });
 
   return handler;
 }
 
 Future<Handler?> _buildStaticFiles() async {
   final spaDirectory = Directory('web');
-  final directoryExisits = await spaDirectory.exists();
-
-  if (directoryExisits == false) {
-    // Local / Debug: no static file serving or a file system exception will be thrown
-    return null;
-  }
+  if (!await spaDirectory.exists()) return null;
 
   final staticHandler = createStaticHandler(
     'web',
     defaultDocument: 'index.html',
-    serveFilesOutsidePath: false,
   );
+
+  final indexFile = File('web/index.html');
 
   return (Request request) async {
     final response = await staticHandler(request);
 
-    // SPA-Fallback: anything that is not a real file → index.html
-    if (response.statusCode == 404 && !request.url.path.startsWith('api')) {
-      return staticHandler(
-        request.change(path: 'index.html'),
+    if (response.statusCode != 404) {
+      return response;
+    }
+
+    if (request.method != 'GET') {
+      return response;
+    }
+
+    if (request.url.path.startsWith('api')) {
+      return response;
+    }
+
+    if (await indexFile.exists()) {
+      return Response.ok(
+        await indexFile.readAsBytes(),
+        headers: {
+          HttpHeaders.contentTypeHeader: 'text/html',
+        },
       );
     }
 
-    return response;
+    return Response.notFound('index.html not found');
   };
 }
 
