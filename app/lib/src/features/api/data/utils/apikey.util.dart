@@ -1,6 +1,5 @@
 import 'package:casa/src/core/interfaces/utils/i_crud_util.dart';
 import 'package:casa/src/core/models/enums/e_snackbar_type.dart';
-import 'package:casa/src/core/utils/logger.util.dart';
 import 'package:casa/src/core/utils/snackbar.util.dart';
 import 'package:casa/src/core/utils/typed.util.dart';
 import 'package:casa/src/features/api/data/provider/apikeys_list_provider.dart';
@@ -13,11 +12,6 @@ import 'package:shared/shared.dart';
 
 class ApiKeyUtil extends TypedUtil<IApiKey> implements ICachedCrudUtil<IApiKey> {
   const ApiKeyUtil();
-
-  @override
-  Future<void> guardedErrorCallback(String message, Object error, StackTrace stackTrace) async {
-    appLog(message: message, error: error, stackTrace: stackTrace);
-  }
 
   @override
   Future<IResponse> refresh(BuildContext context, WidgetRef ref) async {
@@ -62,7 +56,12 @@ class ApiKeyUtil extends TypedUtil<IApiKey> implements ICachedCrudUtil<IApiKey> 
   @override
   Future<IResponse> delete(BuildContext context, WidgetRef ref, IApiKey entity) async {
     return runGuarded(() async {
-      final shouldDelete = await showDeleteDialog(context, ref, entity);
+      final shouldDelete = await showDeleteDialog(
+        context,
+        ref,
+        entity,
+        entityLabel: entity.name,
+      );
 
       if (shouldDelete == false) {
         return Response.skipped();

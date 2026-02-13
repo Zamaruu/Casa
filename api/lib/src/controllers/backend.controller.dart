@@ -103,7 +103,8 @@ class BackendController extends ApiController {
       final entityResponse = await apiKeyOperations.find(id);
 
       if (entityResponse.isError || entityResponse.hasValue == false) {
-        return ApiResponse.notFound("Entity not found");
+        final result = encodeResult(message: "Entity with id $id not found");
+        return ApiResponse.notFound(result);
       }
 
       final entity = entityResponse.value!;

@@ -1,3 +1,4 @@
+import 'package:casa/src/core/utils/logger.util.dart';
 import 'package:casa/src/widgets/base/contextdialog.widget.dart';
 import 'package:casa/src/widgets/base/text.widget.dart';
 import 'package:flutter/material.dart';
@@ -7,15 +8,20 @@ import 'package:shared/shared.dart';
 abstract class TypedUtil<T extends IEntity> extends GuardedOperations {
   const TypedUtil();
 
+  @override
+  Future<void> guardedErrorCallback(String message, Object error, StackTrace stackTrace) async {
+    appLog(message: message, error: error, stackTrace: stackTrace);
+  }
+
   // region Dialog-Helper
 
   /// Returns true if the user wants to delete the entity.
-  Future<bool> showDeleteDialog(BuildContext context, WidgetRef ref, T entity) async {
+  Future<bool> showDeleteDialog(BuildContext context, WidgetRef ref, T entity, {String? entityLabel}) async {
     final shouldDelete = await ContextDialog.openDialog<bool>(
       context,
       ContextDialog(
         title: "Löschen",
-        content: CasaText("Möchtest du das Objekt '${entity.runtimeType}' wirklich löschen?"),
+        content: CasaText("Möchtest du '${entityLabel ?? entity.runtimeType}' wirklich löschen?"),
         actionsBuilder: (context, ref) {
           return [
             TextButton(

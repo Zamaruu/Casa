@@ -17,7 +17,7 @@ RUN flutter build web --release
 
 
 # ---------- API Build ----------
-FROM dart:stable AS api-build
+FROM dart:3.10.7 AS api-build
 WORKDIR /build
 
 # Arguments for versioning

@@ -110,16 +110,19 @@ abstract class CrudController<E extends IEntity, O extends IDefaultEntityOperati
 
   Future<ApiResponse> delete(Request request, String id) async {
     return runCustomGuarded(() async {
-      final body = await request.readAsString();
-      final data = jsonDecode(body);
+      final entityResponse = await operations.find(id);
 
-      final entity = entityFromJson(data);
+      if (entityResponse.isError || entityResponse.hasValue == false) {
+        final result = encodeResult(message: "Entity with id $id not found");
+        return ApiResponse.notFound(result);
+      }
 
-      final response = await operations.delete(entity);
+      final entity = entityResponse.value!;
+      final deleteResponse = await operations.delete(entity);
 
-      if (response.isError) {
-        final message = response.message ?? "Error while deleting entity";
-        final result = encodeError(message: message, error: response.error, stackTrace: response.stackTrace);
+      if (deleteResponse.isError) {
+        final message = deleteResponse.message ?? "Error while deleting entity";
+        final result = encodeError(message: message, error: deleteResponse.error, stackTrace: deleteResponse.stackTrace);
         return ApiResponse.internalServerError(result);
       } else {
         final result = encodeResult(message: "Entity with id $id deleted");
