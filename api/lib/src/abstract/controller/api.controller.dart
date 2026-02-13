@@ -2,14 +2,16 @@ import 'dart:convert';
 
 import 'package:casa_api/src/models/responses/api.response.dart';
 import 'package:casa_api/src/services/auth/user_context.dart';
-import 'package:casa_api/src/utils/logger.util.dart';
+import 'package:shared/shared.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
 
-abstract class ApiController {
+abstract class ApiController extends GuardedOperations {
   final Router router;
 
-  ApiController() : router = Router();
+  final ILogger logger;
+
+  ApiController({required this.logger}) : router = Router();
 
   String get path;
 
@@ -17,23 +19,47 @@ abstract class ApiController {
 
   void registerEndpoints();
 
-  Future<ApiResponse> runGuarded(Future<ApiResponse> Function() endpointHandler) async {
-    try {
-      return await endpointHandler();
-    } catch (e, st) {
-      final message = "Unexpected exeption in ${runtimeType.toString()}";
-      apiLog(message: message, error: e, stackTrace: st, callingClass: runtimeType);
+  String encodeError({required String message, Object? error, StackTrace? stackTrace}) {
+    final result = Result(
+      message: message,
+      error: error?.toString(),
+      stackTrace: stackTrace,
+    );
 
-      final errorMap = <String, String>{
-        "message": message,
-        "error": e.toString(),
-        "stackTrace": st.toString(),
-      };
+    final json = result.toJson();
 
-      final json = jsonEncode(errorMap);
+    return jsonEncode(json);
+  }
 
-      return ApiResponse.internalServerError(json);
-    }
+  String encodeResult({required String message, ISerializable? value}) {
+    final result = Result(
+      message: message,
+      value: value,
+    );
+
+    final json = result.toJson();
+
+    return jsonEncode(json);
+  }
+
+  ApiResponse onGuardedError(String message, Object error, StackTrace stackTrace) {
+    final errorResult = encodeError(message: message, error: error, stackTrace: stackTrace);
+    final json = jsonEncode(errorResult);
+
+    return ApiResponse.internalServerError(json);
+  }
+
+  @override
+  Future<void> guardedErrorCallback(String title, Object error, StackTrace stackTrace) async {
+    final errorLog = ErrorLog(
+      title: title,
+      message: error.toString(),
+      stackTrace: stackTrace,
+      logLevel: ELogLevel.error,
+      exceptionType: error.runtimeType.toString(),
+    );
+
+    await logger.log(errorLog);
   }
 
   UserContext userContext(Request request) {

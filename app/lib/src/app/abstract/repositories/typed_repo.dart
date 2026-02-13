@@ -1,8 +1,9 @@
 import 'package:casa/src/app/abstract/repositories/base_repo.dart';
 import 'package:casa/src/app/abstract/repositories/repo_source.dart';
+import 'package:casa/src/core/interfaces/api/i_typed_api.dart';
 import 'package:shared/shared.dart';
 
-abstract class TypedRepo<T extends IEntity> extends BaseRepo<TypedRepoSource<T>> implements ITypedRepository<T> {
+abstract class TypedRepo<T extends IEntity, A extends ITypedApi<T>> extends BaseRepo<TypedRepoSource<T, A>> implements ITypedRepository<T> {
   const TypedRepo({required super.source});
 
   @override

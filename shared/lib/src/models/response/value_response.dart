@@ -12,18 +12,18 @@ class ValueResponse<T> extends Response implements IValueResponse<T> {
     this.value,
   });
 
-  const ValueResponse.success({T? value, String? message}) : this(status: EResponseStatus.success, value: value);
+  const ValueResponse.success({T? value, String? message}) : this(status: EStatus.success, value: value);
 
   const ValueResponse.failure({
     String? message,
     Object? error,
     StackTrace? stackTrace,
     T? value,
-  }) : this(status: EResponseStatus.failure, error: error, stackTrace: stackTrace, value: value, message: message);
+  }) : this(status: EStatus.failure, error: error, stackTrace: stackTrace, value: value, message: message);
 
   const ValueResponse.notFound({
     String? message,
-  }) : this(status: EResponseStatus.notFound, message: message);
+  }) : this(status: EStatus.notFound, message: message);
 
   @override
   bool get hasValue => value != null;

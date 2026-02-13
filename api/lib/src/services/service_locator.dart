@@ -6,4 +6,6 @@ final services = GetIt.instance;
 
 extension ServiceExtensions on GetIt {
   IServiceCollection<Type, IDefaultEntityOperations> get database => get<DatabaseServiceCollection>();
+
+  ILogger<IErrorLog> get logger => get<ILogger<IErrorLog>>();
 }

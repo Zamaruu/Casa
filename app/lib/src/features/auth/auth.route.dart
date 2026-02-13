@@ -4,6 +4,7 @@ import 'package:casa/src/core/utils/snackbar.util.dart';
 import 'package:casa/src/widgets/base/text.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class AuthRoute extends ConsumerStatefulWidget {
   const AuthRoute({super.key});
@@ -120,9 +121,10 @@ class _AuthRouteState extends ConsumerState<AuthRoute> {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        ElevatedButton(
+                        ElevatedButton.icon(
                           onPressed: () => performLoginWithEmailAndPassword(ref),
-                          child: const Text('Anmelden'),
+                          icon: const Icon(Icons.login),
+                          label: const Text('Anmelden'),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -136,9 +138,10 @@ class _AuthRouteState extends ConsumerState<AuthRoute> {
                           ),
                         ),
 
-                        ElevatedButton(
+                        ElevatedButton.icon(
                           onPressed: null,
-                          child: const Text('OAuth'),
+                          label: const Text('OAuth / OpenID'),
+                          icon: Icon(MdiIcons.openid),
                         ),
                       ],
                     ),

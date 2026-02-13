@@ -1,9 +1,13 @@
 import 'package:casa/src/core/api/api_client.dart';
 import 'package:casa/src/core/interfaces/api/i_api.dart';
+import 'package:casa/src/features/api/api/api.api.dart';
+import 'package:casa/src/features/api/data/interfaces/i_apikey.api.dart';
 import 'package:casa/src/features/auth/api/auth.api.dart';
 import 'package:casa/src/features/auth/data/interfaces/i_auth_api.dart';
 import 'package:casa/src/features/infos/api/meta.api.dart';
 import 'package:casa/src/features/infos/data/interfaces/i_meta_api.dart';
+import 'package:casa/src/features/logs/api/errorlog.api.dart';
+import 'package:casa/src/features/logs/data/interfaces/i_errorlog.api.dart';
 import 'package:casa/src/features/user/api/user.api.dart';
 import 'package:casa/src/features/user/data/interfaces/i_user.api.dart';
 import 'package:shared/shared.dart';
@@ -13,12 +17,16 @@ class ApiServiceManager extends ServiceCollection<Type, IApi> {
 
   ApiServiceManager({required this.client});
 
+  String get url => client.dio.options.baseUrl;
+
   @override
   Future<void> initalize() async {
     addAll({
       IAuthApi: AuthApi(client),
       IMetaApi: MetaApi(client),
       IUserApi: UserApi(client),
+      IApiKeyApi: ApiKeyApi(client),
+      IErrorLogApi: ErrorLogApi(client),
     });
   }
 }

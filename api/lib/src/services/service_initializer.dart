@@ -1,28 +1,42 @@
 import 'package:casa_api/src/config/api_config.dart';
 import 'package:casa_api/src/database/database.service.dart';
+import 'package:casa_api/src/interfaces/auth/i_api_key_authenticator.dart';
+import 'package:casa_api/src/interfaces/auth/i_user_authenticator.dart';
+import 'package:casa_api/src/interfaces/i_api_config.dart';
+import 'package:casa_api/src/services/auth/apikey.service.dart';
 import 'package:casa_api/src/services/auth/auth.service.dart';
 import 'package:casa_api/src/services/auth/jwt.service.dart';
+import 'package:casa_api/src/services/logs/database_logger.service.dart';
 import 'package:casa_api/src/services/service_locator.dart';
 import 'package:casa_api/src/utils/logger.util.dart';
 import 'package:shared/shared.dart';
 
 abstract class ServiceInitializer {
-  static Future<IResponse> startUpServices(IConfig config) async {
+  static Future<IResponse> startUpServices(IApiConfig config) async {
     try {
-      // Database
+      final configResponse = await _initializeConfig(config);
+
+      // Storage
       final dbResponse = await _initializeDatabases(
         config.databaseConfig.databaseType,
         config.databaseConfig.connectionString,
       );
 
+      // Logging
+      final logResponse = await _initializeLogging(config);
+
       // Auth
       final tokenResponse = await _initializeTokenService(config);
+      final apiKeyResponse = await _initalizeApiKeyService();
       final authResponse = await _initializeAuthService();
 
       final serviceResponses = MultiResponse(
         responses: [
+          configResponse,
           dbResponse,
+          logResponse,
           tokenResponse,
+          apiKeyResponse,
           authResponse,
         ],
       );
@@ -35,7 +49,23 @@ abstract class ServiceInitializer {
     }
   }
 
-  // region Databases
+  // region Config
+
+  static Future<IResponse> _initializeConfig(IApiConfig config) async {
+    try {
+      services.registerSingleton<IApiConfig>(config);
+
+      return Response.success();
+    } catch (e, st) {
+      final message = 'Error while initializing config.';
+      apiLog(message: message, error: e, stackTrace: st, callingClass: ServiceInitializer);
+      return Response.failure(message: message, error: e, stackTrace: st);
+    }
+  }
+
+  // endregion
+
+  // region Storage
 
   static Future<IResponse> _initializeDatabases(EDatabase databaseType, String databaseConnectionString) async {
     try {
@@ -69,7 +99,7 @@ abstract class ServiceInitializer {
         tokenLifetime: authConfig.expiresIn,
       );
 
-      services.registerSingleton<JwtService>(jwtService);
+      services.registerSingleton<IUserAuthenticator>(jwtService);
 
       return Response.success();
     } catch (e, st) {
@@ -79,11 +109,28 @@ abstract class ServiceInitializer {
     }
   }
 
+  static Future<IResponse> _initalizeApiKeyService() async {
+    try {
+      final keyOperations = services.database.get<IApiKeyOperations>();
+
+      final apiKeyService = ApiKeyService(
+        keyOperations: keyOperations,
+      );
+
+      services.registerSingleton<IApiKeyAuthenticator>(apiKeyService);
+      return Response.success();
+    } catch (e, st) {
+      final message = 'Error while initializing api key service.';
+      apiLog(message: message, error: e, stackTrace: st, callingClass: ServiceInitializer);
+      return Response.failure(message: message, error: e, stackTrace: st);
+    }
+  }
+
   static Future<IResponse> _initializeAuthService() async {
     try {
       final authService = ApiAuthService(
         userOperations: services.database.get<IUserOperations>(),
-        jwtService: services.get<JwtService>(),
+        userAuthenticator: services.get<IUserAuthenticator>(),
       );
 
       services.registerSingleton<IAuthService>(authService);
@@ -91,6 +138,30 @@ abstract class ServiceInitializer {
       return Response.success();
     } catch (e, st) {
       final message = 'Error while initializing auth service.';
+      apiLog(message: message, error: e, stackTrace: st, callingClass: ServiceInitializer);
+      return Response.failure(message: message, error: e, stackTrace: st);
+    }
+  }
+
+  // endregion
+
+  // region Logging
+
+  static Future<IResponse> _initializeLogging(IConfig config) async {
+    try {
+      final logLevel = config.logLevel;
+
+      final consoleLogger = ConsoleErrorLogger(level: logLevel);
+
+      final errorOperations = services.database.get<IErrorLogOperations>();
+      final databaseLogger = DatabaseErrorLogger(level: logLevel, operations: errorOperations);
+
+      final compositeLogger = CompositeLogger<IErrorLog>(level: logLevel, loggers: [consoleLogger, databaseLogger]);
+      services.registerSingleton<ILogger<IErrorLog>>(compositeLogger);
+
+      return Response.success();
+    } catch (e, st) {
+      final message = 'Error while initializing logging.';
       apiLog(message: message, error: e, stackTrace: st, callingClass: ServiceInitializer);
       return Response.failure(message: message, error: e, stackTrace: st);
     }

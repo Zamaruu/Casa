@@ -1,4 +1,4 @@
-import 'package:shared/src/interfaces/i_serializable.dart';
+import 'package:shared/src/interfaces/misc/i_serializable.dart';
 
 abstract interface class IVersion implements ISerializable {
   /// Main feature version indicator

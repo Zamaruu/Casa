@@ -3,7 +3,7 @@
   "info": {
     "title": "Casa API",
     "description": "Private family API for the Casa app. This API is used by the Flutter app and external tools (e.g., n8n).",
-    "version": "0.1.0"
+    "version": "0.4.0"
   },
   "tags": [
     {
@@ -17,6 +17,10 @@
     {
       "name": "Auth",
       "description": "Authentifizierung"
+    },
+    {
+      "name": "API-Schlüssel",
+      "description": "API-Schlüsselverwaltung"
     }
   ],
   "paths": {
@@ -92,6 +96,9 @@
         "security": [
           {
             "jwt": []
+          },
+          {
+            "apikey": []
           }
         ],
         "responses": {
@@ -115,7 +122,10 @@
         "summary": "Benutzer erstellen",
         "security": [
           {
-            "oauth2": ["openid"]
+            "jwt": []
+          },
+          {
+            "apikey": []
           }
         ],
         "requestBody": {
@@ -149,6 +159,9 @@
         "security": [
           {
             "jwt": []
+          },
+          {
+            "apikey": []
           }
         ],
         "parameters": [
@@ -177,14 +190,90 @@
           }
         }
       }
+    },
+    "/api/backend/apikeys": {
+      "post": {
+        "tags": ["API-Schlüssel"],
+        "summary": "API-Schlüssel erstellen",
+        "security": [
+          {
+            "jwt": []
+          },
+          {
+            "apikey": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateApiKeyRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "API-Schlüssel erstellt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateApiKeyResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "API-Schlüssel"
+        ],
+        "summary": "Alle verfügbaren API-Schlüssel abrufen",
+        "security": [
+          {
+            "jwt": []
+          },
+          {
+            "apikey": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste aller verfügbaren API-Schlüssel",
+            "content": {
+              "application/json": {
+                "schema" : {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CreateApiKeyRequest"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
+
+
   },
   "components": {
     "securitySchemes": {
       "jwt": {
         "type": "http",
         "scheme": "bearer",
-        "bearerFormat": "JWT"
+        "name": "Authorization",
+        "bearerFormat": "JWT",
+        "description": "JSON Web Token für die Authentifizierung"
+      },
+      "apikey": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header",
+        "scheme": "ApiKey",
+        "description": "API-Schlüssel für die Authentifizierung"
       }
     },
     "schemas": {
@@ -222,6 +311,18 @@
           }
         }
       },
+      "CreateUserRequest": {
+        "type": "object",
+        "required": ["displayName", "email"],
+        "properties": {
+          "displayName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        }
+      },
       "JwtLoginRequest": {
         "type": "object",
         "required": ["email", "password"],
@@ -242,15 +343,101 @@
           }
         }
       },
-      "CreateUserRequest": {
+      "CreateApiKeyRequest": {
         "type": "object",
-        "required": ["displayName", "email"],
         "properties": {
-          "displayName": {
-            "type": "string"
+          "name": {
+            "type": "string",
+            "example": "ApiKey"
           },
-          "email": {
-            "type": "string"
+          "description": {
+            "type": "string",
+            "example": "This is an API key"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-01-01T00:00:00Z"
+          },
+          "scopes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "revokedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-01-01T00:00:00Z"
+          },
+          "lastUsedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-01-01T00:00:00Z"
+          },
+          "keyHash": {
+            "type": "string",
+            "example": "hash"
+          }
+        }
+      },
+      "CreateApiKeyResponse": {
+        "type": "object",
+        "properties": {
+          "rawKey": {
+            "type": "string",
+            "example": "rawKey",
+            "description": "The raw key used to create the API key"
+          },
+          "keyInfos": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "user_123"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "name": {
+                "type": "string",
+                "example": "ApiKey"
+              },
+              "description": {
+                "type": "string",
+                "example": "This is an API key"
+              },
+              "expiresAt": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2023-01-01T00:00:00Z"
+              },
+              "scopes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "revokedAt": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2023-01-01T00:00:00Z"
+              },
+              "lastUsedAt": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2023-01-01T00:00:00Z"
+              },
+              "keyHash": {
+                "type": "string",
+                "example": "hash"
+              }
+            }
           }
         }
       }

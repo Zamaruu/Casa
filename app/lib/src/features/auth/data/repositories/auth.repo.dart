@@ -27,6 +27,10 @@ abstract class AuthRepo extends BaseRepo<AuthRepoSource> {
 
   Future<IResponse> saveAndSetToken(String token);
 
+  /// Loads the token from storage and returns it.
+  ///
+  /// If no token is found, returns null.
+  /// If the token is expired, returns null.
   Future<IValueResponse<String>> getToken();
 
   Future<IResponse> logout();

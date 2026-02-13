@@ -24,7 +24,7 @@ class MultiResponse implements IResponse {
   bool get isSuccess => responses.every((element) => element.isSuccess);
 
   @override
-  EResponseStatus get status => isSuccess ? EResponseStatus.success : EResponseStatus.failure;
+  EStatus get status => isSuccess ? EStatus.success : EStatus.failure;
 
   @override
   Map<String, dynamic> toJson() {

@@ -1,5 +1,5 @@
 # ---------- Flutter Build ----------
-FROM ghcr.io/cirruslabs/flutter:stable AS flutter-build
+FROM ghcr.io/cirruslabs/flutter:3.38.7 AS flutter-build
 WORKDIR /build
 
 # --- Shared ---
@@ -17,7 +17,7 @@ RUN flutter build web --release
 
 
 # ---------- API Build ----------
-FROM dart:stable AS api-build
+FROM dart:3.10.7 AS api-build
 WORKDIR /build
 
 # Arguments for versioning

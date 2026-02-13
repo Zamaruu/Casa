@@ -16,4 +16,6 @@ abstract interface class IRepoCache<T extends IEntity> {
   void addToCache(T entity, {bool replace = true});
 
   void setCache(List<T> entities);
+
+  void clearCache();
 }

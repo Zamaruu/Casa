@@ -8,7 +8,10 @@ import 'package:shelf/shelf.dart';
 abstract class CrudController<E extends IEntity, O extends IDefaultEntityOperations<E>> extends ApiController {
   final O operations;
 
-  CrudController({required this.operations});
+  CrudController({
+    required this.operations,
+    required super.logger,
+  });
 
   E Function(Map<String, dynamic> json) get entityFromJson;
 
@@ -25,7 +28,7 @@ abstract class CrudController<E extends IEntity, O extends IDefaultEntityOperati
   // region CRUD-Endpoints
 
   Future<ApiResponse> getAll(Request request) async {
-    return runGuarded(() async {
+    return runCustomGuarded(() async {
       final response = await operations.findAll();
       if (response.isError) {
         return ApiResponse.internalServerError(response.message ?? "Error while getting all entities");
@@ -33,11 +36,11 @@ abstract class CrudController<E extends IEntity, O extends IDefaultEntityOperati
       final entities = response.value!;
       final json = jsonEncode(entities.map((e) => e.toJson()).toList());
       return ApiResponse.ok(json);
-    });
+    }, onError: onGuardedError);
   }
 
   Future<ApiResponse> getById(Request request, String id) async {
-    return runGuarded(() async {
+    return runCustomGuarded(() async {
       final response = await operations.find(id);
 
       if (response.isError) {
@@ -51,11 +54,11 @@ abstract class CrudController<E extends IEntity, O extends IDefaultEntityOperati
           return ApiResponse.notFound("Entity with id $id not found");
         }
       }
-    });
+    }, onError: onGuardedError);
   }
 
   Future<ApiResponse> getByIds(Request request, List<String> ids) async {
-    return runGuarded(() async {
+    return runCustomGuarded(() async {
       final response = await operations.findMany(ids);
 
       if (response.isError) {
@@ -65,11 +68,11 @@ abstract class CrudController<E extends IEntity, O extends IDefaultEntityOperati
         final json = jsonEncode(entities.map((e) => e.toJson()).toList());
         return ApiResponse.ok(json);
       }
-    });
+    }, onError: onGuardedError);
   }
 
   Future<ApiResponse> save(Request request) async {
-    return runGuarded(() async {
+    return runCustomGuarded(() async {
       final body = await request.readAsString();
       final data = jsonDecode(body);
 
@@ -83,11 +86,11 @@ abstract class CrudController<E extends IEntity, O extends IDefaultEntityOperati
 
       final json = jsonEncode(saveResponse.value!.toJson());
       return ApiResponse.created(json);
-    });
+    }, onError: onGuardedError);
   }
 
   Future<ApiResponse> saveMany(Request request) async {
-    return runGuarded(() async {
+    return runCustomGuarded(() async {
       final body = await request.readAsString();
       final data = jsonDecode(body);
 
@@ -102,24 +105,30 @@ abstract class CrudController<E extends IEntity, O extends IDefaultEntityOperati
         final json = jsonEncode(items);
         return ApiResponse.created(json);
       }
-    });
+    }, onError: onGuardedError);
   }
 
   Future<ApiResponse> delete(Request request, String id) async {
-    return runGuarded(() async {
-      final body = await request.readAsString();
-      final data = jsonDecode(body);
+    return runCustomGuarded(() async {
+      final entityResponse = await operations.find(id);
 
-      final entity = entityFromJson(data);
-
-      final response = await operations.delete(entity);
-
-      if (response.isError) {
-        return ApiResponse.internalServerError(response.message ?? "Error while deleting entity");
-      } else {
-        return ApiResponse.ok("Entity with id $id deleted");
+      if (entityResponse.isError || entityResponse.hasValue == false) {
+        final result = encodeResult(message: "Entity with id $id not found");
+        return ApiResponse.notFound(result);
       }
-    });
+
+      final entity = entityResponse.value!;
+      final deleteResponse = await operations.delete(entity);
+
+      if (deleteResponse.isError) {
+        final message = deleteResponse.message ?? "Error while deleting entity";
+        final result = encodeError(message: message, error: deleteResponse.error, stackTrace: deleteResponse.stackTrace);
+        return ApiResponse.internalServerError(result);
+      } else {
+        final result = encodeResult(message: "Entity with id $id deleted");
+        return ApiResponse.ok(result);
+      }
+    }, onError: onGuardedError);
   }
 
   // endregion

@@ -1,4 +1,4 @@
-enum EResponseStatus {
+enum EStatus {
   success,
   failure,
   skipped,

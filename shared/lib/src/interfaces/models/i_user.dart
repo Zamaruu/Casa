@@ -1,4 +1,4 @@
-import 'package:shared/src/interfaces/i_entity.dart';
+import 'package:shared/src/interfaces/models/i_entity.dart';
 
 abstract interface class IUser implements IEntity {
   String get email;

@@ -26,12 +26,16 @@ class _UsersRouteState extends ConsumerState<UsersRoute> {
 
   late final UserUtil userUtil;
 
+  // region LifeCycle
+
   @override
   void initState() {
     super.initState();
     menu = setupMenu();
     userUtil = const UserUtil();
   }
+
+  // endregion
 
   // region Methods
 
@@ -51,7 +55,7 @@ class _UsersRouteState extends ConsumerState<UsersRoute> {
         MenuItem(
           title: "Aktualisieren",
           icon: Icons.refresh,
-          onTap: () => ref.invalidate(usersListProvider),
+          onTap: () => userUtil.refresh(context, ref),
         ),
         MenuItem(
           title: "Suchen",
@@ -131,7 +135,7 @@ class _UsersRouteState extends ConsumerState<UsersRoute> {
                           icon: const Icon(Icons.edit_outlined),
                         ),
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () => userUtil.delete(context, ref, user),
                           color: context.theme.primaryColor,
                           icon: const Icon(Icons.delete_outline),
                         ),

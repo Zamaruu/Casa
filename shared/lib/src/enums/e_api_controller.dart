@@ -2,7 +2,9 @@ enum EApiController {
   unknown(""),
   auth("auth"),
   user("user"),
-  meta("meta")
+  meta("meta"),
+  backend("backend"),
+  errorLogs("logs/error"),
   ;
 
   final String path;

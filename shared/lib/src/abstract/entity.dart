@@ -1,4 +1,4 @@
-import 'package:shared/src/interfaces/i_entity.dart';
+import 'package:shared/src/interfaces/models/i_entity.dart';
 
 abstract class Entity implements IEntity {
   @override
@@ -11,7 +11,7 @@ abstract class Entity implements IEntity {
   final DateTime? updatedAt;
 
   const Entity({
-    required this.id,
+    this.id = '',
     this.createdAt,
     this.updatedAt,
   });

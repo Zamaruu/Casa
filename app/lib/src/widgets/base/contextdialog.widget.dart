@@ -14,6 +14,8 @@ class ContextDialog extends ConsumerWidget {
 
   final Widget? content;
 
+  final List<Widget> Function(BuildContext context, WidgetRef ref)? actionsBuilder;
+
   final bool fullScreen;
 
   final Widget Function(BuildContext context, WidgetRef ref)? builder;
@@ -33,6 +35,7 @@ class ContextDialog extends ConsumerWidget {
     this.onClose,
     this.fullScreen = false,
     required this.content,
+    this.actionsBuilder,
   }) : builder = null;
 
   const ContextDialog.builder({
@@ -42,6 +45,7 @@ class ContextDialog extends ConsumerWidget {
     this.subtitle,
     this.fullScreen = false,
     required this.builder,
+    this.actionsBuilder,
   }) : content = null,
        onClose = null;
 
@@ -117,6 +121,7 @@ class ContextDialog extends ConsumerWidget {
         ],
       ),
       content: content ?? builder!(context, ref),
+      actions: actionsBuilder != null ? actionsBuilder!(context, ref) : null,
     );
   }
 }

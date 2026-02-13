@@ -21,6 +21,9 @@ class CasaScaffold<R extends IResponse> extends ConsumerStatefulWidget {
 
   final Widget Function(BuildContext context, WidgetRef ref, Layout layout)? builder;
 
+  /// When runFutureOnce is true, the [future] will only be executed the first time the scaffold is build.
+  final bool runFutureOnce;
+
   final Future<R>? future;
 
   final Widget Function(BuildContext context, WidgetRef ref, R futureResponse, Layout layout)? futureBuilder;
@@ -49,6 +52,7 @@ class CasaScaffold<R extends IResponse> extends ConsumerStatefulWidget {
     this.bottomNavigationBar,
     this.showAppBar = true,
     this.bodyPadding,
+    this.runFutureOnce = false,
   }) : assert(builder != null || futureBuilder != null, 'Either builder or futureBuilder must be provided');
 
   const CasaScaffold.builder({
@@ -61,7 +65,8 @@ class CasaScaffold<R extends IResponse> extends ConsumerStatefulWidget {
     this.showAppBar = true,
     this.bodyPadding,
   }) : future = null,
-       futureBuilder = null;
+       futureBuilder = null,
+       runFutureOnce = false;
 
   const CasaScaffold.future({
     super.key,
@@ -73,6 +78,7 @@ class CasaScaffold<R extends IResponse> extends ConsumerStatefulWidget {
     this.bottomNavigationBar,
     this.showAppBar = true,
     this.bodyPadding,
+    this.runFutureOnce = false,
   }) : builder = null;
 
   // endregion
@@ -102,7 +108,9 @@ class _CasaScaffoldState<R extends IResponse> extends ConsumerState<CasaScaffold
 
     final menuUtils = MenuUtils();
 
-    future = widget.future;
+    if (widget.runFutureOnce) {
+      future = widget.future;
+    }
 
     navigationItems = menuUtils.buildDrawerItems(context);
     serviceItems = menuUtils.buildServiceItems(ref);
@@ -157,14 +165,13 @@ class _CasaScaffoldState<R extends IResponse> extends ConsumerState<CasaScaffold
           ),
           body: Builder(
             builder: (context) {
+              late Widget content;
+
               if (widget.builder != null) {
-                return buildContent(
-                  widget.builder!(context, ref, layout),
-                  layout,
-                );
-              } else if (future != null && widget.futureBuilder != null) {
-                return FutureBuilder(
-                  future: future,
+                content = widget.builder!(context, ref, layout);
+              } else if (widget.futureBuilder != null) {
+                content = FutureBuilder(
+                  future: widget.runFutureOnce ? future : widget.future,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(child: CircularProgressIndicator());
@@ -173,18 +180,17 @@ class _CasaScaffoldState<R extends IResponse> extends ConsumerState<CasaScaffold
                     } else if (snapshot.hasData) {
                       final futureResponse = snapshot.data!;
 
-                      return buildContent(
-                        widget.futureBuilder!(context, ref, futureResponse, layout),
-                        layout,
-                      );
+                      return widget.futureBuilder!(context, ref, futureResponse, layout);
                     } else {
                       return const Center(child: CasaText('No data available'));
                     }
                   },
                 );
               } else {
-                throw Exception('Either builder or futureBuilder must be provided');
+                content = const Center(child: CasaText('No content available'));
               }
+
+              return buildContent(content, layout);
             },
           ),
           bottomNavigationBar: widget.bottomNavigationBar,

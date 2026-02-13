@@ -3,6 +3,7 @@ import 'package:casa/src/core/services/service_locator.dart';
 import 'package:casa/src/core/utils/logger.util.dart';
 import 'package:casa/src/features/auth/data/interfaces/i_auth_api.dart';
 import 'package:casa/src/features/auth/data/repositories/auth.repo.dart';
+import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared/shared.dart';
@@ -28,6 +29,31 @@ class AuthRepository extends AuthRepo {
   static const _tokenKey = 'casa.jwt';
 
   const AuthRepository({required super.source});
+
+  // region Helper
+
+  /// Checks if the given token is valid.
+  ///
+  /// E.g. if the token is expired, invalid, etc. false will be returned.
+  ///
+  /// Returns true if the token is valid, false otherwise.
+  bool isTokenValid(String token) {
+    final decodedToken = JWT.decode(token);
+    final expiresAt = decodedToken.payload['exp'] as int;
+    final expiryDate = DateTime.fromMillisecondsSinceEpoch(expiresAt * 1000);
+
+    final now = DateTime.now();
+
+    if (now.isAfter(expiryDate)) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  // endregion
+
+  // region Auth-Methods
 
   @override
   Future<IValueResponse<String>> loginWithEmail({required String email, required String password}) async {
@@ -65,7 +91,14 @@ class AuthRepository extends AuthRepo {
       final token = await source.storage.read(key: _tokenKey);
 
       if (token != null) {
-        return ValueResponse.success(value: token);
+        final isValid = isTokenValid(token);
+
+        if (isValid) {
+          return ValueResponse.success(value: token);
+        } else {
+          await logout(); // Remove expired token from storage
+          return ValueResponse.failure(message: 'Token is invalid!');
+        }
       } else {
         return ValueResponse.failure(message: 'No token was found!');
       }
@@ -90,4 +123,6 @@ class AuthRepository extends AuthRepo {
       return Response.failure(message: message, error: e, stackTrace: st);
     }
   }
+
+  // endregion
 }

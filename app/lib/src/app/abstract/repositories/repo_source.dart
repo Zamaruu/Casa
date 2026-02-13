@@ -17,9 +17,9 @@ abstract class AuthenticatedRepoSource extends RepoSource implements IAuthentica
   const AuthenticatedRepoSource({required super.ref, required this.user});
 }
 
-abstract class TypedRepoSource<T extends IEntity> extends AuthenticatedRepoSource implements ITypedRepoSource<T> {
+abstract class TypedRepoSource<T extends IEntity, A extends ITypedApi<T>> extends AuthenticatedRepoSource implements ITypedRepoSource<T> {
   @override
-  final ITypedApi<T> api;
+  final A api;
 
   const TypedRepoSource({
     required super.ref,
