@@ -11,7 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared/shared.dart';
 
 class UserUtil extends TypedUtil<IUser> implements ICachedCrudUtil<IUser> {
-  const UserUtil();
+  UserUtil();
 
   @override
   Future<IValueResponse<IUser>?> create(BuildContext context, WidgetRef ref) async {

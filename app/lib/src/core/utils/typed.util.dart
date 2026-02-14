@@ -1,17 +1,12 @@
-import 'package:casa/src/core/utils/logger.util.dart';
+import 'package:casa/src/core/utils/util.dart';
 import 'package:casa/src/widgets/base/contextdialog.widget.dart';
 import 'package:casa/src/widgets/base/text.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared/shared.dart';
 
-abstract class TypedUtil<T extends IEntity> extends GuardedOperations {
-  const TypedUtil();
-
-  @override
-  Future<void> guardedErrorCallback(String message, Object error, StackTrace stackTrace) async {
-    appLog(message: message, error: error, stackTrace: stackTrace);
-  }
+abstract class TypedUtil<T extends IEntity> extends Util {
+  TypedUtil();
 
   // region Dialog-Helper
 

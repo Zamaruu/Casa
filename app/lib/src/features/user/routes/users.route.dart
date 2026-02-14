@@ -32,7 +32,7 @@ class _UsersRouteState extends ConsumerState<UsersRoute> {
   void initState() {
     super.initState();
     menu = setupMenu();
-    userUtil = const UserUtil();
+    userUtil = UserUtil();
   }
 
   // endregion

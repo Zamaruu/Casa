@@ -11,7 +11,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared/shared.dart';
 
 class ApiKeyUtil extends TypedUtil<IApiKey> implements ICachedCrudUtil<IApiKey> {
-  const ApiKeyUtil();
+  @override
+  void dispose() {}
 
   @override
   Future<IResponse> refresh(BuildContext context, WidgetRef ref) async {

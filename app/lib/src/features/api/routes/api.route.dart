@@ -1,3 +1,4 @@
+import 'package:casa/src/core/constants/markdown.constants.dart';
 import 'package:casa/src/core/extensions/datetime.extensions.dart';
 import 'package:casa/src/core/interfaces/menu/i_menu.dart';
 import 'package:casa/src/core/models/menus/menu.dart';
@@ -29,7 +30,13 @@ class _ApiRouteState extends ConsumerState<ApiRoute> {
   void initState() {
     super.initState();
     menu = setupMenu();
-    apiKeyUtil = const ApiKeyUtil();
+    apiKeyUtil = ApiKeyUtil();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    apiKeyUtil.dispose();
   }
 
   // endregion
@@ -59,6 +66,14 @@ class _ApiRouteState extends ConsumerState<ApiRoute> {
         MenuItem.icon(
           icon: Icons.filter_alt_outlined,
           onTap: () {},
+        ),
+        MenuItem.icon(
+          icon: Icons.help_outline,
+          onTap: () async => apiKeyUtil.openHelpFromAsset(
+            context: context,
+            title: 'API-Schlüssel',
+            assetPath: kMarkdownApiKeyOverview,
+          ),
         ),
       ],
     );
