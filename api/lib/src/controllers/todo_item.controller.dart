@@ -6,7 +6,7 @@ import 'package:casa_api/src/services/service_locator.dart';
 import 'package:shared/shared.dart';
 import 'package:shelf/shelf.dart';
 
-class TodoItemController extends CrudController<ITodoItem, ITodoItemOperations> {
+class TodoItemController extends CrudController<ITodo, ITodoItemOperations> {
   TodoItemController({
     required super.operations,
     required super.logger,
@@ -29,7 +29,7 @@ class TodoItemController extends CrudController<ITodoItem, ITodoItemOperations> 
   String get path => 'todos/items';
 
   @override
-  ITodoItem Function(Map<String, dynamic> json) get entityFromJson => TodoItem.fromJson;
+  ITodo Function(Map<String, dynamic> json) get entityFromJson => Todo.fromJson;
 
   @override
   void registerEndpoints() {
@@ -45,7 +45,7 @@ class TodoItemController extends CrudController<ITodoItem, ITodoItemOperations> 
         return ApiResponse.internalServerError(response.message ?? 'Error while finding todo items by list');
       }
 
-      final items = response.value ?? <ITodoItem>[];
+      final items = response.value ?? <ITodo>[];
       final json = jsonEncode(items.map((e) => e.toJson()).toList());
       return ApiResponse.ok(json);
     }, onError: onGuardedError);

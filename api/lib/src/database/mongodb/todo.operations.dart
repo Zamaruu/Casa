@@ -13,18 +13,18 @@ class MongoTodoListOperations extends MongoOperations<ITodoList> implements ITod
       (Map<String, dynamic> doc) => TodoList.fromJson(doc);
 }
 
-class MongoTodoItemOperations extends MongoOperations<ITodoItem> implements ITodoItemOperations {
+class MongoTodoItemOperations extends MongoOperations<ITodo> implements ITodoItemOperations {
   const MongoTodoItemOperations({required super.db});
 
   @override
   DbCollection get collection => db.collection('todo_items');
 
   @override
-  TodoItem Function(Map<String, dynamic> doc) get fromMongo =>
-      (Map<String, dynamic> doc) => TodoItem.fromJson(doc);
+  Todo Function(Map<String, dynamic> doc) get fromMongo =>
+      (Map<String, dynamic> doc) => Todo.fromJson(doc);
 
   @override
-  Future<IValueResponse<List<ITodoItem>>> findByListId(String listId) async {
+  Future<IValueResponse<List<ITodo>>> findByListId(String listId) async {
     return runGuardedValue(
       () async {
         final docs = await collection.find(where.eq('listId', listId)).toList();
@@ -52,9 +52,7 @@ class MongoTodoAttachmentOperations extends MongoOperations<ITodoAttachment> imp
       () async {
         final docs = await collection
             .find(
-              where
-                  .eq('attachmentTargetType', EAttachmentTargetType.todoItem.name)
-                  .eq('attachmentTargetId', todoItemId),
+              where.eq('attachmentTargetType', EAttachmentTargetType.todoItem.name).eq('attachmentTargetId', todoItemId),
             )
             .toList();
         final attachments = docs.map((doc) => fromMongo(doc)).toList();

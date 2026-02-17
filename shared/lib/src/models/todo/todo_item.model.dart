@@ -2,12 +2,12 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:shared/src/abstract/entity.dart';
 import 'package:shared/src/enums/e_todo_priority.dart';
 import 'package:shared/src/enums/e_todo_status.dart';
-import 'package:shared/src/interfaces/models/i_todo_item.dart';
+import 'package:shared/src/interfaces/models/todos/i_todo.dart';
 
 part 'todo_item.model.g.dart';
 
 @JsonSerializable()
-class TodoItem extends Entity implements ITodoItem {
+class Todo extends Entity implements ITodo {
   @override
   final String listId;
 
@@ -35,8 +35,8 @@ class TodoItem extends Entity implements ITodoItem {
   @override
   final String createdByUserId;
 
-  const TodoItem({
-    required super.id,
+  const Todo({
+    super.id,
     super.createdAt,
     super.updatedAt,
     required this.listId,
@@ -50,13 +50,13 @@ class TodoItem extends Entity implements ITodoItem {
     required this.createdByUserId,
   });
 
-  factory TodoItem.fromJson(Map<String, dynamic> json) => _$TodoItemFromJson(json);
+  factory Todo.fromJson(Map<String, dynamic> json) => _$TodoItemFromJson(json);
 
   @override
   Map<String, dynamic> toJson() => _$TodoItemToJson(this);
 
   @override
-  ITodoItem copyWith({
+  ITodo copyWith({
     String? id,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -70,7 +70,7 @@ class TodoItem extends Entity implements ITodoItem {
     List<String>? attachmentIds,
     String? createdByUserId,
   }) {
-    return TodoItem(
+    return Todo(
       id: id ?? this.id,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,

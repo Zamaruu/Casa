@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:shared/shared.dart';
 import 'package:shared/src/abstract/entity.dart';
-import 'package:shared/src/interfaces/models/i_todo_list.dart';
 
 part 'todo_list.model.g.dart';
 
@@ -22,7 +22,7 @@ class TodoList extends Entity implements ITodoList {
   final bool isShared;
 
   const TodoList({
-    required super.id,
+    super.id,
     super.createdAt,
     super.updatedAt,
     required this.name,

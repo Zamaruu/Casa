@@ -25,7 +25,7 @@ class TestUserAuthenticator implements IUserAuthenticator {
   IUser? authenticateResult;
   String tokenToGenerate;
 
-  TestUserAuthenticator({this.authenticateResult, this.tokenToGenerate = 'token'}) ;
+  TestUserAuthenticator({this.authenticateResult, this.tokenToGenerate = 'token'});
 
   @override
   Future<IUser?> authenticate(String jwt) async => authenticateResult;
@@ -146,28 +146,28 @@ class TestErrorLogOperations implements IErrorLogOperations {
 }
 
 class TestTodoItemOperations implements ITodoItemOperations {
-  IValueResponse<List<ITodoItem>> byListResponse = const ValueResponse.success(value: []);
+  IValueResponse<List<ITodo>> byListResponse = const ValueResponse.success(value: []);
 
   @override
-  Future<IValueResponse<List<ITodoItem>>> findByListId(String listId) async => byListResponse;
+  Future<IValueResponse<List<ITodo>>> findByListId(String listId) async => byListResponse;
 
   @override
-  Future<IResponse> delete(ITodoItem entity) async => const Response.success();
+  Future<IResponse> delete(ITodo entity) async => const Response.success();
 
   @override
-  Future<IValueResponse<ITodoItem>> find(String id) async => ValueResponse.failure(message: 'not found');
+  Future<IValueResponse<ITodo>> find(String id) async => ValueResponse.failure(message: 'not found');
 
   @override
-  Future<IValueResponse<List<ITodoItem>>> findAll() async => const ValueResponse.success(value: []);
+  Future<IValueResponse<List<ITodo>>> findAll() async => const ValueResponse.success(value: []);
 
   @override
-  Future<IValueResponse<List<ITodoItem>>> findMany(List<String> ids) async => const ValueResponse.success(value: []);
+  Future<IValueResponse<List<ITodo>>> findMany(List<String> ids) async => const ValueResponse.success(value: []);
 
   @override
-  Future<IValueResponse<ITodoItem>> save(ITodoItem entity) async => ValueResponse.success(value: entity);
+  Future<IValueResponse<ITodo>> save(ITodo entity) async => ValueResponse.success(value: entity);
 
   @override
-  Future<IValueResponse<List<ITodoItem>>> saveMany(List<ITodoItem> entities) async => ValueResponse.success(value: entities);
+  Future<IValueResponse<List<ITodo>>> saveMany(List<ITodo> entities) async => ValueResponse.success(value: entities);
 }
 
 class TestTodoAttachmentOperations implements ITodoAttachmentOperations {

@@ -8,20 +8,14 @@ import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:shared/shared.dart';
 
 abstract class Util extends GuardedOperations implements IUtil {
-  final PanelController panelController;
-
   // region Constructors
 
-  Util({
-    PanelController? panelController,
-  }) : panelController = panelController ?? PanelController();
+  const Util();
 
   // endregion
 
   @override
-  void dispose() {
-    panelController.dispose();
-  }
+  void dispose() {}
 
   @override
   Future<void> guardedErrorCallback(String message, Object error, StackTrace stackTrace) async {
@@ -50,11 +44,14 @@ abstract class Util extends GuardedOperations implements IUtil {
 
     if (!context.mounted) return;
 
-    panelController.show(
-      context,
+    showPanel(
+      context: context,
       title: title,
       size: size,
-      child: MarkdownBody(data: markdown),
+      child: SingleChildScrollView(
+        padding: EdgeInsets.all(24),
+        child: MarkdownBody(data: markdown),
+      ),
     );
   }
 }

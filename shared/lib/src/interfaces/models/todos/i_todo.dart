@@ -3,7 +3,7 @@ import 'package:shared/src/enums/e_todo_status.dart';
 import 'package:shared/src/interfaces/models/i_entity.dart';
 
 /// Todo item contract representing one actionable task in a todo list.
-abstract interface class ITodoItem implements IEntity {
+abstract interface class ITodo implements IEntity {
   /// Parent list ID this item belongs to.
   ///
   /// Returns `String`.
@@ -88,8 +88,8 @@ abstract interface class ITodoItem implements IEntity {
   /// Parameter `createdByUserId`:
   /// Optional replacement for creator ID.
   ///
-  /// Returns `ITodoItem`.
-  ITodoItem copyWith({
+  /// Returns `ITodo`.
+  ITodo copyWith({
     String? id,
     DateTime? createdAt,
     DateTime? updatedAt,

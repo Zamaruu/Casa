@@ -1,110 +1,87 @@
+import 'package:casa/src/core/extensions/context.extension.dart';
 import 'package:casa/src/core/models/enums/e_panel_size.dart';
 import 'package:casa/src/core/models/layout/layout.dart';
 import 'package:casa/src/widgets/base/layoutbuilder.widget.dart';
+import 'package:casa/src/widgets/base/text.widget.dart';
 import 'package:flutter/material.dart';
 
-class PanelController {
-  OverlayEntry? _entry;
-
-  PanelController();
-
-  bool get isOpen => _entry != null;
-
-  // region Methods
-
-  void show(
-    BuildContext context, {
-    String? title,
-    EPanelSize size = EPanelSize.small,
-    required Widget child,
-  }) {
-    if (_entry != null) return;
-
-    final overlay = Overlay.of(context);
-
-    _entry = OverlayEntry(
-      builder: (context) => _CasaPanel(
-        title: title,
-        onClose: hide,
-        child: child,
-      ),
-    );
-
-    overlay.insert(_entry!);
-  }
-
-  void hide() {
-    _entry?.remove();
-    _entry = null;
-  }
-
-  void dispose() {
-    _entry?.remove();
-  }
-
-  // endregion
+Future<T?> showPanel<T>({
+  required BuildContext context,
+  required Widget child,
+  String? title,
+  EPanelSize size = EPanelSize.small,
+  bool barrierDismissible = true,
+  bool enableTopPadding = false,
+  double topPadding = kToolbarHeight,
+}) {
+  return Navigator.of(context).push(
+    _CasaPanelRoute<T>(
+      child: child,
+      title: title,
+      size: size,
+      barrierDismissible: barrierDismissible,
+      enableTopPadding: enableTopPadding,
+      topPadding: topPadding,
+    ),
+  );
 }
 
-class _CasaPanel extends StatefulWidget {
+class _CasaPanelRoute<T> extends PageRoute<T> {
+  // region Parameters
+
   final Widget child;
 
   final String? title;
 
   final EPanelSize size;
 
-  final VoidCallback onClose;
+  final bool _barrierDismissible;
 
-  const _CasaPanel({
+  final bool enableTopPadding;
+
+  final double topPadding;
+
+  // endregion
+
+  // region Constructors
+
+  _CasaPanelRoute({
     required this.child,
-    required this.onClose,
     this.title,
-    // ignore: unused_element_parameter
+    bool barrierDismissible = true,
     this.size = EPanelSize.small,
-  });
+    this.enableTopPadding = false,
+    this.topPadding = kToolbarHeight,
+  }) : _barrierDismissible = barrierDismissible;
+
+  // endregion
+
+  // region Getter
 
   @override
-  State<_CasaPanel> createState() => _CasaPanelState();
-}
-
-class _CasaPanelState extends State<_CasaPanel> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<Offset> _animation;
-
-  // region Lifecycle
+  bool get maintainState => false;
 
   @override
-  void initState() {
-    super.initState();
-
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 250),
-    );
-
-    _animation = Tween<Offset>(begin: const Offset(1, 0), end: Offset.zero).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic),
-    );
-
-    _controller.forward();
-  }
+  bool get opaque => false;
 
   @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+  bool get barrierDismissible => _barrierDismissible;
+
+  @override
+  Color get barrierColor => Colors.grey.withValues(alpha: 0.3);
+
+  @override
+  String? get barrierLabel => null;
+
+  @override
+  Duration get transitionDuration => const Duration(milliseconds: 250);
 
   // endregion
 
   // region Methods
 
-  void _close() async {
-    await _controller.reverse();
-    widget.onClose();
-  }
-
   double _calculateWidth(Layout layout) {
-    switch (widget.size) {
+    switch (size) {
       case EPanelSize.small:
         return layout.width > 900 ? 420.0 : layout.width;
       case EPanelSize.medium:
@@ -129,14 +106,14 @@ class _CasaPanelState extends State<_CasaPanel> with SingleTickerProviderStateMi
         children: [
           const SizedBox(width: 24),
           Expanded(
-            child: Text(
-              widget.title ?? 'Hilfe',
-              style: Theme.of(context).textTheme.titleMedium,
+            child: CasaText(
+              title ?? 'Panel',
+              style: context.theme.textTheme.titleMedium,
             ),
           ),
           IconButton(
             icon: const Icon(Icons.close),
-            onPressed: _close,
+            onPressed: () => Navigator.of(context).pop(),
           ),
           const SizedBox(width: 12),
         ],
@@ -144,55 +121,65 @@ class _CasaPanelState extends State<_CasaPanel> with SingleTickerProviderStateMi
     );
   }
 
+  @override
+  Widget buildTransitions(
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    final offsetAnimation =
+        Tween<Offset>(
+          begin: const Offset(1, 0),
+          end: Offset.zero,
+        ).animate(
+          CurvedAnimation(
+            parent: animation,
+            curve: Curves.easeOutCubic,
+          ),
+        );
+
+    return SlideTransition(
+      position: offsetAnimation,
+      child: child,
+    );
+  }
+
   // endregion
 
   @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.grey.withValues(alpha: 0.3),
-      child: CasaLayoutBuilder(
-        builder: (context, layout) {
-          final panelWidth = _calculateWidth(layout);
+  Widget buildPage(
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+  ) {
+    return CasaLayoutBuilder(
+      builder: (context, layout) {
+        final panelWidth = _calculateWidth(layout);
 
-          return Stack(
-            children: [
-              /// Scrim
-              Positioned.fill(
-                child: GestureDetector(
-                  onTap: _close,
-                  child: Container(color: Colors.transparent),
+        return Align(
+          alignment: Alignment.centerRight,
+          child: Padding(
+            padding: enableTopPadding ? EdgeInsets.only(top: topPadding) : EdgeInsets.zero,
+            child: SizedBox(
+              width: panelWidth,
+              height: double.infinity,
+              child: Material(
+                color: context.theme.colorScheme.surface,
+                elevation: 16,
+                child: Column(
+                  children: [
+                    _buildHeader(context),
+                    Expanded(
+                      child: child,
+                    ),
+                  ],
                 ),
               ),
-
-              /// Panel
-              Align(
-                alignment: Alignment.centerRight,
-                child: SlideTransition(
-                  position: _animation,
-                  child: Container(
-                    width: panelWidth,
-                    height: double.infinity,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surface,
-                    ),
-                    child: Column(
-                      children: [
-                        _buildHeader(context),
-                        Expanded(
-                          child: SingleChildScrollView(
-                            padding: const EdgeInsets.all(24),
-                            child: widget.child,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          );
-        },
-      ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

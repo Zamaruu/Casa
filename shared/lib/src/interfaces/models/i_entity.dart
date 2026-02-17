@@ -25,18 +25,6 @@ abstract interface class IEntity implements ICopyable<IEntity>, ISerializable {
   DateTime? get updatedAt;
 
   @override
-  /// Creates a copy with selectively overridden base entity fields.
-  ///
-  /// Parameter `id`:
-  /// Optional replacement for the entity identifier.
-  ///
-  /// Parameter `createdAt`:
-  /// Optional replacement for the creation timestamp.
-  ///
-  /// Parameter `updatedAt`:
-  /// Optional replacement for the update timestamp.
-  ///
-  /// Returns `IEntity`.
   IEntity copyWith({
     String? id,
     DateTime? createdAt,

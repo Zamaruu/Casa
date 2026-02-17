@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:casa_api/src/controllers/todo_attachment.controller.dart';
 import 'package:shared/shared.dart';
@@ -12,15 +13,15 @@ void main() {
     test('getByItemId returns 200 with serialized attachments', () async {
       final operations = TestTodoAttachmentOperations()
         ..byItemResponse = ValueResponse.success(
-          value: const [
+          value: [
             TodoAttachment(
               id: 'a1',
               attachmentTargetId: 'i1',
               fileName: 'note.txt',
               mimeType: 'text/plain',
               sizeBytes: 10,
-              storagePath: '/tmp/note.txt',
               uploadedByUserId: 'u1',
+              blob: Uint8List(1),
             ),
           ],
         );

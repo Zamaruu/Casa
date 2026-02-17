@@ -4,7 +4,7 @@ import 'package:casa/src/features/todos/data/interfaces/i_todo_item.api.dart';
 import 'package:casa/src/features/todos/data/repositories/todo_item.repo.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final todoItemRepositoryProvider = Provider<TodoItemRepo>((ref) {
+final todoRepositoryProvider = Provider<TodoItemRepo>((ref) {
   final user = ref.read(authUserProvider);
   final api = services.api.get<ITodoItemApi>();
 

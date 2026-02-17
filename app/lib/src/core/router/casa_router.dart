@@ -10,7 +10,7 @@ import 'package:casa/src/features/home/home.route.dart';
 import 'package:casa/src/features/logs/routes/errorlogs.route.dart';
 import 'package:casa/src/features/settings/data/repositories/settings.repository.dart';
 import 'package:casa/src/features/settings/routes/server.route.dart';
-import 'package:casa/src/features/todos/routes/todo_item.route.dart';
+import 'package:casa/src/features/todos/widgets/dialogs/todo_detail.dialog.dart';
 import 'package:casa/src/features/todos/routes/todo_list.route.dart';
 import 'package:casa/src/features/todos/routes/todos.route.dart';
 import 'package:casa/src/features/user/routes/user.route.dart';
@@ -109,7 +109,7 @@ class RouterNotifier extends AsyncNotifier<GoRouter> {
               builder: (context, state) {
                 final listId = state.pathParameters['listId'];
                 final itemId = state.pathParameters['itemId'];
-                return TodoItemRoute(
+                return TodoDetailDialog(
                   listId: listId!,
                   itemId: itemId!,
                 );

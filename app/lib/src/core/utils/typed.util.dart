@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared/shared.dart';
 
 abstract class TypedUtil<T extends IEntity> extends Util {
-  TypedUtil();
+  const TypedUtil();
 
   // region Dialog-Helper
 

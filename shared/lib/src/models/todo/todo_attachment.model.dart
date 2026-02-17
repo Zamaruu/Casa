@@ -1,7 +1,9 @@
+import 'dart:typed_data';
+
 import 'package:json_annotation/json_annotation.dart';
+import 'package:shared/shared.dart';
 import 'package:shared/src/abstract/entity.dart';
-import 'package:shared/src/enums/e_attachment_target_type.dart';
-import 'package:shared/src/interfaces/models/i_todo_attachment.dart';
+import 'package:shared/src/converters/uint8list.converter.dart';
 
 part 'todo_attachment.model.g.dart';
 
@@ -23,7 +25,11 @@ class TodoAttachment extends Entity implements ITodoAttachment {
   final int sizeBytes;
 
   @override
-  final String storagePath;
+  @Uint8ListConverter()
+  final Uint8List blob;
+
+  @override
+  final String? storagePath;
 
   @override
   final String uploadedByUserId;
@@ -37,8 +43,9 @@ class TodoAttachment extends Entity implements ITodoAttachment {
     required this.fileName,
     required this.mimeType,
     required this.sizeBytes,
-    required this.storagePath,
+    this.storagePath,
     required this.uploadedByUserId,
+    required this.blob,
   });
 
   @override
@@ -62,6 +69,7 @@ class TodoAttachment extends Entity implements ITodoAttachment {
     int? sizeBytes,
     String? storagePath,
     String? uploadedByUserId,
+    Uint8List? blob,
   }) {
     return TodoAttachment(
       id: id ?? this.id,
@@ -74,6 +82,7 @@ class TodoAttachment extends Entity implements ITodoAttachment {
       sizeBytes: sizeBytes ?? this.sizeBytes,
       storagePath: storagePath ?? this.storagePath,
       uploadedByUserId: uploadedByUserId ?? this.uploadedByUserId,
+      blob: blob ?? this.blob,
     );
   }
 }

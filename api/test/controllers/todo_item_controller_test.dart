@@ -13,7 +13,7 @@ void main() {
       final operations = TestTodoItemOperations()
         ..byListResponse = ValueResponse.success(
           value: const [
-            TodoItem(
+            Todo(
               id: 'i1',
               listId: 'l1',
               title: 'Item',
