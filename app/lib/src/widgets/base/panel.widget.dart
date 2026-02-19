@@ -13,6 +13,7 @@ Future<T?> showPanel<T>({
   bool barrierDismissible = true,
   bool enableTopPadding = false,
   double topPadding = kToolbarHeight,
+  VoidCallback? onClose,
 }) {
   return Navigator.of(context).push(
     _CasaPanelRoute<T>(
@@ -22,6 +23,7 @@ Future<T?> showPanel<T>({
       barrierDismissible: barrierDismissible,
       enableTopPadding: enableTopPadding,
       topPadding: topPadding,
+      onClose: onClose,
     ),
   );
 }
@@ -41,6 +43,8 @@ class _CasaPanelRoute<T> extends PageRoute<T> {
 
   final double topPadding;
 
+  final VoidCallback? onClose;
+
   // endregion
 
   // region Constructors
@@ -52,6 +56,7 @@ class _CasaPanelRoute<T> extends PageRoute<T> {
     this.size = EPanelSize.small,
     this.enableTopPadding = false,
     this.topPadding = kToolbarHeight,
+    this.onClose,
   }) : _barrierDismissible = barrierDismissible;
 
   // endregion
@@ -95,6 +100,22 @@ class _CasaPanelRoute<T> extends PageRoute<T> {
     }
   }
 
+  void _onClose(BuildContext context) {
+    if (onClose != null) {
+      onClose!();
+    }
+
+    Navigator.of(context).pop();
+  }
+
+  @override
+  bool didPop(T? result) {
+    final didPop = super.didPop(result);
+    onClose?.call();
+
+    return didPop;
+  }
+
   // endregion
 
   // region Widgets
@@ -113,7 +134,7 @@ class _CasaPanelRoute<T> extends PageRoute<T> {
           ),
           IconButton(
             icon: const Icon(Icons.close),
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => _onClose(context),
           ),
           const SizedBox(width: 12),
         ],

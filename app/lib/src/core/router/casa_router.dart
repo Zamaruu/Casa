@@ -1,4 +1,5 @@
 import 'package:casa/src/core/auth/auth.provider.dart';
+import 'package:casa/src/core/extensions/routerstate.extension.dart';
 import 'package:casa/src/core/models/enums/e_auth_status.dart';
 import 'package:casa/src/core/router/casa_auth_router_refreshable.dart';
 import 'package:casa/src/core/router/casa_route.dart';
@@ -101,21 +102,10 @@ class RouterNotifier extends AsyncNotifier<GoRouter> {
           path: ':listId',
           builder: (context, state) {
             final listId = state.pathParameters['listId'];
+            final itemId = state.queryParameters['itemId'];
+
             return TodoListRoute(listId: listId!);
           },
-          routes: [
-            CasaRoute(
-              path: 'item/:itemId',
-              builder: (context, state) {
-                final listId = state.pathParameters['listId'];
-                final itemId = state.pathParameters['itemId'];
-                return TodoDetailDialog(
-                  listId: listId!,
-                  itemId: itemId!,
-                );
-              },
-            ),
-          ],
         ),
       ],
     ),

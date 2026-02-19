@@ -10,4 +10,15 @@ abstract class CasaNavigator {
 
     context.go(path);
   }
+
+  /// Takes the current route, removes all query parameters (after the ?) and calls context.go with that route.
+  static void removeQuery(BuildContext context) {
+    final router = GoRouter.of(context);
+    final currentUri = router.routerDelegate.currentConfiguration.uri.toString();
+
+    final queryIndex = currentUri.indexOf('?');
+    final newUri = queryIndex == -1 ? currentUri : currentUri.substring(0, queryIndex);
+
+    context.go(newUri);
+  }
 }

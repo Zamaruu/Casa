@@ -1,7 +1,9 @@
+import 'package:casa/src/core/interfaces/widgets/i_menu_widget.dart';
 import 'package:casa/src/core/models/enums/e_panel_size.dart';
 import 'package:casa/src/core/interfaces/menu/i_menu.dart';
 import 'package:casa/src/core/models/menus/menu.dart';
 import 'package:casa/src/core/models/menus/menu_item.dart';
+import 'package:casa/src/core/router/casa_navigator.dart';
 import 'package:casa/src/features/todos/data/provider/todo_items_provider.dart';
 import 'package:casa/src/features/todos/data/utils/todo.util.dart';
 import 'package:casa/src/features/todos/widgets/dialogs/todo_detail.dialog.dart';
@@ -16,13 +18,19 @@ import 'package:shared/shared.dart';
 class TodoListRoute extends ConsumerStatefulWidget {
   final String listId;
 
-  const TodoListRoute({super.key, required this.listId});
+  final String? openItemId;
+
+  const TodoListRoute({
+    super.key,
+    required this.listId,
+    this.openItemId,
+  });
 
   @override
   ConsumerState<TodoListRoute> createState() => _TodoListRouteState();
 }
 
-class _TodoListRouteState extends ConsumerState<TodoListRoute> {
+class _TodoListRouteState extends ConsumerState<TodoListRoute> implements IMenuWidget {
   late final IMenu menu;
 
   late final TodoUtil todoUtils;
@@ -34,6 +42,9 @@ class _TodoListRouteState extends ConsumerState<TodoListRoute> {
     todoUtils = const TodoUtil();
   }
 
+  // region Methods
+
+  @override
   IMenu setupMenu() {
     return Menu(
       mainItems: [
@@ -58,17 +69,22 @@ class _TodoListRouteState extends ConsumerState<TodoListRoute> {
   }
 
   void showTodoDetails(ITodo todo) {
+    CasaNavigator.go(context, '/todos/${todo.listId}?itemId=${todo.id}');
+
     showPanel(
       title: todo.title,
       context: context,
       size: EPanelSize.medium,
       enableTopPadding: true,
+      onClose: () => CasaNavigator.removeQuery(context),
       child: TodoDetailDialog(
         listId: todo.listId,
         itemId: todo.id,
       ),
     );
   }
+
+  // endregion
 
   @override
   Widget build(BuildContext context) {
