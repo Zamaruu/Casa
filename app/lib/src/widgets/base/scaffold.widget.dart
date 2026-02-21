@@ -28,6 +28,9 @@ class CasaScaffold<R extends IResponse> extends ConsumerStatefulWidget {
 
   final Widget Function(BuildContext context, WidgetRef ref, R futureResponse, Layout layout)? futureBuilder;
 
+  /// A function that will be executed on the first render after the future was run.
+  final void Function(BuildContext context, WidgetRef ref, R futureResponse)? runAfterFuture;
+
   /// The menu items to be displayed as commandbar or multifab, depending on device layout
   final IMenu? menu;
 
@@ -53,6 +56,7 @@ class CasaScaffold<R extends IResponse> extends ConsumerStatefulWidget {
     this.showAppBar = true,
     this.bodyPadding,
     this.runFutureOnce = false,
+    this.runAfterFuture,
   }) : assert(builder != null || futureBuilder != null, 'Either builder or futureBuilder must be provided');
 
   const CasaScaffold.builder({
@@ -66,6 +70,7 @@ class CasaScaffold<R extends IResponse> extends ConsumerStatefulWidget {
     this.bodyPadding,
   }) : future = null,
        futureBuilder = null,
+       runAfterFuture = null,
        runFutureOnce = false;
 
   const CasaScaffold.future({
@@ -79,6 +84,7 @@ class CasaScaffold<R extends IResponse> extends ConsumerStatefulWidget {
     this.showAppBar = true,
     this.bodyPadding,
     this.runFutureOnce = false,
+    this.runAfterFuture,
   }) : builder = null;
 
   // endregion
@@ -179,6 +185,12 @@ class _CasaScaffoldState<R extends IResponse> extends ConsumerState<CasaScaffold
                       return Center(child: CasaText('Error: ${snapshot.error}'));
                     } else if (snapshot.hasData) {
                       final futureResponse = snapshot.data!;
+
+                      if (widget.runAfterFuture != null) {
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          widget.runAfterFuture!(context, ref, futureResponse);
+                        });
+                      }
 
                       return widget.futureBuilder!(context, ref, futureResponse, layout);
                     } else {

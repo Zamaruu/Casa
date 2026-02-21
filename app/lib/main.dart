@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
+import 'package:go_router/go_router.dart';
 import 'package:toastification/toastification.dart';
 
 void main() async {
@@ -24,6 +25,19 @@ void main() async {
 
 class CasaApp extends ConsumerWidget {
   const CasaApp({super.key});
+
+  static final GoRouter _bootstrapRouter = GoRouter(
+    routes: [
+      GoRoute(
+        path: '/:path(.*)',
+        builder: (context, state) => const Scaffold(
+          body: Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
+      ),
+    ],
+  );
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -47,15 +61,11 @@ class CasaApp extends ConsumerWidget {
 }
 
 Widget _loadingBuilder() {
-  return MaterialApp(
+  return MaterialApp.router(
     title: "Casa",
     theme: CasaTheme.light(),
     debugShowCheckedModeBanner: false,
-    home: Scaffold(
-      body: Center(
-        child: CircularProgressIndicator(),
-      ),
-    ),
+    routerConfig: CasaApp._bootstrapRouter,
   );
 }
 

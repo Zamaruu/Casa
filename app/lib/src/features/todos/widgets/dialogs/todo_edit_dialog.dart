@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared/shared.dart';
 
 class TodoEditDialog extends ConsumerStatefulWidget {
-  /// The todolist to edit.
+  /// The item to edit.
   /// If null, a new todolist will be created with and empty dialog.
   final ITodo? todo;
 

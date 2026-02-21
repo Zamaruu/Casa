@@ -30,6 +30,8 @@ abstract class GuardedOperations {
 
   // region Guards
 
+  // region Simple Guards
+
   /// Runs a simple operation in a try catch with error handling.
   ///
   /// Returns a simple [IResponse] which indicates the success or failure of the operation.
@@ -48,6 +50,10 @@ abstract class GuardedOperations {
       return Response.failure(message: message, error: e, stackTrace: st);
     }
   }
+
+  // endregion
+
+  // region Value Guards
 
   /// Runs a simple operation in a try catch with error handling.
   ///
@@ -68,6 +74,25 @@ abstract class GuardedOperations {
     }
   }
 
+  Future<IValueResponse<T>?> runGuardedNullableValue<T>(
+    Future<IValueResponse<T>?> Function() operation, {
+    String? operationErrorMessage,
+  }) async {
+    try {
+      return operation();
+    } catch (e, st) {
+      final guardedMessage = 'Unexpected error ${e.runtimeType} catched in $runtimeType guarded value oepration.';
+      final message = _messageBuilder(guardedMessage, operationErrorMessage);
+
+      await guardedErrorCallback(message, e, st);
+      return ValueResponse.failure(message: message, error: e, stackTrace: st);
+    }
+  }
+
+  // endregion
+
+  // region Custom Guards
+
   Future<T> runCustomGuarded<T>(
     Future<T> Function() operation, {
     String? operationErrorMessage,
@@ -84,6 +109,10 @@ abstract class GuardedOperations {
       return onError(message, e, st);
     }
   }
+
+  // endreion
+
+  // endregion
 
   // endregion
 }

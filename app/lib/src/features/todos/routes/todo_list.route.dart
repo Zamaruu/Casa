@@ -1,4 +1,6 @@
+import 'package:casa/src/core/extensions/list.extensions.dart';
 import 'package:casa/src/core/interfaces/widgets/i_menu_widget.dart';
+import 'package:casa/src/core/interfaces/widgets/i_routable_widget.dart';
 import 'package:casa/src/core/models/enums/e_panel_size.dart';
 import 'package:casa/src/core/interfaces/menu/i_menu.dart';
 import 'package:casa/src/core/models/menus/menu.dart';
@@ -30,7 +32,7 @@ class TodoListRoute extends ConsumerStatefulWidget {
   ConsumerState<TodoListRoute> createState() => _TodoListRouteState();
 }
 
-class _TodoListRouteState extends ConsumerState<TodoListRoute> implements IMenuWidget {
+class _TodoListRouteState extends ConsumerState<TodoListRoute> implements IMenuWidget, IRoutableWidget<ITodo> {
   late final IMenu menu;
 
   late final TodoUtil todoUtils;
@@ -68,6 +70,13 @@ class _TodoListRouteState extends ConsumerState<TodoListRoute> implements IMenuW
     );
   }
 
+  @override
+  void openItemNavigate(BuildContext context, WidgetRef ref, ITodo? item) {
+    if (item != null) {
+      showTodoDetails(item);
+    }
+  }
+
   void showTodoDetails(ITodo todo) {
     CasaNavigator.go(context, '/todos/${todo.listId}?itemId=${todo.id}');
 
@@ -92,6 +101,11 @@ class _TodoListRouteState extends ConsumerState<TodoListRoute> implements IMenuW
       title: 'Todo-Liste',
       menu: menu,
       future: ref.watch(todoItemsByListProvider(widget.listId).future),
+      runAfterFuture: (context, ref, response) => openItemNavigate(
+        context,
+        ref,
+        response.value?.firstWhereOrNull((e) => e.id == widget.openItemId),
+      ),
       futureBuilder: (context, ref, response, layout) {
         if (response.isSuccess && response.hasValue) {
           final items = response.value!;

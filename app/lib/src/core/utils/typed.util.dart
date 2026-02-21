@@ -1,5 +1,6 @@
 import 'package:casa/src/core/utils/util.dart';
 import 'package:casa/src/widgets/base/contextdialog.widget.dart';
+import 'package:casa/src/widgets/base/panel.widget.dart';
 import 'package:casa/src/widgets/base/text.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -37,6 +38,18 @@ abstract class TypedUtil<T extends IEntity> extends Util {
     } else {
       return shouldDelete;
     }
+  }
+
+  Future<IValueResponse<T>?> showEditPanel({required BuildContext context, required Widget child, String? title}) async {
+    final createResponse = await showPanel<IValueResponse<T>>(
+      context: context,
+      title: title,
+      contentPadding: EdgeInsets.all(24),
+      enableTopPadding: true,
+      child: child,
+    );
+
+    return createResponse;
   }
 
   // endregion
