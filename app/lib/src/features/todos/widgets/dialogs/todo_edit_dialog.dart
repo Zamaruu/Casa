@@ -104,11 +104,11 @@ class _TodoEditDialogState extends ConsumerState<TodoEditDialog> {
           TextFormField(
             controller: nameController,
             decoration: const InputDecoration(
-              labelText: 'Listenname',
+              labelText: 'Name',
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Listenname darf nicht leer sein';
+                return 'Name darf nicht leer sein';
               }
               return null;
             },

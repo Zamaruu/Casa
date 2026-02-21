@@ -5,7 +5,7 @@ import 'package:casa/src/core/utils/typed.util.dart';
 import 'package:casa/src/features/todos/data/provider/todo_lists_provider.dart';
 import 'package:casa/src/features/todos/data/repositories/todo_list.repository.dart';
 import 'package:casa/src/features/todos/widgets/dialogs/todo_edit_dialog.dart';
-import 'package:casa/src/widgets/base/contextdialog.widget.dart';
+import 'package:casa/src/widgets/base/panel.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared/shared.dart';
@@ -25,12 +25,12 @@ class TodoUtil extends TypedUtil<ITodo> implements ICachedCrudUtil<ITodo> {
       return null;
     }
 
-    final createResponse = await ContextDialog.openDialog<IValueResponse<ITodo>>(
-      context,
-      ContextDialog(
-        title: "Todo erstellen",
-        content: TodoEditDialog(todoListId: listId),
-      ),
+    final createResponse = await showPanel(
+      context: context,
+      title: 'Neues Todo',
+      contentPadding: EdgeInsets.all(24),
+      enableTopPadding: true,
+      child: TodoEditDialog(todoListId: listId),
     );
 
     if (createResponse != null && context.mounted) {

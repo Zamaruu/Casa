@@ -5,14 +5,38 @@ import 'package:casa/src/widgets/base/layoutbuilder.widget.dart';
 import 'package:casa/src/widgets/base/text.widget.dart';
 import 'package:flutter/material.dart';
 
+/// Shows a panel in the right center of the screen with a fade-in and fade-out animation.
 Future<T?> showPanel<T>({
   required BuildContext context,
   required Widget child,
+
+  /// The padding for the content of the panel.
+  EdgeInsetsGeometry contentPadding = EdgeInsets.zero,
+
+  /// The title of the panel.
+  ///
+  /// If `null`, no title will be displayed.
   String? title,
+
+  /// The size of the panel.
+  ///
+  /// Adjusts automatically based on the screen width.
   EPanelSize size = EPanelSize.small,
+
+  /// Whether the panel should be dismissed by tapping outside of it.
+  ///
+  /// If `true`, [onClose] will also be called after the panel is dismissed.
   bool barrierDismissible = true,
+
+  /// Enable padding for the top of the panel.
+  ///
+  /// If `true`, [topPadding] will be used as the padding for the top of the panel.
   bool enableTopPadding = false,
+
+  /// Padding for the top of the panel.
   double topPadding = kToolbarHeight,
+
+  /// Callback to be called shortly before the panel is closed (by clicking on the close button or outside the panel).
   VoidCallback? onClose,
 }) {
   return Navigator.of(context).push(
@@ -24,6 +48,7 @@ Future<T?> showPanel<T>({
       enableTopPadding: enableTopPadding,
       topPadding: topPadding,
       onClose: onClose,
+      contentPadding: contentPadding,
     ),
   );
 }
@@ -45,6 +70,8 @@ class _CasaPanelRoute<T> extends PageRoute<T> {
 
   final VoidCallback? onClose;
 
+  final EdgeInsetsGeometry contentPadding;
+
   // endregion
 
   // region Constructors
@@ -57,6 +84,7 @@ class _CasaPanelRoute<T> extends PageRoute<T> {
     this.enableTopPadding = false,
     this.topPadding = kToolbarHeight,
     this.onClose,
+    this.contentPadding = EdgeInsets.zero,
   }) : _barrierDismissible = barrierDismissible;
 
   // endregion
@@ -192,7 +220,10 @@ class _CasaPanelRoute<T> extends PageRoute<T> {
                   children: [
                     _buildHeader(context),
                     Expanded(
-                      child: child,
+                      child: Padding(
+                        padding: contentPadding,
+                        child: child,
+                      ),
                     ),
                   ],
                 ),

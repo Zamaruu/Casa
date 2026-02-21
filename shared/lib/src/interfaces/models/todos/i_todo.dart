@@ -51,44 +51,6 @@ abstract interface class ITodo implements IEntity {
 
   @override
   /// Creates a copy with selectively overridden todo item fields.
-  ///
-  /// Parameter `id`:
-  /// Optional replacement for item ID.
-  ///
-  /// Parameter `createdAt`:
-  /// Optional replacement for creation timestamp.
-  ///
-  /// Parameter `updatedAt`:
-  /// Optional replacement for update timestamp.
-  ///
-  /// Parameter `listId`:
-  /// Optional replacement for parent list ID.
-  ///
-  /// Parameter `title`:
-  /// Optional replacement for item title.
-  ///
-  /// Parameter `description`:
-  /// Optional replacement for item description.
-  ///
-  /// Parameter `status`:
-  /// Optional replacement for item status.
-  ///
-  /// Parameter `priority`:
-  /// Optional replacement for item priority.
-  ///
-  /// Parameter `dueDate`:
-  /// Optional replacement for due date/time.
-  ///
-  /// Parameter `assignedUserIds`:
-  /// Optional replacement for assignee IDs.
-  ///
-  /// Parameter `attachmentIds`:
-  /// Optional replacement for attachment IDs.
-  ///
-  /// Parameter `createdByUserId`:
-  /// Optional replacement for creator ID.
-  ///
-  /// Returns `ITodo`.
   ITodo copyWith({
     String? id,
     DateTime? createdAt,
