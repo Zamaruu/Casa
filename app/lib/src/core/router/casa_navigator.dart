@@ -21,4 +21,15 @@ abstract class CasaNavigator {
 
     context.go(newUri);
   }
+
+  /// Parses the query parameters from the current route and returns the value of the parameter with the given key 'itemId' or a custom [keyName].
+  static String? getItemId(BuildContext context, {String? keyName}) {
+    final router = GoRouter.of(context);
+    final currentUri = router.routerDelegate.currentConfiguration.uri.toString();
+
+    final queryParams = Uri.parse(currentUri).queryParameters;
+
+    final id = queryParams[keyName ?? 'itemId'];
+    return id;
+  }
 }

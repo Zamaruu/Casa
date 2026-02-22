@@ -32,16 +32,20 @@ class TodoListRoute extends ConsumerStatefulWidget {
   ConsumerState<TodoListRoute> createState() => _TodoListRouteState();
 }
 
-class _TodoListRouteState extends ConsumerState<TodoListRoute> implements IMenuWidget, IRoutableWidget<ITodo> {
+class _TodoListRouteState extends ConsumerState<TodoListRoute>
+    implements IMenuWidget, IRoutableWidget<ITodo> {
   late final IMenu menu;
 
   late final TodoUtil todoUtils;
+  late final String? _initialOpenItemId;
+  bool _hasHandledInitialQueryOpen = false;
 
   @override
   void initState() {
     super.initState();
     menu = setupMenu();
     todoUtils = const TodoUtil();
+    _initialOpenItemId = widget.openItemId;
   }
 
   // region Methods
@@ -77,6 +81,31 @@ class _TodoListRouteState extends ConsumerState<TodoListRoute> implements IMenuW
     }
   }
 
+  void _openInitialQueryItemOnce(List<ITodo> items) {
+    if (_hasHandledInitialQueryOpen) {
+      return;
+    }
+
+    _hasHandledInitialQueryOpen = true;
+    final itemId = _initialOpenItemId;
+    if (itemId == null) {
+      return;
+    }
+
+    final item = items.firstWhereOrNull((todo) => todo.id == itemId);
+    if (item == null) {
+      return;
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+
+      showTodoDetails(item);
+    });
+  }
+
   void showTodoDetails(ITodo todo) {
     CasaNavigator.go(context, '/todos/${todo.listId}?itemId=${todo.id}');
 
@@ -101,14 +130,10 @@ class _TodoListRouteState extends ConsumerState<TodoListRoute> implements IMenuW
       title: 'Todo-Liste',
       menu: menu,
       future: ref.watch(todoItemsByListProvider(widget.listId).future),
-      runAfterFuture: (context, ref, response) => openItemNavigate(
-        context,
-        ref,
-        response.value?.firstWhereOrNull((e) => e.id == widget.openItemId),
-      ),
       futureBuilder: (context, ref, response, layout) {
         if (response.isSuccess && response.hasValue) {
           final items = response.value!;
+          _openInitialQueryItemOnce(items);
 
           return TodoItemsContent(
             items: items,
@@ -116,7 +141,11 @@ class _TodoListRouteState extends ConsumerState<TodoListRoute> implements IMenuW
           );
         }
 
-        return Center(child: CasaText('Fehler beim Laden der Todo-Items für ${widget.listId}'));
+        return Center(
+          child: CasaText(
+            'Fehler beim Laden der Todo-Items für ${widget.listId}',
+          ),
+        );
       },
     );
   }

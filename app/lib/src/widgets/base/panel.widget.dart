@@ -5,8 +5,6 @@ import 'package:casa/src/widgets/base/layoutbuilder.widget.dart';
 import 'package:casa/src/widgets/base/text.widget.dart';
 import 'package:flutter/material.dart';
 
-_CasaPanelRoute<dynamic>? _activePanelRoute;
-
 /// Shows a panel in the right center of the screen with a fade-in and fade-out animation.
 Future<T?> showPanel<T>({
   required BuildContext context,
@@ -40,34 +38,19 @@ Future<T?> showPanel<T>({
 
   /// Callback to be called shortly before the panel is closed (by clicking on the close button or outside the panel).
   VoidCallback? onClose,
-}) async {
-  final navigator = Navigator.of(context);
-
-  final previousRoute = _activePanelRoute;
-  if (previousRoute != null && previousRoute.navigator != null) {
-    previousRoute.navigator!.removeRoute(previousRoute);
-  }
-
-  final route = _CasaPanelRoute<T>(
-    child: child,
-    title: title,
-    size: size,
-    barrierDismissible: barrierDismissible,
-    enableTopPadding: enableTopPadding,
-    topPadding: topPadding,
-    onClose: onClose,
-    contentPadding: contentPadding,
+}) {
+  return Navigator.of(context).push(
+    _CasaPanelRoute<T>(
+      child: child,
+      title: title,
+      size: size,
+      barrierDismissible: barrierDismissible,
+      enableTopPadding: enableTopPadding,
+      topPadding: topPadding,
+      onClose: onClose,
+      contentPadding: contentPadding,
+    ),
   );
-
-  _activePanelRoute = route;
-
-  final result = await navigator.push(route);
-
-  if (identical(_activePanelRoute, route)) {
-    _activePanelRoute = null;
-  }
-
-  return result;
 }
 
 class _CasaPanelRoute<T> extends PageRoute<T> {
@@ -88,7 +71,6 @@ class _CasaPanelRoute<T> extends PageRoute<T> {
   final VoidCallback? onClose;
 
   final EdgeInsetsGeometry contentPadding;
-  bool _didNotifyClose = false;
 
   // endregion
 
@@ -147,41 +129,19 @@ class _CasaPanelRoute<T> extends PageRoute<T> {
   }
 
   void _onClose(BuildContext context) {
-    Navigator.of(context).pop();
-  }
-
-  void _notifyClosed() {
-    if (_didNotifyClose) {
-      return;
+    if (onClose != null) {
+      onClose!();
     }
 
-    _didNotifyClose = true;
-    onClose?.call();
+    Navigator.of(context).pop();
   }
 
   @override
   bool didPop(T? result) {
     final didPop = super.didPop(result);
-    if (didPop) {
-      _notifyClosed();
-    }
-
-    if (identical(_activePanelRoute, this)) {
-      _activePanelRoute = null;
-    }
+    onClose?.call();
 
     return didPop;
-  }
-
-  @override
-  void didComplete(T? result) {
-    _notifyClosed();
-
-    if (identical(_activePanelRoute, this)) {
-      _activePanelRoute = null;
-    }
-
-    super.didComplete(result);
   }
 
   // endregion
@@ -249,9 +209,7 @@ class _CasaPanelRoute<T> extends PageRoute<T> {
         return Align(
           alignment: Alignment.centerRight,
           child: Padding(
-            padding: enableTopPadding
-                ? EdgeInsets.only(top: topPadding)
-                : EdgeInsets.zero,
+            padding: enableTopPadding ? EdgeInsets.only(top: topPadding) : EdgeInsets.zero,
             child: SizedBox(
               width: panelWidth,
               height: double.infinity,
