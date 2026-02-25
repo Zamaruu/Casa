@@ -3,14 +3,25 @@ import 'package:casa/src/widgets/base/tile.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:shared/shared.dart';
 
+bool canMarkTodoAsDone({
+  required ITodo item,
+  required bool markDoneLoading,
+}) {
+  return item.status != ETodoStatus.done && !markDoneLoading;
+}
+
 class TodoItemTile extends StatelessWidget {
   final ITodo item;
   final VoidCallback? onTap;
+  final VoidCallback? onMarkDone;
+  final bool markDoneLoading;
 
   const TodoItemTile({
     super.key,
     required this.item,
     this.onTap,
+    this.onMarkDone,
+    this.markDoneLoading = false,
   });
 
   @override
@@ -24,7 +35,29 @@ class TodoItemTile extends StatelessWidget {
 
     return CasaTile(
       onTap: onTap,
-      leading: Icon(item.status == ETodoStatus.done ? Icons.check_circle_outline : Icons.radio_button_unchecked),
+      leading: IconButton(
+        icon: markDoneLoading
+            ? const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
+            : Icon(
+                item.status == ETodoStatus.done
+                    ? Icons.check_circle
+                    : Icons.radio_button_unchecked,
+              ),
+        onPressed:
+            canMarkTodoAsDone(
+              item: item,
+              markDoneLoading: markDoneLoading,
+            )
+            ? onMarkDone
+            : null,
+        tooltip: item.status == ETodoStatus.done
+            ? 'Erledigt'
+            : 'Als erledigt markieren',
+      ),
       title: CasaText(item.title),
       subtitle: CasaText(subtitle),
       thirdTitle: CasaText('Erstellt von: ${item.createdByUserId}'),

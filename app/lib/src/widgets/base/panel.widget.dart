@@ -217,6 +217,9 @@ class _CasaPanelRoute<T> extends PageRoute<T> {
                 color: context.theme.colorScheme.surface,
                 elevation: 16,
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
                   children: [
                     _buildHeader(context),
                     Expanded(

@@ -131,6 +131,9 @@ class _CasaScaffoldState<R extends IResponse> extends ConsumerState<CasaScaffold
     return Padding(
       padding: widget.bodyPadding ?? EdgeInsets.all(UniversalPlatform.isWeb ? 16 : 8),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.max,
         children: [
           if (layout.screenType != EScreenType.mobil) buildCommandBar(),
 

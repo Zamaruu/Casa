@@ -2,11 +2,14 @@ import 'package:casa/src/core/extensions/list.extensions.dart';
 import 'package:casa/src/core/interfaces/widgets/i_menu_widget.dart';
 import 'package:casa/src/core/interfaces/widgets/i_routable_widget.dart';
 import 'package:casa/src/core/models/enums/e_panel_size.dart';
+import 'package:casa/src/core/models/enums/e_snackbar_type.dart';
 import 'package:casa/src/core/interfaces/menu/i_menu.dart';
 import 'package:casa/src/core/models/menus/menu.dart';
 import 'package:casa/src/core/models/menus/menu_item.dart';
 import 'package:casa/src/core/router/casa_navigator.dart';
+import 'package:casa/src/core/utils/snackbar.util.dart';
 import 'package:casa/src/features/todos/data/provider/todo_items_provider.dart';
+import 'package:casa/src/features/todos/data/repositories/todo_item.repository.dart';
 import 'package:casa/src/features/todos/data/utils/todo.util.dart';
 import 'package:casa/src/features/todos/widgets/dialogs/todo_detail.dialog.dart';
 import 'package:casa/src/features/todos/widgets/content/todo_items_content.widget.dart';
@@ -39,6 +42,7 @@ class _TodoListRouteState extends ConsumerState<TodoListRoute>
   late final TodoUtil todoUtils;
   late final String? _initialOpenItemId;
   bool _hasHandledInitialQueryOpen = false;
+  final Set<String> _markDoneInProgressItemIds = <String>{};
 
   @override
   void initState() {
@@ -122,6 +126,44 @@ class _TodoListRouteState extends ConsumerState<TodoListRoute>
     );
   }
 
+  Future<void> markTodoAsDone(ITodo todo) async {
+    if (todo.status == ETodoStatus.done) {
+      return;
+    }
+
+    if (_markDoneInProgressItemIds.contains(todo.id)) {
+      return;
+    }
+
+    setState(() {
+      _markDoneInProgressItemIds.add(todo.id);
+    });
+
+    final updateResponse = await ref
+        .read(todoRepositoryProvider)
+        .save(
+          todo.copyWith(status: ETodoStatus.done),
+        );
+
+    if (mounted) {
+      setState(() {
+        _markDoneInProgressItemIds.remove(todo.id);
+      });
+
+      if (updateResponse.isSuccess) {
+        ref.invalidate(todoItemsByListProvider(widget.listId));
+      } else {
+        CasaSnackbars.showDefaultSnackbar(
+          message:
+              updateResponse.message ??
+              'Todo konnte nicht als erledigt markiert werden',
+          context: context,
+          type: ESnackbarType.error,
+        );
+      }
+    }
+  }
+
   // endregion
 
   @override
@@ -138,6 +180,9 @@ class _TodoListRouteState extends ConsumerState<TodoListRoute>
           return TodoItemsContent(
             items: items,
             onTap: (item) => showTodoDetails(item),
+            onMarkDone: markTodoAsDone,
+            isMarkDoneLoading: (item) =>
+                _markDoneInProgressItemIds.contains(item.id),
           );
         }
 

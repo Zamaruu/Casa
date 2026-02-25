@@ -6,11 +6,15 @@ import 'package:shared/shared.dart';
 class TodoItemsContent extends StatelessWidget {
   final List<ITodo> items;
   final void Function(ITodo item) onTap;
+  final void Function(ITodo item)? onMarkDone;
+  final bool Function(ITodo item)? isMarkDoneLoading;
 
   const TodoItemsContent({
     super.key,
     required this.items,
     required this.onTap,
+    this.onMarkDone,
+    this.isMarkDoneLoading,
   });
 
   @override
@@ -28,6 +32,8 @@ class TodoItemsContent extends StatelessWidget {
         return TodoItemTile(
           item: item,
           onTap: () => onTap(item),
+          onMarkDone: onMarkDone != null ? () => onMarkDone!(item) : null,
+          markDoneLoading: isMarkDoneLoading?.call(item) ?? false,
         );
       },
     );
