@@ -43,6 +43,11 @@ class _TodosRouteState extends ConsumerState<TodosRoute> {
           icon: Icons.refresh,
           onTap: () => ref.invalidate(todoListsProvider),
         ),
+        MenuItem(
+          title: 'Liste löschen',
+          icon: Icons.delete_outline,
+          onTap: () => todoListUtil.deleteFromMenubar(context, ref),
+        ),
       ],
       farItems: [
         MenuItem.icon(
@@ -69,7 +74,9 @@ class _TodosRouteState extends ConsumerState<TodosRoute> {
           );
         }
 
-        return const Center(child: CasaText('Fehler beim Laden der Todo-Listen'));
+        return const Center(
+          child: CasaText('Fehler beim Laden der Todo-Listen'),
+        );
       },
     );
   }

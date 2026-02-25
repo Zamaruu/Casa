@@ -2,7 +2,8 @@ import 'package:casa_api/src/database/mongodb/mongo_operations.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:shared/shared.dart';
 
-class MongoTodoListOperations extends MongoOperations<ITodoList> implements ITodoListOperations {
+class MongoTodoListOperations extends MongoOperations<ITodoList>
+    implements ITodoListOperations {
   const MongoTodoListOperations({required super.db});
 
   @override
@@ -13,7 +14,8 @@ class MongoTodoListOperations extends MongoOperations<ITodoList> implements ITod
       (Map<String, dynamic> doc) => TodoList.fromJson(doc);
 }
 
-class MongoTodoItemOperations extends MongoOperations<ITodo> implements ITodoItemOperations {
+class MongoTodoItemOperations extends MongoOperations<ITodo>
+    implements ITodoItemOperations {
   const MongoTodoItemOperations({required super.db});
 
   @override
@@ -34,9 +36,37 @@ class MongoTodoItemOperations extends MongoOperations<ITodo> implements ITodoIte
       operationErrorMessage: 'Error while finding todo items by listId $listId',
     );
   }
+
+  @override
+  Future<IResponse> deleteByListId(String listId) async {
+    return runGuarded(
+      () async {
+        await collection.deleteMany(where.eq('listId', listId));
+        return Response.success();
+      },
+      operationErrorMessage:
+          'Error while deleting todo items by listId $listId',
+    );
+  }
+
+  @override
+  Future<IResponse> detachFromListId(String listId) async {
+    return runGuarded(
+      () async {
+        await collection.updateMany(
+          where.eq('listId', listId),
+          modify.set('listId', '').set('updatedAt', DateTime.now()),
+        );
+        return Response.success();
+      },
+      operationErrorMessage:
+          'Error while detaching todo items by listId $listId',
+    );
+  }
 }
 
-class MongoTodoAttachmentOperations extends MongoOperations<ITodoAttachment> implements ITodoAttachmentOperations {
+class MongoTodoAttachmentOperations extends MongoOperations<ITodoAttachment>
+    implements ITodoAttachmentOperations {
   const MongoTodoAttachmentOperations({required super.db});
 
   @override
@@ -47,18 +77,26 @@ class MongoTodoAttachmentOperations extends MongoOperations<ITodoAttachment> imp
       (Map<String, dynamic> doc) => TodoAttachment.fromJson(doc);
 
   @override
-  Future<IValueResponse<List<ITodoAttachment>>> findByTodoItemId(String todoItemId) async {
+  Future<IValueResponse<List<ITodoAttachment>>> findByTodoItemId(
+    String todoItemId,
+  ) async {
     return runGuardedValue(
       () async {
         final docs = await collection
             .find(
-              where.eq('attachmentTargetType', EAttachmentTargetType.todoItem.name).eq('attachmentTargetId', todoItemId),
+              where
+                  .eq(
+                    'attachmentTargetType',
+                    EAttachmentTargetType.todoItem.name,
+                  )
+                  .eq('attachmentTargetId', todoItemId),
             )
             .toList();
         final attachments = docs.map((doc) => fromMongo(doc)).toList();
         return ValueResponse.success(value: attachments);
       },
-      operationErrorMessage: 'Error while finding todo attachments by todoItemId $todoItemId',
+      operationErrorMessage:
+          'Error while finding todo attachments by todoItemId $todoItemId',
     );
   }
 }

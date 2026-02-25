@@ -1,5 +1,6 @@
 import 'package:casa/src/app/abstract/repositories/repo_source.dart';
 import 'package:casa/src/app/abstract/repositories/typed_cache_repo.dart';
+import 'package:casa/src/core/interfaces/api/i_api_response.dart';
 import 'package:casa/src/features/todos/data/interfaces/i_todo_list.api.dart';
 import 'package:shared/shared.dart';
 
@@ -13,4 +14,11 @@ class TodoListRepoSource extends TypedRepoSource<ITodoList, ITodoListApi> {
 
 abstract class TodoListRepo extends TypedCacheRepo<ITodoList, ITodoListApi> {
   TodoListRepo({required super.source});
+
+  Future<IApiResponse<void>> deleteWithTodoAction(
+    String id, {
+    String? todoAction,
+  }) {
+    return source.api.deleteList(id, todoAction: todoAction);
+  }
 }
