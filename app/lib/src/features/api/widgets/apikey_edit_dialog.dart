@@ -94,7 +94,7 @@ class _ApiKeyEditDialogState extends ConsumerState<ApiKeyEditDialog> {
         if (saveResponse.isSuccess && saveResponse.hasValue) {
           final key = saveResponse.value!.rawKey;
 
-          await ContextDialog.openDialog(
+          await ContextDialog.open(
             context,
             ContextDialog.builder(
               title: 'API-Schlüssel',

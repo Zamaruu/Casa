@@ -69,7 +69,7 @@ class MenuUtils {
   }
 
   void openUserContextMenu(BuildContext context) {
-    ContextDialog.openDialog(
+    ContextDialog.open(
       context,
       ContextDialog(
         title: "Benutzermenü",

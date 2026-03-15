@@ -13,7 +13,7 @@ abstract class TypedUtil<T extends IEntity> extends Util {
 
   /// Returns true if the user wants to delete the entity.
   Future<bool> showDeleteDialog(BuildContext context, WidgetRef ref, T entity, {String? entityLabel}) async {
-    final shouldDelete = await ContextDialog.openDialog<bool>(
+    final shouldDelete = await ContextDialog.open<bool>(
       context,
       ContextDialog(
         title: "Löschen",

@@ -26,7 +26,7 @@ class ApiKeyUtil extends TypedUtil<IApiKey> implements ICachedCrudUtil<IApiKey> 
 
   @override
   Future<IValueResponse<IApiKey>?> create(BuildContext context, WidgetRef ref) async {
-    final userResponse = await ContextDialog.openDialog<IValueResponse<IApiKey>>(
+    final userResponse = await ContextDialog.open<IValueResponse<IApiKey>>(
       context,
       ContextDialog(
         title: "API-Schlüssel erstellen",

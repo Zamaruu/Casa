@@ -20,7 +20,7 @@ class UserContextDialog extends ConsumerWidget {
 
     final launcherUtil = const LauncherUtil();
 
-    ContextDialog.openDialog(
+    ContextDialog.open(
       context,
       ContextDialog(
         title: 'Unterstützung & Feedback',

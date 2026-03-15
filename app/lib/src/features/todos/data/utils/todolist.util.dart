@@ -10,8 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared/shared.dart';
 
-class TodoListUtil extends TypedUtil<ITodoList>
-    implements ICachedCrudUtil<ITodoList> {
+class TodoListUtil extends TypedUtil<ITodoList> implements ICachedCrudUtil<ITodoList> {
   TodoListUtil();
 
   @override
@@ -19,14 +18,13 @@ class TodoListUtil extends TypedUtil<ITodoList>
     BuildContext context,
     WidgetRef ref,
   ) async {
-    final todoListResponse =
-        await ContextDialog.openDialog<IValueResponse<ITodoList>>(
-          context,
-          ContextDialog(
-            title: "Todo-Liste erstellen",
-            content: const TodoListEditDialog(),
-          ),
-        );
+    final todoListResponse = await ContextDialog.open<IValueResponse<ITodoList>>(
+      context,
+      ContextDialog(
+        title: "Todo-Liste erstellen",
+        content: const TodoListEditDialog(),
+      ),
+    );
 
     if (todoListResponse != null && context.mounted) {
       if (todoListResponse.isSuccess && todoListResponse.hasValue) {
@@ -62,70 +60,65 @@ class TodoListUtil extends TypedUtil<ITodoList>
 
       if (!shouldDelete || !context.mounted) {
         return Response.success();
-      }
+      } else {
+        final repo = ref.read(todoListRepositoryProvider);
 
-      final repo = ref.read(todoListRepositoryProvider);
+        final initialDeleteResponse = await repo.deleteWithTodoAction(entity.id);
 
-      final initialDeleteResponse = await repo.deleteWithTodoAction(entity.id);
+        if (initialDeleteResponse.isSuccess) {
+          CasaSnackbars.showDefaultSnackbar(
+            message: "Todo-Liste '${entity.name}' gelöscht",
+            context: context,
+            type: ESnackbarType.success,
+          );
+          await refresh(context, ref);
+          return Response.success();
+        }
 
-      if (initialDeleteResponse.isSuccess) {
-        CasaSnackbars.showDefaultSnackbar(
-          message: "Todo-Liste '${entity.name}' gelöscht",
-          context: context,
-          type: ESnackbarType.success,
+        final needsTodoAction = initialDeleteResponse.httpStatus == EHttpStatus.badRequest;
+        if (!needsTodoAction) {
+          CasaSnackbars.showDefaultSnackbar(
+            message: initialDeleteResponse.message ?? "Fehler beim Löschen der Todo-Liste",
+            context: context,
+            type: ESnackbarType.error,
+          );
+          return Response.failure(
+            message: initialDeleteResponse.message ?? 'Delete failed',
+          );
+        }
+
+        final todoAction = await _showTodoDeleteActionDialog(
+          context,
+          entity.name,
         );
-        await refresh(context, ref);
-        return Response.success();
-      }
+        if (todoAction == null || !context.mounted) {
+          return Response.success();
+        }
 
-      final needsTodoAction =
-          initialDeleteResponse.httpStatus == EHttpStatus.badRequest;
-      if (!needsTodoAction) {
+        final resolvedDeleteResponse = await repo.deleteWithTodoAction(
+          entity.id,
+          todoAction: todoAction,
+        );
+
+        if (resolvedDeleteResponse.isSuccess) {
+          CasaSnackbars.showDefaultSnackbar(
+            message: "Todo-Liste '${entity.name}' gelöscht",
+            context: context,
+            type: ESnackbarType.success,
+          );
+          await refresh(context, ref);
+          return Response.success();
+        }
+
         CasaSnackbars.showDefaultSnackbar(
-          message:
-              initialDeleteResponse.message ??
-              "Fehler beim Löschen der Todo-Liste",
+          message: resolvedDeleteResponse.message ?? "Fehler beim Löschen der Todo-Liste",
           context: context,
           type: ESnackbarType.error,
         );
         return Response.failure(
-          message: initialDeleteResponse.message ?? 'Delete failed',
+          message: resolvedDeleteResponse.message ?? 'Delete failed',
         );
       }
-
-      final todoAction = await _showTodoDeleteActionDialog(
-        context,
-        entity.name,
-      );
-      if (todoAction == null || !context.mounted) {
-        return Response.success();
-      }
-
-      final resolvedDeleteResponse = await repo.deleteWithTodoAction(
-        entity.id,
-        todoAction: todoAction,
-      );
-
-      if (resolvedDeleteResponse.isSuccess) {
-        CasaSnackbars.showDefaultSnackbar(
-          message: "Todo-Liste '${entity.name}' gelöscht",
-          context: context,
-          type: ESnackbarType.success,
-        );
-        await refresh(context, ref);
-        return Response.success();
-      }
-
-      CasaSnackbars.showDefaultSnackbar(
-        message:
-            resolvedDeleteResponse.message ??
-            "Fehler beim Löschen der Todo-Liste",
-        context: context,
-        type: ESnackbarType.error,
-      );
-      return Response.failure(
-        message: resolvedDeleteResponse.message ?? 'Delete failed',
-      );
     });
   }
 
@@ -175,7 +168,7 @@ class TodoListUtil extends TypedUtil<ITodoList>
     BuildContext context,
     List<ITodoList> lists,
   ) {
-    return ContextDialog.openDialog<ITodoList>(
+    return ContextDialog.open<ITodoList>(
       context,
       ContextDialog(
         title: 'Todo-Liste auswählen',
@@ -188,9 +181,7 @@ class TodoListUtil extends TypedUtil<ITodoList>
                   .map(
                     (list) => ListTile(
                       title: Text(list.name),
-                      subtitle: list.description.isNotEmpty
-                          ? Text(list.description)
-                          : null,
+                      subtitle: list.description.isNotEmpty ? Text(list.description) : null,
                       onTap: () => Navigator.of(context).pop(list),
                     ),
                   )
@@ -206,7 +197,7 @@ class TodoListUtil extends TypedUtil<ITodoList>
     BuildContext context,
     String listName,
   ) {
-    return ContextDialog.openDialog<String>(
+    return ContextDialog.open<String>(
       context,
       ContextDialog(
         title: 'Liste enthält Todos',

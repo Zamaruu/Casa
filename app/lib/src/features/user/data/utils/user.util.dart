@@ -15,7 +15,7 @@ class UserUtil extends TypedUtil<IUser> implements ICachedCrudUtil<IUser> {
 
   @override
   Future<IValueResponse<IUser>?> create(BuildContext context, WidgetRef ref) async {
-    final userResponse = await ContextDialog.openDialog<IValueResponse<IUser>>(
+    final userResponse = await ContextDialog.open<IValueResponse<IUser>>(
       context,
       ContextDialog(
         title: "Benutzer erstellen",

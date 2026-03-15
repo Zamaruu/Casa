@@ -49,7 +49,7 @@ class ContextDialog extends ConsumerWidget {
   }) : content = null,
        onClose = null;
 
-  static Future<T?> openDialog<T>(
+  static Future<T?> open<T>(
     BuildContext context,
     ContextDialog dialog, {
     bool fullScreen = false,

@@ -4,7 +4,8 @@ import 'package:casa/src/core/models/enums/e_snackbar_type.dart';
 import 'package:casa/src/core/utils/snackbar.util.dart';
 import 'package:casa/src/features/user/data/provider/users_list_provider.dart';
 import 'package:casa/src/features/todos/data/repositories/todo_item.repository.dart';
-import 'package:casa/src/features/todos/widgets/dialogs/todo_assignee_selection_dialog.dart';
+import 'package:casa/src/features/user/widgets/user_selection_dialog.dart';
+import 'package:casa/src/widgets/base/contextdialog.widget.dart';
 import 'package:casa/src/widgets/base/primarybutton.widget.dart';
 import 'package:casa/src/widgets/base/text.widget.dart';
 import 'package:flutter/material.dart';
@@ -85,9 +86,7 @@ class _TodoEditDialogState extends ConsumerState<TodoEditDialog> {
         assignedUserIds: assignedUserId != null ? [assignedUserId!] : const [],
       );
 
-      final saveResponse = await ref
-          .read(todoRepositoryProvider)
-          .save(todoList);
+      final saveResponse = await ref.read(todoRepositoryProvider).save(todoList);
 
       if (mounted) {
         setLoading(false);
@@ -96,8 +95,7 @@ class _TodoEditDialogState extends ConsumerState<TodoEditDialog> {
           Navigator.of(context).pop(saveResponse);
         } else {
           CasaSnackbars.showDefaultSnackbar(
-            message:
-                saveResponse.message ?? 'Fehler beim Speichern der Todo-Liste',
+            message: saveResponse.message ?? 'Fehler beim Speichern der Todo-Liste',
             context: context,
             type: ESnackbarType.error,
           );
@@ -109,9 +107,14 @@ class _TodoEditDialogState extends ConsumerState<TodoEditDialog> {
   // endregion
 
   Future<void> selectAssignee() async {
-    final selectedUser = await TodoAssigneeSelectionDialog.open(
+    final selectedUser = await ContextDialog.open(
       context,
-      selectedUserId: assignedUserId,
+      ContextDialog(
+        title: 'Benutzer auswählen',
+        content: UserSelectionDialog(
+          selectedUserId: assignedUserId,
+        ),
+      ),
     );
 
     if (!mounted || selectedUser == null) {
