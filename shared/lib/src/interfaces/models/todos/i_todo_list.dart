@@ -1,4 +1,4 @@
-import 'package:shared/src/interfaces/models/i_entity.dart';
+import 'package:shared/shared.dart';
 
 /// Todo list contract representing a personal or shared task container.
 abstract interface class ITodoList implements IEntity {
@@ -27,34 +27,14 @@ abstract interface class ITodoList implements IEntity {
   /// Returns `bool`.
   bool get isShared;
 
-  @override
+  /// List of todos in the list.
+  ///
+  /// Returns `List<ITodo>`.
+  /// Will be empty by default and can either be filled by api query argument or manually by setting the list property in app state.
+  List<ITodo> get todos;
+
   /// Creates a copy with selectively overridden todo list fields.
-  ///
-  /// Parameter `id`:
-  /// Optional replacement for list ID.
-  ///
-  /// Parameter `createdAt`:
-  /// Optional replacement for creation timestamp.
-  ///
-  /// Parameter `updatedAt`:
-  /// Optional replacement for update timestamp.
-  ///
-  /// Parameter `name`:
-  /// Optional replacement for list name.
-  ///
-  /// Parameter `description`:
-  /// Optional replacement for list description.
-  ///
-  /// Parameter `ownerUserId`:
-  /// Optional replacement for owner user ID.
-  ///
-  /// Parameter `memberUserIds`:
-  /// Optional replacement for member user IDs.
-  ///
-  /// Parameter `isShared`:
-  /// Optional replacement for sharing state.
-  ///
-  /// Returns `ITodoList`.
+  @override
   ITodoList copyWith({
     String? id,
     DateTime? createdAt,
@@ -64,5 +44,6 @@ abstract interface class ITodoList implements IEntity {
     String? ownerUserId,
     List<String>? memberUserIds,
     bool? isShared,
+    List<ITodo>? todos,
   });
 }

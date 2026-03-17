@@ -21,6 +21,9 @@ class TodoList extends Entity implements ITodoList {
   @override
   final bool isShared;
 
+  @override
+  final List<ITodo> todos;
+
   const TodoList({
     super.id,
     super.createdAt,
@@ -30,6 +33,7 @@ class TodoList extends Entity implements ITodoList {
     required this.ownerUserId,
     this.memberUserIds = const [],
     this.isShared = false,
+    this.todos = const [],
   });
 
   factory TodoList.fromJson(Map<String, dynamic> json) => _$TodoListFromJson(json);
@@ -47,6 +51,7 @@ class TodoList extends Entity implements ITodoList {
     String? ownerUserId,
     List<String>? memberUserIds,
     bool? isShared,
+    List<ITodo>? todos,
   }) {
     return TodoList(
       id: id ?? this.id,
@@ -57,6 +62,7 @@ class TodoList extends Entity implements ITodoList {
       ownerUserId: ownerUserId ?? this.ownerUserId,
       memberUserIds: memberUserIds ?? this.memberUserIds,
       isShared: isShared ?? this.isShared,
+      todos: todos ?? this.todos,
     );
   }
 }

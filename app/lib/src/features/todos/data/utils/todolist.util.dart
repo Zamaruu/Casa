@@ -11,7 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared/shared.dart';
 
 class TodoListUtil extends TypedUtil<ITodoList> implements ICachedCrudUtil<ITodoList> {
-  TodoListUtil();
+  const TodoListUtil();
 
   @override
   Future<IValueResponse<ITodoList>?> create(
@@ -59,19 +59,20 @@ class TodoListUtil extends TypedUtil<ITodoList> implements ICachedCrudUtil<ITodo
       );
 
       if (!shouldDelete || !context.mounted) {
-        return Response.success();
+        return Response.skipped();
       } else {
         final repo = ref.read(todoListRepositoryProvider);
 
         final initialDeleteResponse = await repo.deleteWithTodoAction(entity.id);
 
-        if (initialDeleteResponse.isSuccess) {
+        if (initialDeleteResponse.isSuccess && context.mounted) {
           CasaSnackbars.showDefaultSnackbar(
             message: "Todo-Liste '${entity.name}' gelöscht",
             context: context,
             type: ESnackbarType.success,
           );
           await refresh(context, ref);
+
           return Response.success();
         }
 

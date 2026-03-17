@@ -9,8 +9,10 @@ import 'package:casa/src/core/models/menus/menu_item.dart';
 import 'package:casa/src/core/router/casa_navigator.dart';
 import 'package:casa/src/core/utils/snackbar.util.dart';
 import 'package:casa/src/features/todos/data/provider/todo_items_provider.dart';
+import 'package:casa/src/features/todos/data/provider/todo_list_content_provider.dart';
 import 'package:casa/src/features/todos/data/repositories/todo_item.repository.dart';
 import 'package:casa/src/features/todos/data/utils/todo.util.dart';
+import 'package:casa/src/features/todos/data/utils/todolist.util.dart';
 import 'package:casa/src/features/todos/widgets/dialogs/todo_detail.dialog.dart';
 import 'package:casa/src/features/todos/widgets/content/todo_items_content.widget.dart';
 import 'package:casa/src/widgets/base/panel.widget.dart';
@@ -35,20 +37,28 @@ class TodoListRoute extends ConsumerStatefulWidget {
   ConsumerState<TodoListRoute> createState() => _TodoListRouteState();
 }
 
-class _TodoListRouteState extends ConsumerState<TodoListRoute>
-    implements IMenuWidget, IRoutableWidget<ITodo> {
-  late final IMenu menu;
+class _TodoListRouteState extends ConsumerState<TodoListRoute> implements IMenuWidget, IRoutableWidget<ITodo> {
+  late bool _hasHandledInitialQueryOpen;
+
+  late IMenu menu;
+
+  late ITodoList todoList;
 
   late final TodoUtil todoUtils;
+
+  late final TodoListUtil todoListUtils;
+
   late final String? _initialOpenItemId;
-  bool _hasHandledInitialQueryOpen = false;
+
   final Set<String> _markDoneInProgressItemIds = <String>{};
 
   @override
   void initState() {
     super.initState();
-    menu = setupMenu();
+    _hasHandledInitialQueryOpen = false;
+    menu = Menu();
     todoUtils = const TodoUtil();
+    todoListUtils = const TodoListUtil();
     _initialOpenItemId = widget.openItemId;
   }
 
@@ -66,7 +76,19 @@ class _TodoListRouteState extends ConsumerState<TodoListRoute>
         MenuItem(
           title: 'Aktualisieren',
           icon: Icons.refresh,
-          onTap: () => ref.invalidate(todoItemsByListProvider(widget.listId)),
+          onTap: () => ref.invalidate(todoListContentProvider),
+        ),
+        MenuItem(
+          title: 'Löschen',
+          icon: Icons.delete_outline,
+          onTap: () async {
+            final deleteResponse = await todoListUtils.delete(context, ref, todoList);
+
+            if (deleteResponse.isSuccess && mounted) {
+              CasaNavigator.removeQuery(context);
+              Navigator.of(context).pop();
+            }
+          },
         ),
       ],
       farItems: [
@@ -83,6 +105,18 @@ class _TodoListRouteState extends ConsumerState<TodoListRoute>
     if (item != null) {
       showTodoDetails(item);
     }
+  }
+
+  void setMenuAfterRefresh(BuildContext context, WidgetRef ref) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        menu = setupMenu();
+      });
+    });
   }
 
   void _openInitialQueryItemOnce(List<ITodo> items) {
@@ -154,9 +188,7 @@ class _TodoListRouteState extends ConsumerState<TodoListRoute>
         ref.invalidate(todoItemsByListProvider(widget.listId));
       } else {
         CasaSnackbars.showDefaultSnackbar(
-          message:
-              updateResponse.message ??
-              'Todo konnte nicht als erledigt markiert werden',
+          message: updateResponse.message ?? 'Todo konnte nicht als erledigt markiert werden',
           context: context,
           type: ESnackbarType.error,
         );
@@ -168,21 +200,23 @@ class _TodoListRouteState extends ConsumerState<TodoListRoute>
 
   @override
   Widget build(BuildContext context) {
-    return CasaScaffold<IValueResponse<List<ITodo>>>.future(
+    return CasaScaffold<IValueResponse<ITodoList>>.future(
       title: 'Todo-Liste',
       menu: menu,
-      future: ref.watch(todoItemsByListProvider(widget.listId).future),
+      future: ref.watch(todoListContentProvider(widget.listId).future),
       futureBuilder: (context, ref, response, layout) {
         if (response.isSuccess && response.hasValue) {
-          final items = response.value!;
+          todoList = response.value!;
+          setMenuAfterRefresh(context, ref);
+
+          final items = response.value!.todos;
           _openInitialQueryItemOnce(items);
 
           return TodoItemsContent(
             items: items,
             onTap: (item) => showTodoDetails(item),
             onMarkDone: markTodoAsDone,
-            isMarkDoneLoading: (item) =>
-                _markDoneInProgressItemIds.contains(item.id),
+            isMarkDoneLoading: (item) => _markDoneInProgressItemIds.contains(item.id),
           );
         }
 
